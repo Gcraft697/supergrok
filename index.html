@@ -117,18 +117,20 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
         
-        <!-- MINI CALENDAR BAR (Countdown Cards for Lite & SuperGrok) -->
-        <div class="max-w-4xl mx-auto mb-8 bg-[#161e2e] border border-grok-border rounded-2xl p-4 md:p-5 shadow-xl">
-            <div class="flex items-center justify-between mb-3 border-b border-grok-border pb-2">
-                <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-2">
-                    ⚡ คิวที่เร็วที่สุด (Lite & SuperGrok)
-                </span>
-                <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
-                    ดูปฏิทินใหญ่ ❯
-                </a>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="countdown-bar-container">
-                <!-- Javascript will render dynamic countdown cards here -->
+        <!-- MINI COUNTDOWN BAR (ซ่อนอัตโนมัติหากพร้อมขายทันที ไม่แสดงช่องว่าง) -->
+        <div id="mini-countdown-wrapper" class="max-w-4xl mx-auto mb-8 hidden">
+            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-4 md:p-5 shadow-xl">
+                <div class="flex items-center justify-between mb-3 border-b border-grok-border pb-2">
+                    <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-2">
+                        ⏳ เคาน์ดาวน์คิวถัดไปที่กำลังจะมาถึง
+                    </span>
+                    <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
+                        ดูปฏิทินใหญ่ ❯
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="countdown-bar-container">
+                    <!-- Javascript will render pure countdown cards here -->
+                </div>
             </div>
         </div>
 
@@ -178,7 +180,7 @@
             </div>
         </div>
 
-        <!-- FULL CALENDAR SECTION (ขยับขึ้นมาก่อนส่วนรอคิว) -->
+        <!-- FULL CALENDAR SECTION -->
         <div id="calendar-section" class="border-t border-grok-border pt-10 mb-16 scroll-mt-24">
             <div class="text-center mb-6 md:mb-8">
                 <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-white">
@@ -211,7 +213,7 @@
             </div>
         </div>
 
-        <!-- QUEUE SECTION (ย้ายมาไว้ล่างสุด) -->
+        <!-- QUEUE SECTION -->
         <div id="queue-section" class="border-t border-grok-border pt-10 mb-16">
             <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-slate-700/50 pb-3">
                 <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-full">PRE-ORDER / WAITING</span>
@@ -472,13 +474,13 @@
             if (normalProducts.length > 0) {
                 normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
             } else {
-                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีสินค้าพร้อมขายทันทีในรอบนี้</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีสินค้าพร้อมขายทันทีในหมวดนี้</div>`;
             }
 
             if (queueProducts.length > 0) {
                 queueProducts.forEach(item => queueGrid.appendChild(createProductCard(item, 'queue')));
             } else {
-                queueGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีรายการรอคิวในหมวดนี้</div>`;
+                queueGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีรายการที่ต้องรอคิวในหมวดนี้</div>`;
             }
         }
 
@@ -515,24 +517,24 @@
             if (type === 'queue') {
                 card.className = "queue-card-muted rounded-2xl p-3 flex flex-col justify-between cursor-pointer shadow overflow-hidden relative";
                 card.onclick = () => openDetail(item, type);
-                let queueText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'ถึงกำหนดวันนี้' : `รออีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
+                let queueText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'คิวพร้อมใช้' : `รออีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
                 card.innerHTML = `
                     <div>
                         <div class="w-full h-32 md:h-36 bg-[#090d14] rounded-xl overflow-hidden mb-3 border border-slate-800 relative">
                             <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover grayscale opacity-50">
-                            <span class="absolute top-2 right-2 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-semibold px-2 py-0.5 rounded-full">⏳ รอรอบคิว</span>
+                            <span class="absolute top-2 right-2 bg-slate-800/90 text-slate-400 border border-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">🚫 ไม่พร้อมใช้งาน</span>
                         </div>
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <h3 class="text-sm md:text-base font-bold text-slate-300 truncate">${item.product}</h3>
                             <span class="bg-[#090d14] border border-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-md font-medium shrink-0">${item.day} วัน</span>
                         </div>
                         <div class="bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-400 mb-3 flex items-center justify-between">
-                            <span class="text-slate-500 text-[11px]">สถานะ:</span>
-                            <strong class="text-amber-300 font-semibold">${queueText}</strong>
+                            <span class="text-slate-500 text-[11px]">สถานะคิว:</span>
+                            <strong class="text-slate-300 font-semibold">${queueText}</strong>
                         </div>
                     </div>
                     <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
-                        <span class="text-xs text-slate-500">จองล่วงหน้า</span>
+                        <span class="text-xs text-slate-500">ราคาเช่า</span>
                         <span class="text-sm md:text-base font-bold text-slate-400">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-slate-600">บาท</span></span>
                     </div>`;
                 return card;
@@ -544,7 +546,7 @@
                 <div>
                     <div class="w-full h-32 md:h-36 bg-[#0f172a] rounded-xl overflow-hidden mb-3 border border-grok-border relative">
                         <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover">
-                        <span class="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-md">🟢 พร้อมขาย</span>
+                        <span class="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-md">พร้อมขาย</span>
                     </div>
                     <div class="flex items-center justify-between gap-2 mb-3">
                         <h3 class="text-sm md:text-base font-bold text-white truncate">${item.product}</h3>
@@ -561,19 +563,38 @@
             return card;
         }
 
-        // --- MINI COUNTDOWN BAR (Dual Countdown Cards for Lite & SuperGrok) ---
+        // --- MINI COUNTDOWN BAR (แสดงเฉพาะ LITE และ SuperGrok ที่ต้องรอคิว และซ่อนหากพร้อมขาย) ---
         function renderCountdownBar() {
+            const wrapper = document.getElementById('mini-countdown-wrapper');
             const container = document.getElementById('countdown-bar-container');
             container.innerHTML = '';
 
-            let liteItems = allProducts.filter(i => i.product.toLowerCase().includes('lite'));
-            let grokItems = allProducts.filter(i => !i.product.toLowerCase().includes('lite'));
+            // กรองหาเฉพาะรายการที่ติดสถานะ "รอคิว" เท่านั้น
+            let queueItems = allProducts.filter(i => i.status.includes('รอคิว'));
 
-            let fastestLite = getFastestItem(liteItems);
-            let fastestGrok = getFastestItem(grokItems);
+            let liteQueue = queueItems.filter(i => i.product.toLowerCase().includes('lite'));
+            let grokQueue = queueItems.filter(i => !i.product.toLowerCase().includes('lite'));
 
-            container.appendChild(createCountdownCard('LITE Package', fastestLite, 'sky'));
-            container.appendChild(createCountdownCard('SuperGrok Package', fastestGrok, 'rose'));
+            let fastestLite = getFastestItem(liteQueue);
+            let fastestGrok = getFastestItem(grokQueue);
+
+            let cardsCount = 0;
+
+            if (fastestLite) {
+                container.appendChild(createPureCountdownCard('LITE', fastestLite, 'sky'));
+                cardsCount++;
+            }
+            if (fastestGrok) {
+                container.appendChild(createPureCountdownCard('SuperGrok', fastestGrok, 'rose'));
+                cardsCount++;
+            }
+
+            // ถ้าไม่มีคิวรอเลย (พร้อมขายหมด) ให้ซ่อนบาร์นี้ทันที
+            if (cardsCount > 0) {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+            }
         }
 
         function getFastestItem(items) {
@@ -586,52 +607,44 @@
             return sorted[0];
         }
 
-        function createCountdownCard(title, item, themeColor) {
+        function createPureCountdownCard(packageName, item, themeColor) {
             const card = document.createElement('div');
-            
-            // หากพร้อมขายอยู่แล้วหรือไม่มีคิวรอ ให้แสดงสถานะพร้อมขายโดยไม่ต้องแสดงเป็นวันรอคิว
-            let isReady = !item || !item.status.includes('รอคิว') || (item.remainingDays !== null && item.remainingDays <= 0);
             let daysLeft = item && item.remainingDays !== null ? Math.max(0, item.remainingDays) : 0;
-            if (isReady) daysLeft = 0;
 
             let borderColor = themeColor === 'sky' ? 'border-sky-500/40 hover:border-sky-400' : 'border-rose-500/40 hover:border-rose-400';
             let badgeStyle = themeColor === 'sky' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
 
             card.className = `bg-[#0f172a] border ${borderColor} rounded-xl p-3.5 flex flex-col justify-between shadow-lg cursor-pointer transition relative`;
             
-            // คลิกเปิดดูรายละเอียดสินค้าตัวนั้นทันที
+            // คลิกเพื่อเปิด Modal ดูรายละเอียดสินค้า
             card.onclick = () => {
-                if (item) {
-                    openDetail(item, item.status.includes('รอคิว') ? 'queue' : 'normal');
-                }
+                openDetail(item, 'queue');
             };
-
-            let statusHTML = isReady 
-                ? `<span class="text-emerald-400 font-bold flex items-center gap-1">🟢 พร้อมขายทันที</span>`
-                : `<span class="text-amber-300 font-bold flex items-center gap-1">⏳ เคาน์ดาวน์: อีก ${daysLeft} วัน</span>`;
 
             card.innerHTML = `
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                        ${title}
+                        ${packageName}
                     </span>
                     <div class="flex items-center gap-1.5">
                         <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badgeStyle}">
-                            ${item ? item.product : 'ไม่มีข้อมูล'}
+                            ${item.product}
                         </span>
-                        <!-- มุมเล็กๆ สำหรับกดดูปฏิทินเต็ม -->
+                        <!-- ปุ่มมุมเล็กๆ สำหรับกดดูปฏิทินใหญ่ -->
                         <button onclick="event.stopPropagation(); document.getElementById('calendar-section').scrollIntoView({ behavior: 'smooth' });" 
                                 class="bg-[#1e293b] hover:bg-grok-accent hover:text-slate-950 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-grok-border transition" title="ดูปฏิทิน">
                             📅 ❯
                         </button>
                     </div>
                 </div>
-                <div class="mb-2 bg-[#161e2e] border border-grok-border p-2 rounded-lg flex items-center justify-between">
-                    <span class="text-[11px] text-gray-400">สถานะคิวปัจจุบัน:</span>
-                    <div class="text-xs">${statusHTML}</div>
+                <div class="mb-2 bg-[#161e2e] border border-grok-border px-3 py-2.5 rounded-lg flex items-center justify-between">
+                    <span class="text-xs text-gray-400">เวลานับถอยหลัง:</span>
+                    <div class="text-sm font-black text-amber-400 tracking-wider">
+                        ⏳ อีก ${daysLeft} วัน
+                    </div>
                 </div>
                 <div class="flex items-center justify-between text-[11px] text-gray-400 pt-1 border-t border-grok-border/60">
-                    <span>ราคาเช่า: <strong class="text-white">${item ? Number(item.price).toLocaleString() : '0'} บาท</strong></span>
+                    <span>ราคา: <strong class="text-white">${Number(item.price).toLocaleString()} บาท</strong></span>
                     <span class="text-grok-accent font-semibold hover:underline">คลิกดูรายละเอียด ❯</span>
                 </div>
             `;
@@ -773,7 +786,7 @@
                 modalQueue.classList.add('hidden');
             } else if (type === 'queue') {
                 modalBadge.className = 'bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '⏳ รอรอบคิว (จองล่วงหน้า)';
+                modalBadge.textContent = '⏳ เคาน์ดาวน์รอคิว (จองล่วงหน้า)';
                 modalQueue.textContent = `📅 วันกำหนด/คิวว่าง: ${item.queue}`;
                 modalQueue.classList.remove('hidden');
             } else {
@@ -808,7 +821,7 @@
                         </div>
                     </div>
                     <a href="${FACEBOOK_LINK}" target="_blank" class="w-full sm:w-auto bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-semibold py-2 px-3.5 rounded-lg transition text-center shrink-0">
-                        ติดต่อเช่า / จอง
+                        จองคิว / ติดต่อ
                     </a>`;
                 container.appendChild(cardDiv);
             });
