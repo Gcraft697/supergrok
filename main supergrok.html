@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supergrok เช่ารายวัน / รายชั่วโมง - ตารางรีเซ็ตพลังงานรายสัปดาห์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        grok: {
+                            bg: '#0b0f17',
+                            card: '#161e2e',
+                            border: '#1e293b',
+                            accent: '#38bdf8',
+                            hover: '#0284c7',
+                            sale: '#f43f5e',
+                            queue: '#64748b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f17;
+            color: #ffffff;
+        }
+        .grok-card {
+            background: #161e2e;
+            border: 1px solid #1e293b;
+            transition: all 0.3s ease;
+        }
+        .grok-card:hover {
+            transform: translateY(-4px);
+            border-color: #38bdf8;
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2);
+        }
+        .sale-card-large {
+            background: linear-gradient(135deg, #2a1221 0%, #161e2e 100%);
+            border: 2px solid #f43f5e;
+            box-shadow: 0 0 25px rgba(244, 63, 94, 0.3);
+            transition: all 0.3s ease;
+        }
+        .sale-card-large:hover {
+            transform: translateY(-4px);
+            border-color: #fb7185;
+            box-shadow: 0 10px 35px rgba(244, 63, 94, 0.5);
+        }
+        .queue-card-muted {
+            background: #111622;
+            border: 1px solid #334155;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+        .queue-card-muted:hover {
+            opacity: 1;
+            border-color: #64748b;
+        }
+        .tooltip-box {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+            transform: translateY(4px);
+            z-index: 100;
+        }
+        .calendar-day-cell:hover .tooltip-box {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Marquee Animation for Live Status Banner */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-100 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- LIVE STATUS BANNER (ประกาศแจ้งสถานะรอบรีเซ็ตพลังงาน) -->
+    <div class="bg-gradient-to-r from-sky-900 via-indigo-900 to-rose-900 border-b border-sky-500/30 text-white py-2 px-4 overflow-hidden relative shadow-inner">
+        <div class="max-w-7xl mx-auto flex items-center gap-3">
+            <span class="bg-rose-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider animate-pulse shrink-0">ประกาศ</span>
+            <div class="whitespace-nowrap overflow-hidden w-full">
+                <p class="text-xs md:text-sm font-medium animate-marquee">
+                    ⚡ บริการเช่า SuperGrok รายวัน/ชั่วโมง ราคาหลักสิบ รับประกันตลอดอายุใช้งาน ใช้คนเดียว ไม่เเชร์ สงวนสิทธิ์เริ่มนับวันเเรกของการเช่าเป็น1วันเต็ม เเละ สงวนสิทธิ์เรียกคืนการครอบครองเมือสิ้นสัญญาเช่าเที่ยงคืนวันสุดท้าย เช่น supergrok 7วัน จ่ายตังเช่าวันที่1 เวลา 19.00น. รหัสหมดอายุ วันที่7 เวลา 0.00น.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="bg-[#111827] border-b border-grok-border sticky top-7 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-lg md:text-xl tracking-wider text-white">SuperGrok<span class="text-grok-accent"> By Treethep</span></span>
+            </div>
+            <!-- Tabs Menu -->
+            <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium text-gray-300">
+                <a href="#" class="text-grok-accent hover:text-white transition">หน้าแรก</a>
+                <a href="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314" target="_blank" class="hover:text-grok-accent transition">เช็คเครดิต</a>
+                <a href="#calendar-section" class="hover:text-grok-accent transition hidden sm:inline-block">ปฎิทินคิว</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
+        
+        <!-- 1. MINI CALENDAR BAR (ปฏิทินจิ๋วข้างบนสุด - แสดงสถานะสีเขียวพร้อมขาย / สีเหลืองรอคิว และระบุ Lite / Supergrok) -->
+        <div class="max-w-2xl mx-auto mb-8 bg-[#161e2e] border border-grok-border rounded-2xl p-4 shadow-xl">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+                    🟢 <span class="text-emerald-400">พร้อมขาย</span> | 🟡 <span class="text-amber-400">รอคิวจอง (ล่วงหน้าได้)</span>
+                </span>
+                <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
+                    ดูปฏิทินใหญ่ ❯
+                </a>
+            </div>
+            <div id="mini-calendar-bar" class="flex items-center justify-between gap-2 overflow-x-auto pb-2">
+                <!-- Javascript will render mini scrollable dates here -->
+            </div>
+        </div>
+
+        <!-- HEADER SECTION -->
+        <div class="text-center mb-6 md:mb-8">
+            <h1 class="text-2xl md:text-4xl font-extrabold mb-2">
+                ระบบเช่า AI Supergrok (รีเซ็ตพลังงานทุก 1 สัปดาห์)
+            </h1>
+            <p class="text-gray-400 text-xs md:text-sm">ข้อมูลอัปเดตแบบเรียลไทม์ เลือกจองรอบสัปดาห์ที่ต้องการได้ทันที</p>
+        </div>
+
+        <!-- CATEGORY FILTER BUTTONS -->
+        <div class="flex justify-center items-center gap-2 md:gap-3 mb-8 md:mb-10">
+            <button onclick="setCategoryFilter('all')" id="btn-filter-all" 
+                    class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-accent bg-grok-accent text-slate-950 shadow-lg shadow-sky-500/20">
+                ทั้งหมด
+            </button>
+            <button onclick="setCategoryFilter('supergrok')" id="btn-filter-supergrok" 
+                    class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-border bg-[#161e2e] text-gray-300 hover:border-grok-accent hover:text-white">
+                Supergrok
+            </button>
+            <button onclick="setCategoryFilter('lite')" id="btn-filter-lite" 
+                    class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-border bg-[#161e2e] text-gray-300 hover:border-grok-accent hover:text-white">
+                Lite
+            </button>
+        </div>
+
+        <!-- 2. DEAL / HOT SALE SECTION (ลดราคาพิเศษ) -->
+        <div id="sale-section" class="hidden mb-10 md:mb-12">
+            <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-rose-500/30 pb-3">
+                <span class="bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">HOT SALE</span>
+                <h2 class="text-lg md:text-xl font-bold text-rose-400">🔥 สินค้าลดราคาพิเศษ (รอบรีเซ็ตสัปดาห์นี้)</h2>
+            </div>
+            <div id="sale-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+        </div>
+
+        <!-- 3. PRODUCTS SECTION (พร้อมขายทันที) -->
+        <div id="products-section" class="mb-10 md:mb-12">
+            <h2 class="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2 border-b border-grok-border pb-3">
+                <span>📦 สินค้าพร้อมขายทันที (พลังงานเต็มรอบใหม่)</span>
+            </h2>
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="col-span-full text-center py-16 text-gray-400">
+                    <div class="w-8 h-8 md:w-10 md:h-10 border-2 border-grok-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p class="text-xs md:text-sm">กำลังโหลดข้อมูลสินค้า...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. FULL CALENDAR SECTION (ปฏิทินใหญ่ ขยับขึ้นมาก่อนส่วนรอคิว) -->
+        <div id="calendar-section" class="border-t border-grok-border pt-10 mb-16 scroll-mt-24">
+            <div class="text-center mb-6 md:mb-8">
+                <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-white">
+                    📅 ปฏิทินเช็คคิวว่าง & รอบรีเซ็ตพลังงาน
+                </h2>
+                <p class="text-gray-400 text-xs md:text-sm">เอาเมาส์ชี้ดูข้อมูลรอบสัปดาห์ หรือคลิกวันที่เพื่อจองล็อกสิทธิ์ล่วงหน้า</p>
+            </div>
+
+            <!-- CALENDAR CONTROLS -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#161e2e] border border-grok-border px-4 md:px-6 py-4 rounded-2xl mb-6 shadow-lg max-w-4xl mx-auto">
+                <button onclick="changeMonth(-1)" class="w-full sm:w-auto bg-[#0f172a] hover:bg-grok-accent hover:text-slate-950 border border-grok-border text-gray-300 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center justify-center gap-2">
+                    ❮ เดือนก่อนหน้า
+                </button>
+                <h3 id="calendar-month-year" class="text-base md:text-xl font-bold text-white tracking-wide">กำลังโหลด...</h3>
+                <button onclick="changeMonth(1)" class="w-full sm:w-auto bg-[#0f172a] hover:bg-grok-accent hover:text-slate-950 border border-grok-border text-gray-300 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center justify-center gap-2">
+                    เดือนถัดไป ❯
+                </button>
+            </div>
+
+            <!-- CALENDAR GRID CONTAINER -->
+            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3 md:p-6 shadow-2xl max-w-4xl mx-auto overflow-x-auto">
+                <div class="grid grid-cols-7 gap-1 md:gap-2 mb-3 text-center font-bold text-gray-400 text-xs md:text-sm min-w-[300px]">
+                    <div class="text-rose-400">อา.</div>
+                    <div>จ.</div>
+                    <div>อ.</div>
+                    <div>พ.</div>
+                    <div>พฤ.</div>
+                    <div>ศ.</div>
+                    <div class="text-sky-400">ส.</div>
+                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 md:gap-2 min-w-[300px]"></div>
+            </div>
+        </div>
+
+        <!-- 5. QUEUE SECTION (รายการรอคิว อยู่ล่างสุดของหน้าเว็บ) -->
+        <div id="queue-section" class="border-t border-grok-border pt-10 mb-16">
+            <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-slate-700/50 pb-3">
+                <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-full">PRE-ORDER / WAITING</span>
+                <h2 class="text-lg md:text-xl font-bold text-slate-400">⏳ รายการสินค้าที่ต้องรอคิว (จองล่วงหน้าล็อคสิทธิ์รอบรีเซ็ต)</h2>
+            </div>
+            <div id="queue-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div id="empty-state" class="hidden text-center py-20 text-gray-500">
+            <p class="text-base md:text-lg">ไม่พบข้อมูลสินค้าที่เลือก</p>
+        </div>
+    </main>
+
+    <!-- PRODUCT DETAIL POPUP (MODAL) -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeDetail()"></div>
+        <div class="relative bg-[#161e2e] border border-grok-border rounded-2xl max-w-md w-full p-5 md:p-6 shadow-2xl z-10">
+            <button onclick="closeDetail()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
+            <div class="flex flex-col items-center text-center">
+                <img id="modal-image" src="" alt="สินค้า" class="w-full h-40 md:h-48 object-cover rounded-xl border border-grok-border mb-4">
+                <span id="modal-badge" class="text-xs font-semibold px-3 py-1 rounded-full mb-2"></span>
+                <h3 id="modal-title" class="text-lg md:text-xl font-bold text-white mb-2"></h3>
+                <div id="modal-day" class="text-xs md:text-sm text-gray-400 mb-2 bg-[#0f172a] px-4 py-1.5 rounded-lg border border-grok-border"></div>
+                <div id="modal-queue" class="hidden text-xs font-semibold text-slate-300 bg-slate-800/80 border border-slate-700 px-4 py-2 rounded-lg mb-4 w-full"></div>
+                <div class="text-xl md:text-2xl font-extrabold text-grok-accent mb-6" id="modal-price"></div>
+                <a id="modal-facebook-link" href="https://www.facebook.com/TreethepGolf" target="_blank" 
+                   class="w-full bg-[#1877F2] hover:bg-[#166fe5] text-white font-semibold py-3 px-4 rounded-xl transition flex items-center justify-center gap-3 shadow-lg text-sm md:text-base">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>จองคิวล็อกสิทธิ์รอบรีเซ็ต / ผ่าน Facebook</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALENDAR DAY DETAIL MODAL -->
+    <div id="calendar-day-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCalendarModal()"></div>
+        <div class="relative bg-[#161e2e] border border-grok-border rounded-2xl max-w-lg w-full p-5 md:p-6 shadow-2xl z-10">
+            <button onclick="closeCalendarModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
+            <h3 id="cal-modal-date" class="text-base md:text-lg font-bold text-grok-accent mb-4 border-b border-grok-border pb-2"></h3>
+            <div id="cal-modal-content" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#111827] border-t border-grok-border py-6 text-center text-xs text-gray-500">
+        <p>© 2026 Supergrok Store · ระบบเช่าพลังงานรีเซ็ตรายสัปดาห์ · All rights reserved.</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        const SHEET_ID = '1FZDa93Qn_N44biC3gugdPf2uaXh2-BeI';
+        const SHEET_TITLE = 'ตารางคิวว่างเช่า AI';
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TITLE)}`;
+
+        const PRODUCT_IMAGES = {
+            'supergrok': 'https://static.kinguin.net/media/images/products/000_202508040930_supergroksmall.jpg',
+            'lite': 'https://cdn.phototourl.com/free/2026-09-07-f58fdfca-6dd2-4689-935b-abca02d35cad.jpg',
+            'default': 'https://static.kinguin.net/media/images/products/000_202508040930_supergroksmall.jpg'
+        };
+
+        const FACEBOOK_LINK = 'https://www.facebook.com/TreethepGolf';
+
+        let allProducts = [];
+        let filteredProducts = [];
+        let dateProductMap = {};
+        let currentFilter = 'all';
+
+        let today = new Date();
+        let currentYear = today.getFullYear();
+        let currentMonth = today.getMonth();
+
+        function getProductImage(productName) {
+            if (!productName) return PRODUCT_IMAGES['default'];
+            const name = productName.toLowerCase();
+            if (name.includes('lite')) {
+                return PRODUCT_IMAGES['lite'];
+            } else if (name.includes('supergrok') || name.includes('grok')) {
+                return PRODUCT_IMAGES['supergrok'];
+            }
+            return PRODUCT_IMAGES['default'];
+        }
+
+        function parseDateString(dateStr) {
+            if (!dateStr || dateStr === '-') return null;
+            let targetDate = null;
+
+            const dmyMatch = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+            if (dmyMatch) {
+                let day = parseInt(dmyMatch[1]);
+                let month = parseInt(dmyMatch[2]) - 1;
+                let year = parseInt(dmyMatch[3]);
+                if (year > 2500) year -= 543;
+                if (year < 100) year += 2000;
+                targetDate = new Date(year, month, day);
+            } else {
+                const thaiMonths = {
+                    'ม.ค.': 0, 'มกราคม': 0, 'ก.พ.': 1, 'กุมภาพันธ์': 1, 'มี.ค.': 2, 'มีนาคม': 2,
+                    'เม.ย.': 3, 'เมษายน': 3, 'พ.ค.': 4, 'พฤษภาคม': 4, 'มิ.ย.': 5, 'มิถุนายน': 5,
+                    'ก.ค.': 6, 'กรกฎาคม': 6, 'ส.ค.': 7, 'สิงหาคม': 7, 'ก.ย.': 8, 'กันยายน': 8,
+                    'ต.ค.': 9, 'ตุลาคม': 9, 'พ.ย.': 10, 'พฤศจิกายน': 10, 'ธ.ค.': 11, 'ธันวาคม': 11
+                };
+
+                const parts = dateStr.trim().split(/\s+/);
+                if (parts.length >= 3) {
+                    let day = parseInt(parts[0]);
+                    let month = thaiMonths[parts[1]];
+                    let year = parseInt(parts[2]);
+                    if (year > 2500) year -= 543;
+                    
+                    if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+                        targetDate = new Date(year, month, day);
+                    }
+                }
+            }
+            return (targetDate && !isNaN(targetDate.getTime())) ? targetDate : null;
+        }
+
+        function calculateRemainingDays(dateStr) {
+            if (!dateStr || dateStr === '-') return null;
+            let targetDate = parseDateString(dateStr);
+            if (!targetDate) return null;
+
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            targetDate.setHours(0, 0, 0, 0);
+
+            const diffTime = targetDate - now;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                const jsonString = text.substring(47, text.length - 2);
+                const json = JSON.parse(jsonString);
+                const rows = json.table.rows;
+
+                allProducts = [];
+                dateProductMap = {};
+
+                rows.forEach((row) => {
+                    if (!row.c) return;
+
+                    const product = row.c[1] ? row.c[1].v : ''; 
+                    const status = row.c[2] ? String(row.c[2].v).trim() : '';  
+                    const day = row.c[3] ? row.c[3].v : '-';    
+                    const price = row.c[4] ? row.c[4].v : '0';  
+                    const role = row.c[5] ? String(row.c[5].v).trim() : ''; 
+                    const queue = row.c[7] ? (row.c[7].f || row.c[7].v) : '-';
+
+                    const image = getProductImage(product);
+                    const remainingDays = calculateRemainingDays(queue);
+                    const parsedDate = parseDateString(queue);
+
+                    const item = {
+                        product: product || 'Supergrok',
+                        status: status,
+                        day: day,
+                        price: price,
+                        role: role,
+                        queue: queue,
+                        remainingDays: remainingDays,
+                        image: image,
+                        parsedDate: parsedDate
+                    };
+
+                    if (status && status !== 'ขายแล้ว') {
+                        allProducts.push(item);
+                        if (parsedDate) {
+                            const dateKey = `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}-${String(parsedDate.getDate()).padStart(2, '0')}`;
+                            if (!dateProductMap[dateKey]) {
+                                dateProductMap[dateKey] = [];
+                            }
+                            dateProductMap[dateKey].push(item);
+                        }
+                    }
+                });
+
+                filterProducts();
+                renderCalendar();
+                renderMiniCalendarBar();
+
+            } catch (error) {
+                console.error('Error fetching sheet data:', error);
+                document.getElementById('product-grid').innerHTML = `
+                    <div class="col-span-full text-center py-16 text-red-400">
+                        เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาตรวจสอบสิทธิ์การแชร์ Google Sheet
+                    </div>`;
+            }
+        }
+
+        function setCategoryFilter(category) {
+            currentFilter = category;
+            ['all', 'supergrok', 'lite'].forEach(cat => {
+                const btn = document.getElementById(`btn-filter-${cat}`);
+                if (cat === category) {
+                    btn.className = "px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-accent bg-grok-accent text-slate-950 shadow-lg shadow-sky-500/20";
+                } else {
+                    btn.className = "px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-border bg-[#161e2e] text-gray-300 hover:border-grok-accent hover:text-white";
+                }
+            });
+            filterProducts();
+        }
+
+        function filterProducts() {
+            if (currentFilter === 'all') {
+                filteredProducts = [...allProducts];
+            } else if (currentFilter === 'supergrok') {
+                filteredProducts = allProducts.filter(item => 
+                    item.product.toLowerCase().includes('supergrok') || 
+                    (item.product.toLowerCase().includes('grok') && !item.product.toLowerCase().includes('lite'))
+                );
+            } else if (currentFilter === 'lite') {
+                filteredProducts = allProducts.filter(item => 
+                    item.product.toLowerCase().includes('lite')
+                );
+            }
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const saleGrid = document.getElementById('sale-grid');
+            const queueGrid = document.getElementById('queue-grid');
+            const saleSection = document.getElementById('sale-section');
+            const emptyState = document.getElementById('empty-state');
+
+            grid.innerHTML = '';
+            saleGrid.innerHTML = '';
+            queueGrid.innerHTML = '';
+
+            if (filteredProducts.length === 0) {
+                saleSection.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            const queueProducts = filteredProducts.filter(item => item.status.includes('รอคิว'));
+            const availableProducts = filteredProducts.filter(item => !item.status.includes('รอคิว'));
+            
+            const saleProducts = availableProducts.filter(item => item.role.includes('ลดราคา'));
+            const normalProducts = availableProducts.filter(item => !item.role.includes('ลดราคา'));
+
+            if (saleProducts.length > 0) {
+                saleSection.classList.remove('hidden');
+                saleProducts.forEach(item => saleGrid.appendChild(createProductCard(item, 'sale')));
+            } else {
+                saleSection.classList.add('hidden');
+            }
+
+            if (normalProducts.length > 0) {
+                normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
+            } else {
+                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีสินค้าพร้อมขายทันทีในรอบนี้</div>`;
+            }
+
+            if (queueProducts.length > 0) {
+                queueProducts.forEach(item => queueGrid.appendChild(createProductCard(item, 'queue')));
+            } else {
+                queueGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีรายการรอคิวในหมวดนี้</div>`;
+            }
+        }
+
+        function createProductCard(item, type) {
+            const card = document.createElement('div');
+            
+            if (type === 'sale') {
+                card.className = "sale-card-large col-span-1 md:col-span-2 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center cursor-pointer shadow-xl relative overflow-hidden";
+                card.onclick = () => openDetail(item, type);
+                card.innerHTML = `
+                    <div class="w-full sm:w-1/2 h-36 md:h-40 bg-[#0f172a] rounded-xl overflow-hidden border border-rose-500/30 shrink-0 relative">
+                        <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 bg-rose-500 text-white text-[10px] font-extrabold tracking-wider px-2 py-0.5 rounded uppercase shadow-lg animate-pulse">🔥 DEAL</span>
+                    </div>
+                    <div class="flex flex-col justify-between w-full h-full py-1">
+                        <div>
+                            <span class="bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[11px] font-semibold px-2.5 py-0.5 rounded-full">ลดราคาพิเศษ (รอบรีเซ็ตนี้)</span>
+                            <h3 class="text-base md:text-lg font-bold text-white mb-1.5 leading-snug mt-1">${item.product}</h3>
+                            <div class="bg-[#0f172a]/80 border border-[#1e293b] rounded-lg px-2.5 py-1 text-xs text-gray-300 mb-3 inline-block">
+                                ระยะเวลา: <strong class="text-rose-300 font-bold">${item.day} วัน (พลังงานเต็ม)</strong>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-rose-500/20 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] text-gray-400 block">ราคาพิเศษเพียง</span>
+                                <span class="text-lg md:text-xl font-black text-rose-400 leading-none">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-gray-400">บาท</span></span>
+                            </div>
+                            <span class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shadow-md">เช่าทันที →</span>
+                        </div>
+                    </div>`;
+                return card;
+            }
+
+            if (type === 'queue') {
+                card.className = "queue-card-muted rounded-2xl p-3 flex flex-col justify-between cursor-pointer shadow overflow-hidden relative";
+                card.onclick = () => openDetail(item, type);
+                let queueText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'ถึงรอบรีเซ็ตวันนี้' : `รอรีเซ็ตอีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
+                card.innerHTML = `
+                    <div>
+                        <div class="w-full h-32 md:h-36 bg-[#090d14] rounded-xl overflow-hidden mb-3 border border-slate-800 relative">
+                            <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover grayscale opacity-50">
+                            <span class="absolute top-2 right-2 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-semibold px-2 py-0.5 rounded-full">⏳ รอรอบรีเซ็ต</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <h3 class="text-sm md:text-base font-bold text-slate-300 truncate">${item.product}</h3>
+                            <span class="bg-[#090d14] border border-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-md font-medium shrink-0">${item.day} วัน</span>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-400 mb-3 flex items-center justify-between">
+                            <span class="text-slate-500 text-[11px]">สถานะพลังงาน:</span>
+                            <strong class="text-amber-300 font-semibold">${queueText}</strong>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
+                        <span class="text-xs text-slate-500">จองล่วงหน้า</span>
+                        <span class="text-sm md:text-base font-bold text-slate-400">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-slate-600">บาท</span></span>
+                    </div>`;
+                return card;
+            }
+
+            card.className = "grok-card rounded-2xl p-3 flex flex-col justify-between cursor-pointer shadow-lg overflow-hidden relative";
+            card.onclick = () => openDetail(item, type);
+            card.innerHTML = `
+                <div>
+                    <div class="w-full h-32 md:h-36 bg-[#0f172a] rounded-xl overflow-hidden mb-3 border border-grok-border relative">
+                        <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-md">🟢 พร้อมขาย (พลังงานเต็ม)</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <h3 class="text-sm md:text-base font-bold text-white truncate">${item.product}</h3>
+                        <span class="bg-[#0f172a] border border-[#1e293b] text-gray-300 text-xs px-2.5 py-0.5 rounded-md font-medium shrink-0">${item.day} วัน</span>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-grok-border/80 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] text-gray-400 block leading-tight">ราคาเช่า</span>
+                        <span class="text-base md:text-lg font-black text-grok-accent leading-none">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-gray-400">บาท</span></span>
+                    </div>
+                    <button class="bg-sky-500/10 hover:bg-grok-accent text-grok-accent hover:text-slate-950 border border-sky-500/30 text-xs font-bold px-2.5 py-1.5 rounded-lg transition">เช่าเลย</button>
+                </div>`;
+            return card;
+        }
+
+        // --- MINI CALENDAR BAR (ปฏิทินจิ๋ว 7 วัน พร้อมบอกสถานะ Lite/Supergrok และสีเขียว/เหลือง) ---
+        function renderMiniCalendarBar() {
+            const bar = document.getElementById('mini-calendar-bar');
+            bar.innerHTML = '';
+
+            const now = new Date();
+            for (let i = 0; i < 7; i++) {
+                let d = new Date();
+                d.setDate(now.getDate() + i);
+                d.setHours(0,0,0,0);
+
+                let dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                let items = dateProductMap[dateKey] || [];
+                let hasItems = items.length > 0;
+
+                // เช็คว่าเป็นสินค้าประเภทไหนและสถานะอะไร
+                let isReady = hasItems && items.some(item => !item.status.includes('รอคิว'));
+                let isQueue = hasItems && items.some(item => item.status.includes('รอคิว'));
+
+                let dayNames = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
+                let dayName = dayNames[d.getDay()];
+                let dateNum = d.getDate();
+
+                let cell = document.createElement('div');
+                
+                // กำหนดสีตามสถานะ: สีเขียว (พร้อมขาย), สีเหลือง/ส้ม (รอคิว), สีปกติ (ว่าง)
+                let colorClass = 'bg-[#0f172a] border-[#1e293b] text-gray-400';
+                let indicatorDot = '';
+
+                if (isReady) {
+                    colorClass = 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300 shadow-sm';
+                    indicatorDot = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5 animate-pulse"></span>';
+                } else if (isQueue) {
+                    colorClass = 'bg-amber-950/40 border-amber-500/50 text-amber-300 shadow-sm';
+                    indicatorDot = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-0.5"></span>';
+                }
+
+                cell.className = `flex flex-col items-center justify-center p-2 rounded-xl border text-center shrink-0 w-14 cursor-pointer transition ${colorClass}`;
+                
+                if (hasItems) {
+                    cell.onclick = () => openCalendarDayModal(dateKey, items);
+                } else {
+                    cell.onclick = () => {
+                        window.location.href = '#calendar-section';
+                    };
+                }
+
+                // แสดงป้ายบอกประเภทสั้นๆ เช่น Grok หรือ Lite
+                let labelType = '';
+                if (hasItems) {
+                    let textType = items[0].product.toLowerCase();
+                    if (textType.includes('lite')) {
+                        labelType = '<span class="text-[8px] bg-sky-500/20 text-sky-300 px-1 rounded mt-0.5">Lite</span>';
+                    } else {
+                        labelType = '<span class="text-[8px] bg-rose-500/20 text-rose-300 px-1 rounded mt-0.5">Grok</span>';
+                    }
+                } else {
+                    labelType = '<span class="text-[8px] text-gray-600 mt-0.5">-</span>';
+                }
+
+                cell.innerHTML = `
+                    <span class="text-[10px] font-semibold">${dayName}</span>
+                    <span class="text-sm font-bold">${dateNum}</span>
+                    ${labelType}
+                    ${indicatorDot}
+                `;
+                bar.appendChild(cell);
+            }
+        }
+
+        // --- CALENDAR LOGIC ---
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const titleEl = document.getElementById('calendar-month-year');
+            grid.innerHTML = '';
+
+            const thaiMonthNames = [
+                "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+            ];
+            titleEl.textContent = `${thaiMonthNames[currentMonth]} ${currentYear + 543}`;
+
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const prevTotalDays = new Date(currentYear, currentMonth, 0).getDate();
+
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            // Previous Month Muted Days
+            for (let i = firstDayIndex; i > 0; i--) {
+                grid.appendChild(createDayCellElement(prevTotalDays - i + 1, true, null));
+            }
+
+            // Current Month Days
+            for (let day = 1; day <= totalDays; day++) {
+                let cellDate = new Date(currentYear, currentMonth, day);
+                cellDate.setHours(0, 0, 0, 0);
+
+                const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let itemsOnThisDay = dateProductMap[dateKey] || [];
+                let isToday = (cellDate.getTime() === now.getTime());
+
+                grid.appendChild(createDayCellElement(day, false, itemsOnThisDay, isToday, dateKey));
+            }
+
+            // Next Month Muted Fill Days
+            let totalCells = firstDayIndex + totalDays;
+            let nextDaysCount = totalCells <= 35 ? (35 - totalCells) : (42 - totalCells);
+            for (let i = 1; i <= nextDaysCount; i++) {
+                grid.appendChild(createDayCellElement(i, true, null));
+            }
+        }
+
+        function createDayCellElement(dayNum, isMuted, items, isToday = false, dateKey = '') {
+            const cell = document.createElement('div');
+            let baseClass = "calendar-day-cell relative min-h-[75px] md:min-h-[110px] rounded-xl p-1.5 md:p-2 border transition flex flex-col justify-between ";
+            
+            if (isMuted) {
+                cell.className = baseClass + "bg-[#0f172a]/40 border-[#1e293b]/50 opacity-30";
+                cell.innerHTML = `<span class="text-[10px] md:text-xs font-semibold text-gray-500">${dayNum}</span>`;
+                return cell;
+            }
+
+            let hasItems = items && items.length > 0;
+            let isReady = hasItems && items.some(i => !i.status.includes('รอคิว'));
+            let isSale = hasItems && items.some(i => i.role.includes('ลดราคา'));
+
+            // ปรับสีตารางปฏิทินใหญ่ตามสถานะ (เขียว = พร้อมขาย, เหลือง = รอคิว)
+            if (isSale) {
+                cell.className = baseClass + "bg-rose-950/20 border-rose-500/50 hover:border-rose-400 cursor-pointer shadow-sm";
+            } else if (isReady) {
+                cell.className = baseClass + "bg-emerald-950/20 border-emerald-500/40 hover:border-emerald-400 cursor-pointer shadow-sm";
+            } else if (hasItems) {
+                cell.className = baseClass + "bg-amber-950/20 border-amber-500/40 hover:border-amber-400 cursor-pointer shadow-sm";
+            } else {
+                cell.className = baseClass + "bg-[#0f172a] border-[#1e293b] hover:border-slate-700";
+            }
+
+            let todayBadge = isToday ? `<span class="bg-sky-500 text-slate-950 text-[9px] font-black px-1 rounded ml-0.5">วันนี้</span>` : '';
+            let badgesHTML = '';
+            
+            if (hasItems) {
+                items.forEach(item => {
+                    let badgeColor = item.status.includes('รอคิว') ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+                    if (item.role.includes('ลดราคา')) badgeColor = 'bg-rose-500 text-white';
+                    
+                    badgesHTML += `<div class="text-[9px] md:text-[10px] font-bold px-1 py-0.5 rounded truncate ${badgeColor} mb-0.5">⚡ ${item.product}</div>`;
+                });
+
+                // Auto Hover Tooltip
+                let tooltipContent = '';
+                items.forEach(item => {
+                    tooltipContent += `
+                        <div class="mb-2 pb-2 border-b border-gray-700 last:border-0 last:mb-0 last:pb-0">
+                            <div class="font-bold text-white text-xs md:text-sm">${item.product}</div>
+                            <div class="text-[11px] text-gray-300">สถานะ: ${item.status} (${item.day} วัน)</div>
+                            <div class="text-[11px] text-sky-400 font-extrabold">ราคา: ${Number(item.price).toLocaleString()} บาท</div>
+                        </div>`;
+                });
+
+                const tooltip = document.createElement('div');
+                tooltip.className = "tooltip-box absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 md:w-56 bg-[#1e293b] border border-grok-accent text-white p-2.5 rounded-xl shadow-2xl pointer-events-none hidden sm:block";
+                tooltip.innerHTML = `
+                    <div class="text-[11px] font-bold text-grok-accent mb-1 border-b border-slate-700 pb-1">รอบรีเซ็ตพลังงานวันนี้</div>
+                    ${tooltipContent}
+                    <div class="text-[9px] text-gray-400 mt-1 text-center">💡 คลิกเพื่อจองล็อคสิทธิ์</div>`;
+                cell.appendChild(tooltip);
+
+                cell.onclick = () => openCalendarDayModal(dateKey, items);
+            }
+
+            cell.innerHTML += `
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] md:text-sm font-bold ${isToday ? 'text-sky-400' : 'text-gray-300'}">${dayNum}${todayBadge}</span>
+                    ${hasItems ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>' : ''}
+                </div>
+                <div class="my-auto overflow-hidden">${badgesHTML}</div>`;
+
+            return cell;
+        }
+
+        function openDetail(item, type) {
+            document.getElementById('modal-image').src = item.image;
+            document.getElementById('modal-title').textContent = item.product;
+            document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน (พลังงานรีเซ็ตทุก 7 วัน)`;
+            document.getElementById('modal-price').textContent = `${Number(item.price).toLocaleString()} บาท`;
+            document.getElementById('modal-facebook-link').href = FACEBOOK_LINK;
+
+            const modalBadge = document.getElementById('modal-badge');
+            const modalQueue = document.getElementById('modal-queue');
+
+            if (type === 'sale') {
+                modalBadge.className = 'bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
+                modalBadge.textContent = '🔥 ลดราคาพิเศษ (รอบรีเซ็ตสัปดาห์นี้)';
+                modalQueue.classList.add('hidden');
+            } else if (type === 'queue') {
+                modalBadge.className = 'bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
+                modalBadge.textContent = '⏳ รอรอบรีเซ็ตพลังงาน (จองล่วงหน้าล็อกสิทธิ์)';
+                modalQueue.textContent = `📅 วันรีเซ็ต/คิวว่าง: ${item.queue}`;
+                modalQueue.classList.remove('hidden');
+            } else {
+                modalBadge.className = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold px-3 py-1 rounded-full mb-2';
+                modalBadge.textContent = '🟢 พร้อมขายทันที (พลังงานเต็มรอบใหม่)';
+                modalQueue.classList.add('hidden');
+            }
+            document.getElementById('detail-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            document.getElementById('detail-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function openCalendarDayModal(dateKey, items) {
+            document.getElementById('cal-modal-date').textContent = `📅 รอบรีเซ็ตพลังงาน / คิววันที่: ${dateKey}`;
+            const container = document.getElementById('cal-modal-content');
+            container.innerHTML = '';
+
+            items.forEach(item => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = "bg-[#0f172a] border border-grok-border p-3.5 rounded-xl flex flex-col sm:flex-row gap-3 items-center justify-between";
+                cardDiv.innerHTML = `
+                    <div class="flex items-center gap-3 w-full">
+                        <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg border border-grok-border shrink-0">
+                        <div>
+                            <h4 class="font-bold text-white text-sm md:text-base">${item.product}</h4>
+                            <p class="text-[11px] text-gray-400">สถานะ: ${item.status} | รอบสัปดาห์: ${item.day} วัน</p>
+                            <p class="text-xs md:text-sm font-extrabold text-grok-accent mt-0.5">ราคา: ${Number(item.price).toLocaleString()} บาท</p>
+                        </div>
+                    </div>
+                    <a href="${FACEBOOK_LINK}" target="_blank" class="w-full sm:w-auto bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-semibold py-2 px-3.5 rounded-lg transition text-center shrink-0">
+                        จองล็อกสิทธิ์รอบนี้
+                    </a>`;
+                container.appendChild(cardDiv);
+            });
+
+            document.getElementById('calendar-day-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendar-day-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        fetchProducts();
+    </script>
+</body>
+</html>
