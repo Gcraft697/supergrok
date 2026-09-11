@@ -263,14 +263,14 @@
 
     <!-- FOOTER -->
     <footer class="bg-[#111827] border-t border-grok-border py-6 text-center text-xs text-gray-500">
-        <!-- ตัวนับยอดคนเข้าชมเว็บไซต์ -->
+        <!-- Visitor Counter -->
         <div class="mb-3 flex justify-center items-center">
             <div id="sfcttyawtjrunb8b5d82gatz6hejasjwtzn"></div>
         </div>
         <p>© 2026 Supergrok Store · All rights reserved.</p>
     </footer>
 
-    <!-- OPTISTATS COUNTER SCRIPT -->
+    <!-- Counter Script -->
     <script type="text/javascript" src="https://counter11.optistats.ovh/private/counter.js?c=ttyawtjrunb8b5d82gatz6hejasjwtzn&down=async" async></script>
     <noscript><a href="https://www.freecounterstat.com" title="web counter"><img src="https://counter11.optistats.ovh/private/freecounterstat.php?c=ttyawtjrunb8b5d82gatz6hejasjwtzn" border="0" title="web counter" alt="web counter"></a></noscript>
 
@@ -487,13 +487,48 @@
             if (normalProducts.length > 0) {
                 normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
             } else {
-                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีสินค้าพร้อมขายทันทีในหมวดนี้</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีสินค้าพร้อมขายทันทีในรอบนี้</div>`;
             }
 
+            // ระบบจำกัดการแสดงผลรายการรอคิวแค่ 7 รายการแรก + ปุ่มเพิ่มเติม
             if (queueProducts.length > 0) {
-                queueProducts.forEach(item => queueGrid.appendChild(createProductCard(item, 'queue')));
+                const limitCount = 7;
+                const visibleQueue = queueProducts.slice(0, limitCount);
+                const hiddenQueue = queueProducts.slice(limitCount);
+
+                visibleQueue.forEach(item => queueGrid.appendChild(createProductCard(item, 'queue')));
+
+                if (hiddenQueue.length > 0) {
+                    const oldBtnWrapper = document.getElementById('queue-toggle-wrapper');
+                    if (oldBtnWrapper) oldBtnWrapper.remove();
+
+                    const btnWrapper = document.createElement('div');
+                    btnWrapper.id = 'queue-toggle-wrapper';
+                    btnWrapper.className = 'col-span-full text-center mt-6';
+                    
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.className = 'bg-[#161e2e] hover:bg-grok-accent hover:text-slate-950 text-gray-300 border border-grok-border text-xs md:text-sm font-semibold px-6 py-2.5 rounded-xl transition shadow-lg flex items-center gap-2 mx-auto';
+                    toggleBtn.innerHTML = `<span>📂 ดูคิวเพิ่มเติมทั้งหมดอีก (${hiddenQueue.length} รายการ)</span> <span>▼</span>`;
+                    
+                    let isExpanded = false;
+                    toggleBtn.onclick = () => {
+                        isExpanded = !isExpanded;
+                        if (isExpanded) {
+                            hiddenQueue.forEach(item => {
+                                const hiddenCard = createProductCard(item, 'queue');
+                                queueGrid.appendChild(hiddenCard);
+                            });
+                            toggleBtn.innerHTML = `<span>🔼 ซ่อนรายการเพิ่มเติม</span>`;
+                        } else {
+                            renderProducts();
+                        }
+                    };
+
+                    btnWrapper.appendChild(toggleBtn);
+                    queueGrid.after(btnWrapper);
+                }
             } else {
-                queueGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีรายการที่ต้องรอคิวในหมวดนี้</div>`;
+                queueGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีรายการรอคิวในหมวดนี้</div>`;
             }
         }
 
@@ -571,7 +606,7 @@
             return card;
         }
 
-        // --- COMPACT UNIFIED COUNTDOWN BAR (ซ่อนอัตโนมัติถ้าหมวดนั้นมีสินค้าพร้อมขายในสต็อกแล้ว) ---
+        // --- COMPACT UNIFIED COUNTDOWN BAR ---
         function setupUnifiedCountdownBar() {
             if (countdownInterval) clearInterval(countdownInterval);
             updateCountdownContent();
