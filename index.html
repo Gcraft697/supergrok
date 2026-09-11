@@ -117,19 +117,20 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
         
-        <!-- MINI COUNTDOWN BAR (ซ่อนอัตโนมัติหากพร้อมขายทันที ไม่แสดงช่องว่าง) -->
+        <!-- SINGLE BIG COUNTDOWN BAR (แถบใหญ่รวมเคาน์ดาวน์ ตัวเลขใหญ่ แสดงเฉพาะหมวดที่ต้องรอคิว) -->
         <div id="mini-countdown-wrapper" class="max-w-4xl mx-auto mb-8 hidden">
-            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-4 md:p-5 shadow-xl">
-                <div class="flex items-center justify-between mb-3 border-b border-grok-border pb-2">
-                    <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-2">
-                        ⏳ เคาน์ดาวน์คิวถัดไปที่กำลังจะมาถึง
+            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 border-b border-grok-border pb-3">
+                    <span class="text-sm md:text-base font-bold text-gray-200 flex items-center gap-2">
+                        ⏳ เวลานับถอยหลังคิวถัดไป
                     </span>
-                    <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
+                    <a href="#calendar-section" class="text-xs md:text-sm text-grok-accent hover:underline font-semibold flex items-center gap-1">
                         ดูปฏิทินใหญ่ ❯
                     </a>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="countdown-bar-container">
-                    <!-- Javascript will render pure countdown cards here -->
+                <!-- ช่องแถบใหญ่รวม -->
+                <div id="countdown-bar-container" class="grid grid-cols-1 gap-4">
+                    <!-- Javascript will render the unified big countdown card here -->
                 </div>
             </div>
         </div>
@@ -284,6 +285,7 @@
         let filteredProducts = [];
         let dateProductMap = {};
         let currentFilter = 'all';
+        let countdownInterval = null;
 
         let today = new Date();
         let currentYear = today.getFullYear();
@@ -335,17 +337,24 @@
             return (targetDate && !isNaN(targetDate.getTime())) ? targetDate : null;
         }
 
-        function calculateRemainingDays(dateStr) {
+        function calculateRemainingTime(dateStr) {
             if (!dateStr || dateStr === '-') return null;
             let targetDate = parseDateString(dateStr);
             if (!targetDate) return null;
 
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);
+            // กำหนดเวลาเป้าหมายเป็นเที่ยงคืนของวันนั้น
             targetDate.setHours(0, 0, 0, 0);
+            const now = new Date();
 
             const diffTime = targetDate - now;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffTime <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, isReady: true };
+
+            const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+
+            return { days, hours, minutes, seconds, isReady: false };
         }
 
         async function fetchProducts() {
@@ -370,7 +379,6 @@
                     const queue = row.c[7] ? (row.c[7].f || row.c[7].v) : '-';
 
                     const image = getProductImage(product);
-                    const remainingDays = calculateRemainingDays(queue);
                     const parsedDate = parseDateString(queue);
 
                     const item = {
@@ -380,7 +388,6 @@
                         price: price,
                         role: role,
                         queue: queue,
-                        remainingDays: remainingDays,
                         image: image,
                         parsedDate: parsedDate
                     };
@@ -399,7 +406,7 @@
 
                 filterProducts();
                 renderCalendar();
-                renderCountdownBar();
+                setupUnifiedCountdownBar();
 
             } catch (error) {
                 console.error('Error fetching sheet data:', error);
@@ -517,7 +524,6 @@
             if (type === 'queue') {
                 card.className = "queue-card-muted rounded-2xl p-3 flex flex-col justify-between cursor-pointer shadow overflow-hidden relative";
                 card.onclick = () => openDetail(item, type);
-                let queueText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'คิวพร้อมใช้' : `รออีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
                 card.innerHTML = `
                     <div>
                         <div class="w-full h-32 md:h-36 bg-[#090d14] rounded-xl overflow-hidden mb-3 border border-slate-800 relative">
@@ -527,10 +533,6 @@
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <h3 class="text-sm md:text-base font-bold text-slate-300 truncate">${item.product}</h3>
                             <span class="bg-[#090d14] border border-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-md font-medium shrink-0">${item.day} วัน</span>
-                        </div>
-                        <div class="bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-400 mb-3 flex items-center justify-between">
-                            <span class="text-slate-500 text-[11px]">สถานะคิว:</span>
-                            <strong class="text-slate-300 font-semibold">${queueText}</strong>
                         </div>
                     </div>
                     <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
@@ -563,92 +565,87 @@
             return card;
         }
 
-        // --- MINI COUNTDOWN BAR (แสดงเฉพาะ LITE และ SuperGrok ที่ต้องรอคิว และซ่อนหากพร้อมขาย) ---
-        function renderCountdownBar() {
+        // --- UNIFIED BIG COUNTDOWN BAR (1 แถบใหญ่รวมเคาน์ดาวน์ ตัวเลขใหญ่ วินาทีเรียลไทม์ ซ่อนอัตโนมัติถ้าพร้อมขาย) ---
+        function setupUnifiedCountdownBar() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            updateCountdownContent();
+            countdownInterval = setInterval(updateCountdownContent, 1000);
+        }
+
+        function updateCountdownContent() {
             const wrapper = document.getElementById('mini-countdown-wrapper');
             const container = document.getElementById('countdown-bar-container');
             container.innerHTML = '';
 
-            // กรองหาเฉพาะรายการที่ติดสถานะ "รอคิว" เท่านั้น
+            // ค้นหาสินค้าในหมวด lite และ supergrok ที่ติดสถานะรอคิว และเลือกตัวที่ใกล้ที่สุดมานับถอยหลัง
             let queueItems = allProducts.filter(i => i.status.includes('รอคิว'));
-
             let liteQueue = queueItems.filter(i => i.product.toLowerCase().includes('lite'));
             let grokQueue = queueItems.filter(i => !i.product.toLowerCase().includes('lite'));
 
-            let fastestLite = getFastestItem(liteQueue);
-            let fastestGrok = getFastestItem(grokQueue);
+            let fastestLite = getClosestQueueItem(liteQueue);
+            let fastestGrok = getClosestQueueItem(grokQueue);
 
-            let cardsCount = 0;
+            let activeCards = [];
+            if (fastestLite) activeCards.push({ name: 'LITE', item: fastestLite });
+            if (fastestGrok) activeCards.push({ name: 'SUPERGROK', item: fastestGrok });
 
-            if (fastestLite) {
-                container.appendChild(createPureCountdownCard('LITE', fastestLite, 'sky'));
-                cardsCount++;
-            }
-            if (fastestGrok) {
-                container.appendChild(createPureCountdownCard('SuperGrok', fastestGrok, 'rose'));
-                cardsCount++;
-            }
-
-            // ถ้าไม่มีคิวรอเลย (พร้อมขายหมด) ให้ซ่อนบาร์นี้ทันที
-            if (cardsCount > 0) {
-                wrapper.classList.remove('hidden');
-            } else {
+            if (activeCards.length === 0) {
                 wrapper.classList.add('hidden');
+                return;
             }
+
+            wrapper.classList.remove('hidden');
+
+            activeCards.forEach(target => {
+                let timeData = calculateRemainingTime(target.item.queue);
+                if (!timeData || timeData.isReady) return;
+
+                let cardDiv = document.createElement('div');
+                cardDiv.className = "bg-[#0f172a] border border-grok-border rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4";
+                cardDiv.onclick = () => openDetail(target.item, 'queue');
+                cardDiv.style.cursor = 'pointer';
+
+                cardDiv.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="bg-grok-accent/20 text-grok-accent border border-grok-accent/40 text-xs font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider">
+                            ${target.name}
+                        </span>
+                        <span class="text-xs text-gray-400 truncate max-w-[200px] md:max-w-xs">${target.item.product}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-center">
+                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
+                            <span class="text-lg md:text-xl font-black text-white">${String(timeData.days).padStart(2, '0')}</span>
+                            <span class="text-[10px] text-gray-400 block">วัน</span>
+                        </div>
+                        <span class="text-gray-500 font-bold">:</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
+                            <span class="text-lg md:text-xl font-black text-white">${String(timeData.hours).padStart(2, '0')}</span>
+                            <span class="text-[10px] text-gray-400 block">ชม.</span>
+                        </div>
+                        <span class="text-gray-500 font-bold">:</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
+                            <span class="text-lg md:text-xl font-black text-white">${String(timeData.minutes).padStart(2, '0')}</span>
+                            <span class="text-[10px] text-gray-400 block">นาที</span>
+                        </div>
+                        <span class="text-gray-500 font-bold">:</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
+                            <span class="text-lg md:text-xl font-black text-amber-400">${String(timeData.seconds).padStart(2, '0')}</span>
+                            <span class="text-[10px] text-gray-400 block">วินาที</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(cardDiv);
+            });
         }
 
-        function getFastestItem(items) {
+        function getClosestQueueItem(items) {
             if (!items || items.length === 0) return null;
             let sorted = [...items].sort((a, b) => {
-                let daysA = a.remainingDays !== null ? a.remainingDays : 999;
-                let daysB = b.remainingDays !== null ? b.remainingDays : 999;
-                return daysA - daysB;
+                let timeA = parseDateString(a.queue) ? parseDateString(a.queue).getTime() : 9999999999999;
+                let timeB = parseDateString(b.queue) ? parseDateString(b.queue).getTime() : 9999999999999;
+                return timeA - timeB;
             });
             return sorted[0];
-        }
-
-        function createPureCountdownCard(packageName, item, themeColor) {
-            const card = document.createElement('div');
-            let daysLeft = item && item.remainingDays !== null ? Math.max(0, item.remainingDays) : 0;
-
-            let borderColor = themeColor === 'sky' ? 'border-sky-500/40 hover:border-sky-400' : 'border-rose-500/40 hover:border-rose-400';
-            let badgeStyle = themeColor === 'sky' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
-
-            card.className = `bg-[#0f172a] border ${borderColor} rounded-xl p-3.5 flex flex-col justify-between shadow-lg cursor-pointer transition relative`;
-            
-            // คลิกเพื่อเปิด Modal ดูรายละเอียดสินค้า
-            card.onclick = () => {
-                openDetail(item, 'queue');
-            };
-
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                        ${packageName}
-                    </span>
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badgeStyle}">
-                            ${item.product}
-                        </span>
-                        <!-- ปุ่มมุมเล็กๆ สำหรับกดดูปฏิทินใหญ่ -->
-                        <button onclick="event.stopPropagation(); document.getElementById('calendar-section').scrollIntoView({ behavior: 'smooth' });" 
-                                class="bg-[#1e293b] hover:bg-grok-accent hover:text-slate-950 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-grok-border transition" title="ดูปฏิทิน">
-                            📅 ❯
-                        </button>
-                    </div>
-                </div>
-                <div class="mb-2 bg-[#161e2e] border border-grok-border px-3 py-2.5 rounded-lg flex items-center justify-between">
-                    <span class="text-xs text-gray-400">เวลานับถอยหลัง:</span>
-                    <div class="text-sm font-black text-amber-400 tracking-wider">
-                        ⏳ อีก ${daysLeft} วัน
-                    </div>
-                </div>
-                <div class="flex items-center justify-between text-[11px] text-gray-400 pt-1 border-t border-grok-border/60">
-                    <span>ราคา: <strong class="text-white">${Number(item.price).toLocaleString()} บาท</strong></span>
-                    <span class="text-grok-accent font-semibold hover:underline">คลิกดูรายละเอียด ❯</span>
-                </div>
-            `;
-            return card;
         }
 
         // --- CALENDAR LOGIC ---
