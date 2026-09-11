@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supergrok เช่ารายวัน / รายชั่วโมง</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <div id="sfcttyawtjrunb8b5d82gatz6hejasjwtzn"></div>
-<script type="text/javascript" src="https://counter11.optistats.ovh/private/counter.js?c=ttyawtjrunb8b5d82gatz6hejasjwtzn&down=async" async></script>
-<noscript><a href="https://www.freecounterstat.com" title="web counter"><img src="https://counter11.optistats.ovh/private/freecounterstat.php?c=ttyawtjrunb8b5d82gatz6hejasjwtzn" border="0" title="web counter" alt="web counter"></a></noscript>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -120,18 +117,18 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
         
-        <!-- UNIFIED COMPACT COUNTDOWN BAR (แถบเคาน์ดาวน์ขนาดกะทัดรัด ไม่กินพื้นที่) -->
-        <div id="mini-countdown-wrapper" class="max-w-6xl mx-auto mb-6 hidden">
-            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3.5 md:p-4 shadow-xl relative overflow-hidden">
-                <div class="flex items-center justify-between mb-3 border-b border-grok-border pb-2">
+        <!-- COMPACT UNIFIED COUNTDOWN BAR -->
+        <div id="mini-countdown-wrapper" class="max-w-3xl mx-auto mb-6 hidden">
+            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3 md:p-3.5 shadow-xl relative overflow-hidden">
+                <div class="flex items-center justify-between mb-2 border-b border-grok-border pb-1.5">
                     <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-1.5">
-                        ⏳ ของเติมสต็อก ลูกค้าจองล่วงหน้าได้ครับ
+                        ⏳ เวลานับถอยหลังคิวถัดไป
                     </span>
                     <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
                         ดูปฏิทินใหญ่ ❯
                     </a>
                 </div>
-                <div id="countdown-bar-container" class="grid grid-cols-1 gap-2.5">
+                <div id="countdown-bar-container" class="grid grid-cols-1 gap-2">
                     <!-- Javascript will render compact unified countdown cards here -->
                 </div>
             </div>
@@ -189,7 +186,7 @@
                 <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-white">
                     📅 ปฏิทินเช็คคิวว่าง
                 </h2>
-                <p class="text-gray-400 text-xs md:text-sm">เอาเมาส์ชี้ดูข้อมูล และคลิกเพื่อเช่าหรือจองล่วงหน้าได้ มัดจำ20-40บาท</p>
+                <p class="text-gray-400 text-xs md:text-sm">เอาเมาส์ชี้ดูข้อมูล และคลิกเพื่อเช่าหรือจองล่วงหน้าได้</p>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#161e2e] border border-grok-border px-4 md:px-6 py-4 rounded-2xl mb-6 shadow-lg max-w-4xl mx-auto">
@@ -266,8 +263,16 @@
 
     <!-- FOOTER -->
     <footer class="bg-[#111827] border-t border-grok-border py-6 text-center text-xs text-gray-500">
+        <!-- ตัวนับยอดคนเข้าชมเว็บไซต์ -->
+        <div class="mb-3 flex justify-center items-center">
+            <div id="sfcttyawtjrunb8b5d82gatz6hejasjwtzn"></div>
+        </div>
         <p>© 2026 Supergrok Store · All rights reserved.</p>
     </footer>
+
+    <!-- OPTISTATS COUNTER SCRIPT -->
+    <script type="text/javascript" src="https://counter11.optistats.ovh/private/counter.js?c=ttyawtjrunb8b5d82gatz6hejasjwtzn&down=async" async></script>
+    <noscript><a href="https://www.freecounterstat.com" title="web counter"><img src="https://counter11.optistats.ovh/private/freecounterstat.php?c=ttyawtjrunb8b5d82gatz6hejasjwtzn" border="0" title="web counter" alt="web counter"></a></noscript>
 
     <!-- SCRIPT -->
     <script>
@@ -566,7 +571,7 @@
             return card;
         }
 
-        // --- COMPACT UNIFIED COUNTDOWN BAR ---
+        // --- COMPACT UNIFIED COUNTDOWN BAR (ซ่อนอัตโนมัติถ้าหมวดนั้นมีสินค้าพร้อมขายในสต็อกแล้ว) ---
         function setupUnifiedCountdownBar() {
             if (countdownInterval) clearInterval(countdownInterval);
             updateCountdownContent();
@@ -578,7 +583,6 @@
             const container = document.getElementById('countdown-bar-container');
             container.innerHTML = '';
 
-            // ตรวจสอบว่าในสต็อกมีสินค้าพร้อมขายในหมวดนั้นๆ หรือยัง
             let liteAvailable = allProducts.some(i => i.product.toLowerCase().includes('lite') && !i.status.includes('รอคิว'));
             let grokAvailable = allProducts.some(i => (!i.product.toLowerCase().includes('lite')) && !i.status.includes('รอคิว'));
 
@@ -586,7 +590,6 @@
             let liteQueue = queueItems.filter(i => i.product.toLowerCase().includes('lite'));
             let grokQueue = queueItems.filter(i => !i.product.toLowerCase().includes('lite'));
 
-            // ถ้าหมวดไหนมีสินค้าพร้อมขายแล้ว จะไม่นำมาแสดงนับถอยหลัง
             let fastestLite = liteAvailable ? null : getClosestQueueItem(liteQueue);
             let fastestGrok = grokAvailable ? null : getClosestQueueItem(grokQueue);
 
@@ -606,36 +609,36 @@
                 if (!timeData || timeData.isReady) return;
 
                 let cardDiv = document.createElement('div');
-                cardDiv.className = "bg-[#0f172a] border border-grok-border rounded-xl p-2.5 md:p-3 flex flex-col md:flex-row items-center justify-between gap-3";
+                cardDiv.className = "bg-[#0f172a] border border-grok-border rounded-xl p-2 md:p-2.5 flex flex-col md:flex-row items-center justify-between gap-2";
                 cardDiv.onclick = () => openDetail(target.item, 'queue');
                 cardDiv.style.cursor = 'pointer';
 
                 cardDiv.innerHTML = `
                     <div class="flex items-center gap-2">
-                        <span class="bg-grok-accent/20 text-grok-accent border border-grok-accent/40 text-[11px] font-extrabold px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+                        <span class="bg-grok-accent/20 text-grok-accent border border-grok-accent/40 text-[10px] md:text-xs font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
                             ${target.name}
                         </span>
                         <span class="text-xs text-gray-400 truncate max-w-[180px] md:max-w-xs">${target.item.product}</span>
                     </div>
-                    <div class="flex items-center gap-1.5 text-center">
-                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
-                            <span class="text-sm md:text-base font-black text-white">${String(timeData.days).padStart(2, '0')}</span>
-                            <span class="text-[9px] text-gray-400 block leading-none">วัน</span>
+                    <div class="flex items-center gap-1 text-center">
+                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
+                            <span class="text-xs md:text-sm font-black text-white">${String(timeData.days).padStart(2, '0')}</span>
+                            <span class="text-[8px] text-gray-400 block leading-none">วัน</span>
                         </div>
                         <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
-                            <span class="text-sm md:text-base font-black text-white">${String(timeData.hours).padStart(2, '0')}</span>
-                            <span class="text-[9px] text-gray-400 block leading-none">ชม.</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
+                            <span class="text-xs md:text-sm font-black text-white">${String(timeData.hours).padStart(2, '0')}</span>
+                            <span class="text-[8px] text-gray-400 block leading-none">ชม.</span>
                         </div>
                         <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
-                            <span class="text-sm md:text-base font-black text-white">${String(timeData.minutes).padStart(2, '0')}</span>
-                            <span class="text-[9px] text-gray-400 block leading-none">นาที</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
+                            <span class="text-xs md:text-sm font-black text-white">${String(timeData.minutes).padStart(2, '0')}</span>
+                            <span class="text-[8px] text-gray-400 block leading-none">นาที</span>
                         </div>
                         <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
-                            <span class="text-sm md:text-base font-black text-amber-400">${String(timeData.seconds).padStart(2, '0')}</span>
-                            <span class="text-[9px] text-gray-400 block leading-none">วินาที</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
+                            <span class="text-xs md:text-sm font-black text-amber-400">${String(timeData.seconds).padStart(2, '0')}</span>
+                            <span class="text-[8px] text-gray-400 block leading-none">วินาที</span>
                         </div>
                     </div>
                 `;
