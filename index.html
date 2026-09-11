@@ -117,20 +117,19 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
         
-        <!-- SINGLE BIG COUNTDOWN BAR (แถบใหญ่รวมเคาน์ดาวน์ ตัวเลขใหญ่ แสดงเฉพาะหมวดที่ต้องรอคิว) -->
-        <div id="mini-countdown-wrapper" class="max-w-4xl mx-auto mb-8 hidden">
-            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
-                <div class="flex items-center justify-between mb-4 border-b border-grok-border pb-3">
-                    <span class="text-sm md:text-base font-bold text-gray-200 flex items-center gap-2">
+        <!-- UNIFIED COMPACT COUNTDOWN BAR (แถบเคาน์ดาวน์ขนาดกะทัดรัด ไม่กินพื้นที่) -->
+        <div id="mini-countdown-wrapper" class="max-w-3xl mx-auto mb-6 hidden">
+            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3.5 md:p-4 shadow-xl relative overflow-hidden">
+                <div class="flex items-center justify-between mb-3 border-b border-grok-border pb-2">
+                    <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-1.5">
                         ⏳ เวลานับถอยหลังคิวถัดไป
                     </span>
-                    <a href="#calendar-section" class="text-xs md:text-sm text-grok-accent hover:underline font-semibold flex items-center gap-1">
+                    <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
                         ดูปฏิทินใหญ่ ❯
                     </a>
                 </div>
-                <!-- ช่องแถบใหญ่รวม -->
-                <div id="countdown-bar-container" class="grid grid-cols-1 gap-4">
-                    <!-- Javascript will render the unified big countdown card here -->
+                <div id="countdown-bar-container" class="grid grid-cols-1 gap-2.5">
+                    <!-- Javascript will render compact unified countdown cards here -->
                 </div>
             </div>
         </div>
@@ -342,7 +341,6 @@
             let targetDate = parseDateString(dateStr);
             if (!targetDate) return null;
 
-            // กำหนดเวลาเป้าหมายเป็นเที่ยงคืนของวันนั้น
             targetDate.setHours(0, 0, 0, 0);
             const now = new Date();
 
@@ -565,7 +563,7 @@
             return card;
         }
 
-        // --- UNIFIED BIG COUNTDOWN BAR (1 แถบใหญ่รวมเคาน์ดาวน์ ตัวเลขใหญ่ วินาทีเรียลไทม์ ซ่อนอัตโนมัติถ้าพร้อมขาย) ---
+        // --- COMPACT UNIFIED COUNTDOWN BAR ---
         function setupUnifiedCountdownBar() {
             if (countdownInterval) clearInterval(countdownInterval);
             updateCountdownContent();
@@ -577,13 +575,17 @@
             const container = document.getElementById('countdown-bar-container');
             container.innerHTML = '';
 
-            // ค้นหาสินค้าในหมวด lite และ supergrok ที่ติดสถานะรอคิว และเลือกตัวที่ใกล้ที่สุดมานับถอยหลัง
+            // ตรวจสอบว่าในสต็อกมีสินค้าพร้อมขายในหมวดนั้นๆ หรือยัง
+            let liteAvailable = allProducts.some(i => i.product.toLowerCase().includes('lite') && !i.status.includes('รอคิว'));
+            let grokAvailable = allProducts.some(i => (!i.product.toLowerCase().includes('lite')) && !i.status.includes('รอคิว'));
+
             let queueItems = allProducts.filter(i => i.status.includes('รอคิว'));
             let liteQueue = queueItems.filter(i => i.product.toLowerCase().includes('lite'));
             let grokQueue = queueItems.filter(i => !i.product.toLowerCase().includes('lite'));
 
-            let fastestLite = getClosestQueueItem(liteQueue);
-            let fastestGrok = getClosestQueueItem(grokQueue);
+            // ถ้าหมวดไหนมีสินค้าพร้อมขายแล้ว จะไม่นำมาแสดงนับถอยหลัง
+            let fastestLite = liteAvailable ? null : getClosestQueueItem(liteQueue);
+            let fastestGrok = grokAvailable ? null : getClosestQueueItem(grokQueue);
 
             let activeCards = [];
             if (fastestLite) activeCards.push({ name: 'LITE', item: fastestLite });
@@ -601,36 +603,36 @@
                 if (!timeData || timeData.isReady) return;
 
                 let cardDiv = document.createElement('div');
-                cardDiv.className = "bg-[#0f172a] border border-grok-border rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4";
+                cardDiv.className = "bg-[#0f172a] border border-grok-border rounded-xl p-2.5 md:p-3 flex flex-col md:flex-row items-center justify-between gap-3";
                 cardDiv.onclick = () => openDetail(target.item, 'queue');
                 cardDiv.style.cursor = 'pointer';
 
                 cardDiv.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <span class="bg-grok-accent/20 text-grok-accent border border-grok-accent/40 text-xs font-extrabold px-3 py-1 rounded-lg uppercase tracking-wider">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-grok-accent/20 text-grok-accent border border-grok-accent/40 text-[11px] font-extrabold px-2.5 py-0.5 rounded-md uppercase tracking-wider">
                             ${target.name}
                         </span>
-                        <span class="text-xs text-gray-400 truncate max-w-[200px] md:max-w-xs">${target.item.product}</span>
+                        <span class="text-xs text-gray-400 truncate max-w-[180px] md:max-w-xs">${target.item.product}</span>
                     </div>
-                    <div class="flex items-center gap-2 text-center">
-                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
-                            <span class="text-lg md:text-xl font-black text-white">${String(timeData.days).padStart(2, '0')}</span>
-                            <span class="text-[10px] text-gray-400 block">วัน</span>
+                    <div class="flex items-center gap-1.5 text-center">
+                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
+                            <span class="text-sm md:text-base font-black text-white">${String(timeData.days).padStart(2, '0')}</span>
+                            <span class="text-[9px] text-gray-400 block leading-none">วัน</span>
                         </div>
                         <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
-                            <span class="text-lg md:text-xl font-black text-white">${String(timeData.hours).padStart(2, '0')}</span>
-                            <span class="text-[10px] text-gray-400 block">ชม.</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
+                            <span class="text-sm md:text-base font-black text-white">${String(timeData.hours).padStart(2, '0')}</span>
+                            <span class="text-[9px] text-gray-400 block leading-none">ชม.</span>
                         </div>
                         <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
-                            <span class="text-lg md:text-xl font-black text-white">${String(timeData.minutes).padStart(2, '0')}</span>
-                            <span class="text-[10px] text-gray-400 block">นาที</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
+                            <span class="text-sm md:text-base font-black text-white">${String(timeData.minutes).padStart(2, '0')}</span>
+                            <span class="text-[9px] text-gray-400 block leading-none">นาที</span>
                         </div>
                         <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-3 py-1.5 rounded-lg min-w-[50px]">
-                            <span class="text-lg md:text-xl font-black text-amber-400">${String(timeData.seconds).padStart(2, '0')}</span>
-                            <span class="text-[10px] text-gray-400 block">วินาที</span>
+                        <div class="bg-[#161e2e] border border-grok-border px-2 py-1 rounded-lg min-w-[42px]">
+                            <span class="text-sm md:text-base font-black text-amber-400">${String(timeData.seconds).padStart(2, '0')}</span>
+                            <span class="text-[9px] text-gray-400 block leading-none">วินาที</span>
                         </div>
                     </div>
                 `;
