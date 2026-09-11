@@ -781,7 +781,7 @@
 
             if (type === 'sale') {
                 modalBadge.className = 'bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '🔥 ลดราคาพิเศษ (รอบรีเซ็ตสัปดาห์นี้)';
+                modalBadge.textContent = '🔥 ลดราคาพิเศษ';
                 modalQueue.classList.add('hidden');
             } else if (type === 'queue') {
                 modalBadge.className = 'bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
@@ -789,7 +789,7 @@
                 modalQueue.classList.remove('hidden');
             } else {
                 modalBadge.className = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '🟢 พร้อมขายทันที (พลังงานเต็มรอบใหม่)';
+                modalBadge.textContent = '🟢 พร้อมขายทันที';
                 modalQueue.classList.add('hidden');
             }
             document.getElementById('detail-modal').classList.remove('hidden');
@@ -819,7 +819,7 @@
                         </div>
                     </div>
                     <a href="${FACEBOOK_LINK}" target="_blank" class="w-full sm:w-auto bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-semibold py-2 px-3.5 rounded-lg transition text-center shrink-0">
-                        จองล็อกสิทธิ์รอบนี้
+                        จองล่วงหน้า
                     </a>`;
                 container.appendChild(cardDiv);
             });
