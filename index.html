@@ -222,7 +222,7 @@
                 <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-white">
                     ✔ ข้อสัญญา
                 </h2>
-                <p class="text-gray-400 text-xs md:text-sm">สงวนสิทธิ์เริ่มนับวันเเรกของการเช่าเป็น1วันเต็ม เเละ สงวนสิทธิ์เรียกคืนการครอบครองเมือสิ้นสัญญาเช่าเที่ยงคืนวันสุดท้าย เช่น supergrok 7วัน จ่ายตังเช่าวันที่1 เวลา 19.00น. รหัสหมดอายุ วันที่7 เวลา 0.00น./p>
+                <p class="text-gray-400 text-xs md:text-sm">สงวนสิทธิ์เริ่มนับวันเเรกของการเช่าเป็น1วันเต็ม เเละ สงวนสิทธิ์เรียกคืนการครอบครองเมือสิ้นสัญญาเช่าเที่ยงคืนวันสุดท้าย เช่น supergrok 7วัน จ่ายตังเช่าวันที่1 เวลา 19.00น. รหัสหมดอายุ วันที่7 เวลา 0.00น.</p>
             </div>
 
         <!-- 5. QUEUE SECTION (รายการรอคิว อยู่ล่างสุดของหน้าเว็บ) -->
@@ -772,7 +772,7 @@
         function openDetail(item, type) {
             document.getElementById('modal-image').src = item.image;
             document.getElementById('modal-title').textContent = item.product;
-            document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน (พลังงานรีเซ็ตทุก 7 วัน)`;
+            document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน`;
             document.getElementById('modal-price').textContent = `${Number(item.price).toLocaleString()} บาท`;
             document.getElementById('modal-facebook-link').href = FACEBOOK_LINK;
 
@@ -785,7 +785,6 @@
                 modalQueue.classList.add('hidden');
             } else if (type === 'queue') {
                 modalBadge.className = 'bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '⏳ รอรอบรีเซ็ตพลังงาน (จองล่วงหน้าล็อกสิทธิ์)';
                 modalQueue.textContent = `📅 วันรีเซ็ต/คิวว่าง: ${item.queue}`;
                 modalQueue.classList.remove('hidden');
             } else {
@@ -803,7 +802,7 @@
         }
 
         function openCalendarDayModal(dateKey, items) {
-            document.getElementById('cal-modal-date').textContent = `📅 รอบรีเซ็ตพลังงาน / คิววันที่: ${dateKey}`;
+            document.getElementById('cal-modal-date').textContent = `📅 คิววันที่: ${dateKey}`;
             const container = document.getElementById('cal-modal-content');
             container.innerHTML = '';
 
@@ -815,7 +814,7 @@
                         <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg border border-grok-border shrink-0">
                         <div>
                             <h4 class="font-bold text-white text-sm md:text-base">${item.product}</h4>
-                            <p class="text-[11px] text-gray-400">สถานะ: ${item.status} | รอบสัปดาห์: ${item.day} วัน</p>
+                            <p class="text-[11px] text-gray-400">สถานะ: ${item.status} | เช่ากี่วัน: ${item.day} วัน</p>
                             <p class="text-xs md:text-sm font-extrabold text-grok-accent mt-0.5">ราคา: ${Number(item.price).toLocaleString()} บาท</p>
                         </div>
                     </div>
