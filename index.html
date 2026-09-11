@@ -79,7 +79,6 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* Marquee Animation for Live Status Banner */
         @keyframes marquee {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
@@ -92,7 +91,7 @@
 </head>
 <body class="font-sans text-gray-100 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- LIVE STATUS BANNER (ประกาศแจ้งสถานะรอบรีเซ็ตพลังงาน) -->
+    <!-- LIVE STATUS BANNER -->
     <div class="bg-gradient-to-r from-sky-900 via-indigo-900 to-rose-900 border-b border-sky-500/30 text-white py-2 px-4 overflow-hidden relative shadow-inner">
         <div class="max-w-7xl mx-auto flex items-center gap-3">
             <span class="bg-rose-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider animate-pulse shrink-0">ประกาศ</span>
@@ -110,7 +109,6 @@
             <div class="flex items-center gap-2">
                 <span class="font-bold text-lg md:text-xl tracking-wider text-white">SuperGrok<span class="text-grok-accent"> By Treethep</span></span>
             </div>
-            <!-- Tabs Menu -->
             <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium text-gray-300">
                 <a href="#" class="text-grok-accent hover:text-white transition">หน้าแรก</a>
                 <a href="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314" target="_blank" class="hover:text-grok-accent transition">เช็คเครดิต</a>
@@ -122,18 +120,18 @@
     <!-- MAIN CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
         
-        <!-- MINI CALENDAR BAR (ปฏิทินจิ๋ว 2 สัปดาห์ เรียงจาก จันทร์ ถึง อาทิตย์) -->
-        <div class="max-w-4xl mx-auto mb-8 bg-[#161e2e] border border-grok-border rounded-2xl p-4 shadow-xl">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
-                    📅 คิวว่าง 2 สัปดาห์ (จันทร์ - อาทิตย์) | 🟢 <span class="text-emerald-400">พร้อมขาย</span> | 🟡 <span class="text-amber-400">จองล่วงหน้า</span>
+        <!-- MINI CALENDAR BAR (Option 1: DUAL FAST COUNTDOWN CARDS WITH PROGRESS BARS) -->
+        <div class="max-w-4xl mx-auto mb-8 bg-[#161e2e] border border-grok-border rounded-2xl p-4 md:p-5 shadow-xl">
+            <div class="flex items-center justify-between mb-3 border-b border-grok-border pb-2">
+                <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-2">
+                    ⚡ เรดาร์คิวความเร็วสูงสุด (รอบรีเซ็ต 7 วัน)
                 </span>
                 <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
-                    ดูปฏิทินใหญ่ ❯
+                    ดูปฏิทินใหญ่ทั้งหมด ❯
                 </a>
             </div>
-            <div id="mini-calendar-bar" class="grid grid-cols-7 gap-2 overflow-x-auto pb-1">
-                <!-- Javascript will render 14 days grid from Mon to Sun here -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="fast-countdown-container">
+                <!-- Javascript will render Lite & SuperGrok Fast Cards here -->
             </div>
         </div>
 
@@ -161,7 +159,7 @@
             </button>
         </div>
 
-        <!-- 2. DEAL / HOT SALE SECTION (ลดราคาพิเศษ) -->
+        <!-- HOT SALE SECTION -->
         <div id="sale-section" class="hidden mb-10 md:mb-12">
             <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-rose-500/30 pb-3">
                 <span class="bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">HOT SALE</span>
@@ -170,7 +168,7 @@
             <div id="sale-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
         </div>
 
-        <!-- 3. PRODUCTS SECTION (พร้อมขายทันที) -->
+        <!-- PRODUCTS SECTION -->
         <div id="products-section" class="mb-10 md:mb-12">
             <h2 class="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2 border-b border-grok-border pb-3">
                 <span>📦 สินค้าพร้อมขายทันที</span>
@@ -183,7 +181,7 @@
             </div>
         </div>
 
-        <!-- 4. FULL CALENDAR SECTION (ปฏิทินใหญ่ ขยับขึ้นมาก่อนส่วนรอคิว) -->
+        <!-- FULL CALENDAR SECTION -->
         <div id="calendar-section" class="border-t border-grok-border pt-10 mb-16 scroll-mt-24">
             <div class="text-center mb-6 md:mb-8">
                 <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-white">
@@ -192,7 +190,6 @@
                 <p class="text-gray-400 text-xs md:text-sm">เอาเมาส์ชี้ดูข้อมูล เเละคลิกเพื่อเช่าหรือจองล่วงหน้าได้ โดยจองล่วงหน้า 20-40บาท</p>
             </div>
 
-            <!-- CALENDAR CONTROLS -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#161e2e] border border-grok-border px-4 md:px-6 py-4 rounded-2xl mb-6 shadow-lg max-w-4xl mx-auto">
                 <button onclick="changeMonth(-1)" class="w-full sm:w-auto bg-[#0f172a] hover:bg-grok-accent hover:text-slate-950 border border-grok-border text-gray-300 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center justify-center gap-2">
                     ❮ เดือนก่อนหน้า
@@ -203,7 +200,6 @@
                 </button>
             </div>
 
-            <!-- CALENDAR GRID CONTAINER -->
             <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3 md:p-6 shadow-2xl max-w-4xl mx-auto overflow-x-auto">
                 <div class="grid grid-cols-7 gap-1 md:gap-2 mb-3 text-center font-bold text-gray-400 text-xs md:text-sm min-w-[300px]">
                     <div class="text-rose-400">อา.</div>
@@ -226,7 +222,7 @@
             <p class="text-gray-400 text-xs md:text-sm max-w-3xl mx-auto">สงวนสิทธิ์เริ่มนับวันเเรกของการเช่าเป็น1วันเต็ม เเละ สงวนสิทธิ์เรียกคืนการครอบครองเมือสิ้นสัญญาเช่าเที่ยงคืนวันสุดท้าย เช่น supergrok 7วัน จ่ายตังเช่าวันที่1 เวลา 19.00น. รหัสหมดอายุ วันที่7 เวลา 0.00น.</p>
         </div>
 
-        <!-- 5. QUEUE SECTION (รายการรอคิว อยู่ล่างสุดของหน้าเว็บ) -->
+        <!-- QUEUE SECTION -->
         <div id="queue-section" class="border-t border-grok-border pt-10 mb-16">
             <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-slate-700/50 pb-3">
                 <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-full">PRE-ORDER / WAITING</span>
@@ -412,7 +408,7 @@
 
                 filterProducts();
                 renderCalendar();
-                renderMiniCalendarBar();
+                renderFastCountdownBar();
 
             } catch (error) {
                 console.error('Error fetching sheet data:', error);
@@ -576,83 +572,78 @@
             return card;
         }
 
-        // --- MINI CALENDAR BAR (ปฏิทินจิ๋ว 2 สัปดาห์ เรียงวัน จันทร์ ถึง อาทิตย์) ---
-        function renderMiniCalendarBar() {
-            const bar = document.getElementById('mini-calendar-bar');
-            bar.innerHTML = '';
+        // --- OPTION 1: DUAL FAST COUNTDOWN CARDS WITH PERCENTAGE PROGRESS BAR ---
+        function renderFastCountdownBar() {
+            const container = document.getElementById('fast-countdown-container');
+            container.innerHTML = '';
 
-            const now = new Date();
-            now.setHours(0,0,0,0);
+            // ค้นหาสินค้า LITE ที่เร็วที่สุด
+            let liteItems = allProducts.filter(i => i.product.toLowerCase().includes('lite'));
+            let grokItems = allProducts.filter(i => !i.product.toLowerCase().includes('lite'));
 
-            let dayOfWeek = now.getDay();
-            let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            let fastestLite = getFastestItem(liteItems);
+            let fastestGrok = getFastestItem(grokItems);
+
+            container.appendChild(createCountdownCard('LITE Package', fastestLite, 'sky'));
+            container.appendChild(createCountdownCard('SuperGrok Package', fastestGrok, 'rose'));
+        }
+
+        function getFastestItem(items) {
+            if (!items || items.length === 0) return null;
+            // หาตัวที่มี remainingDays น้อยที่สุด (ถ้าพร้อมขายคือ <= 0 หรือสถานะไม่ใช่รอคิว)
+            let sorted = [...items].sort((a, b) => {
+                let daysA = a.remainingDays !== null ? a.remainingDays : 999;
+                let daysB = b.remainingDays !== null ? b.remainingDays : 999;
+                return daysA - daysB;
+            });
+            return sorted[0];
+        }
+
+        function createCountdownCard(title, item, themeColor) {
+            const card = document.createElement('div');
+            let isReady = !item || !item.status.includes('รอคิว') || (item.remainingDays !== null && item.remainingDays <= 0);
             
-            let startDate = new Date(now);
-            startDate.setDate(now.getDate() + diffToMonday);
+            let daysLeft = item && item.remainingDays !== null ? Math.max(0, item.remainingDays) : 0;
+            if (isReady) daysLeft = 0;
 
-            for (let i = 0; i < 14; i++) {
-                let d = new Date(startDate);
-                d.setDate(startDate.getDate() + i);
+            // คำนวณหลอดเปอร์เซ็นต์ (รอบ 7 วัน = 100%) ถ้าเหลือ 7 วัน = 0%, ถ้าพร้อมขาย = 100%
+            let percentage = isReady ? 100 : Math.max(0, Math.min(100, Math.round(((7 - daysLeft) / 7) * 100)));
 
-                let dateKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                let items = dateProductMap[dateKey] || [];
-                let hasItems = items.length > 0;
+            let borderColor = themeColor === 'sky' ? 'border-sky-500/40 hover:border-sky-400' : 'border-rose-500/40 hover:border-rose-400';
+            let barColor = themeColor === 'sky' ? 'bg-sky-400' : 'bg-rose-500';
+            let badgeStyle = themeColor === 'sky' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40';
 
-                let isReady = hasItems && items.some(item => !item.status.includes('รอคิว'));
-                let isQueue = hasItems && items.some(item => item.status.includes('รอคิว'));
+            card.className = `bg-[#0f172a] border ${borderColor} rounded-xl p-3.5 flex flex-col justify-between shadow-lg cursor-pointer transition`;
+            card.onclick = () => {
+                document.getElementById('calendar-section').scrollIntoView({ behavior: 'smooth' });
+            };
 
-                let dayNames = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
-                let dayName = dayNames[d.getDay()];
-                let dateNum = d.getDate();
-                let isToday = (d.getTime() === now.getTime());
+            let statusText = isReady ? '🟢 พร้อมขายทันที (พลังงานเต็ม 100%)' : `⏳ รีเซ็ตในอีก ${daysLeft} วัน (${percentage}%)`;
 
-                let cell = document.createElement('div');
-                
-                let colorClass = 'bg-[#0f172a] border-[#1e293b] text-gray-400';
-                let indicatorDot = '';
-
-                if (isReady) {
-                    colorClass = 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300 shadow-sm';
-                    indicatorDot = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5 animate-pulse"></span>';
-                } else if (isQueue) {
-                    colorClass = 'bg-amber-950/40 border-amber-500/50 text-amber-300 shadow-sm';
-                    indicatorDot = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-0.5"></span>';
-                }
-
-                if (isToday) {
-                    colorClass += ' ring-1 ring-sky-400';
-                }
-
-                cell.className = `flex flex-col items-center justify-center p-1.5 rounded-xl border text-center shrink-0 cursor-pointer transition ${colorClass}`;
-                
-                if (hasItems) {
-                    cell.onclick = () => openCalendarDayModal(dateKey, items);
-                } else {
-                    cell.onclick = () => {
-                        window.location.href = '#calendar-section';
-                    };
-                }
-
-                let labelType = '';
-                if (hasItems) {
-                    let textType = items[0].product.toLowerCase();
-                    if (textType.includes('lite')) {
-                        labelType = '<span class="text-[7px] bg-sky-500/20 text-sky-300 px-1 rounded mt-0.5">Lite</span>';
-                    } else {
-                        labelType = '<span class="text-[7px] bg-rose-500/20 text-rose-300 px-1 rounded mt-0.5">Grok</span>';
-                    }
-                } else {
-                    labelType = '<span class="text-[7px] text-gray-600 mt-0.5">-</span>';
-                }
-
-                cell.innerHTML = `
-                    <span class="text-[9px] font-semibold">${dayName}</span>
-                    <span class="text-xs md:text-sm font-bold">${dateNum}</span>
-                    ${labelType}
-                    ${indicatorDot}
-                `;
-                bar.appendChild(cell);
-            }
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full ${barColor} animate-pulse"></span> ${title}
+                    </span>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${badgeStyle}">
+                        ${item ? item.product : 'ไม่มีข้อมูล'}
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <div class="flex justify-between text-[11px] text-gray-400 mb-1">
+                        <span>สถานะพลังงานรอบ 7 วัน</span>
+                        <strong class="${isReady ? 'text-emerald-400' : 'text-amber-300'}">${statusText}</strong>
+                    </div>
+                    <div class="w-full bg-[#1e293b] rounded-full h-2 overflow-hidden border border-grok-border">
+                        <div class="${barColor} h-2 rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-grok-border/60">
+                    <span>ราคา: <strong class="text-white">${item ? Number(item.price).toLocaleString() : '0'} บาท</strong></span>
+                    <span class="text-grok-accent font-semibold hover:underline">คลิกเพื่อดูปฏิทินใหญ่ ❯</span>
+                </div>
+            `;
+            return card;
         }
 
         // --- CALENDAR LOGIC ---
