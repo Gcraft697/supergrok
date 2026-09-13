@@ -1,1 +1,238 @@
 
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตรวจสอบสถานะการเช่า - SuperGrok by Treethep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        grok: {
+                            bg: '#0b0f17',
+                            card: '#161e2e',
+                            border: '#1e293b',
+                            accent: '#38bdf8',
+                            hover: '#0284c7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f17;
+            color: #ffffff;
+        }
+        .cert-card {
+            background: linear-gradient(135deg, #161e2e 0%, #0f172a 100%);
+            border: 1px solid #38bdf8/30;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.1);
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-100 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- TOP NAVIGATION: ปุ่มกลับหน้าแรก -->
+    <nav class="bg-[#111827] border-b border-grok-border sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <span class="font-bold text-base md:text-lg tracking-wider text-white">SuperGrok<span class="text-grok-accent"> By Treethep</span></span>
+            <a href="index.html" class="bg-[#1e293b] hover:bg-grok-accent hover:text-slate-950 text-gray-200 text-xs md:text-sm font-semibold px-4 py-2 rounded-xl transition flex items-center gap-2 border border-grok-border">
+                ← กลับหน้าแรก
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-2xl mx-auto px-4 py-10 md:py-16 w-full flex-grow">
+        
+        <!-- HEADER TITLE -->
+        <div class="text-center mb-8">
+            <div class="inline-block bg-sky-500/10 text-grok-accent border border-sky-500/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
+                SECURE VERIFICATION
+            </div>
+            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 text-white">
+                ตรวจสอบสถานะการเช่าสินค้า
+            </h1>
+            <p class="text-gray-400 text-xs md:text-sm">กรอก Username หรือ Email ของท่านเพื่อตรวจสอบรายละเอียดและใบประกันสิทธิ์</p>
+        </div>
+
+        <!-- SEARCH BOX -->
+        <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-5 md:p-6 shadow-xl mb-8">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="search-username" placeholder="กรอก Username / Email เช่น golfcraft697@gmail.com" 
+                       class="flex-grow bg-[#0f172a] border border-grok-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-grok-accent transition">
+                <button onclick="checkRentalStatus()" 
+                        class="bg-grok-accent hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-sky-500/20 shrink-0">
+                    🔍 ค้นหาข้อมูล
+                </button>
+            </div>
+        </div>
+
+        <!-- LOADING STATE -->
+        <div id="loading-state" class="hidden text-center py-12">
+            <div class="w-8 h-8 border-2 border-grok-accent border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <p class="text-xs text-gray-400">กำลังตรวจสอบข้อมูลจากระบบ...</p>
+        </div>
+
+        <!-- RESULT CONTAINER (ใบประกันสินค้า/ใบรับรองสิทธิ์) -->
+        <div id="result-container" class="hidden space-y-4">
+            <div class="cert-card rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <!-- ตราประทับจำลองสถานะ Clear -->
+                <div class="absolute top-4 right-4 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] md:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    ✓ ACTIVE / CLEAR
+                </div>
+
+                <div class="flex items-center gap-3 mb-6 border-b border-grok-border pb-4">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center text-grok-accent text-xl font-bold">
+                        🛡️
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-400">ใบรับรองสิทธิ์การเช่าบริการ</h3>
+                        <p class="text-xs text-grok-accent">SuperGrok & Lite Protection Guarantee</p>
+                    </div>
+                </div>
+
+                <!-- รายละเอียดข้อมูล -->
+                <div class="space-y-4 text-sm">
+                    <div class="flex flex-col sm:flex-row justify-between border-b border-slate-800 pb-3 gap-1">
+                        <span class="text-gray-400 text-xs">1. ประเภทแพ็กเกจ (Package):</span>
+                        <span id="res-package" class="font-bold text-white text-base"></span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-between border-b border-slate-800 pb-3 gap-1">
+                        <span class="text-gray-400 text-xs">2. ระยะเวลาเช่า & รอบเวลาสิ้นสุด (00:00 น.):</span>
+                        <span id="res-duration" class="font-bold text-emerald-400 text-right"></span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-between border-b border-slate-800 pb-3 gap-1">
+                        <span class="text-gray-400 text-xs">3. อัตราค่าบริการ (Price):</span>
+                        <span id="res-price" class="font-bold text-white"></span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-between pb-1 gap-1">
+                        <span class="text-gray-400 text-xs">4. ผู้รับประโยชน์ประกัน (Secured By):</span>
+                        <span id="res-buyer" class="font-bold text-amber-300 font-mono tracking-wide"></span>
+                    </div>
+                </div>
+
+                <!-- Footer ด้านล่างใบประกัน -->
+                <div class="mt-8 pt-4 border-t border-grok-border text-center">
+                    <p class="text-[11px] text-gray-500">ข้อมูลนี้ดึงแบบเรียลไทม์จากระบบฐานข้อมูล · หากพบปัญหาติดต่อแอดมินผ่านเพจ Facebook</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOT FOUND / ERROR STATE -->
+        <div id="error-state" class="hidden text-center py-12 bg-[#161e2e] border border-grok-border rounded-2xl p-6">
+            <span class="text-3xl block mb-2">⚠️</span>
+            <h3 class="text-base font-bold text-white mb-1">ไม่พบข้อมูลการเช่า หรือสถานะยังไม่ Clear</h3>
+            <p class="text-xs text-gray-400">กรุณาตรวจสอบ Username ที่กรอกใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ</p>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#111827] border-t border-grok-border py-6 text-center text-xs text-gray-500">
+        <p>© 2026 Supergrok Store · Secure Verification System</p>
+    </footer>
+
+    <!-- SCRIPT ดึงข้อมูลและระบบเซ็นเซอร์ชื่อ -->
+    <script>
+        const SHEET_ID = '1FZDa93Qn_N44biC3gugdPf2uaXh2-BeI';
+        const SHEET_TITLE = 'ตารางคิวว่างเช่า AI';
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TITLE)}`;
+
+        // ฟังก์ชันเซ็นเซอร์ชื่อ: เอาอักษรตัวแรก 1 ตัว แล้วเปลี่ยนที่เหลือเป็นดอกจัน (รองรับนามสกุลด้วย)
+        function maskBuyerName(name) {
+            if (!name || name === '-') return 'ไม่ระบุ';
+            
+            // แยกคำ (เผื่อมีชื่อ-นามสกุล หรือมีข้อความอื่นๆ เช่น / วาวิณี)
+            let parts = name.trim().split(/[\s\/]+/);
+            let maskedParts = parts.map(part => {
+                if (part.length <= 1) return part + '***';
+                let firstChar = part.charAt(0);
+                let stars = '*'.repeat(Math.max(part.length - 1, 4));
+                return firstChar + stars;
+            });
+            
+            return maskedParts.join(' ');
+        }
+
+        async function checkRentalStatus() {
+            const inputVal = document.getElementById('search-username').value.trim().toLowerCase();
+            const loadingEl = document.getElementById('loading-state');
+            const resultEl = document.getElementById('result-container');
+            const errorEl = document.getElementById('error-state');
+
+            if (!inputVal) {
+                alert('กรุณากรอก Username หรือ Email ก่อนค้นหาครับ');
+                return;
+            }
+
+            loadingEl.classList.remove('hidden');
+            resultEl.classList.add('hidden');
+            errorEl.classList.add('hidden');
+
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                const jsonString = text.substring(47, text.length - 2);
+                const json = JSON.parse(jsonString);
+                const rows = json.table.rows;
+
+                let foundItem = null;
+
+                // วนลูปค้นหาแถวที่ตรงกับเงื่อนไข:
+                // 1. คอลัมน์ J (index 9) หรือ G (index 6) มี Username ตรงกัน
+                // 2. คอลัมน์ L (index 11) สถานะต้องเป็น "clear"
+                for (let row of rows) {
+                    if (!row.c) continue;
+
+                    const usernameColJ = row.c[9] ? String(row.c[9].v).trim().toLowerCase() : '';
+                    const usernameColG = row.c[6] ? String(row.c[6].v).trim().toLowerCase() : '';
+                    const statusColL = row.c[11] ? String(row.c[11].v).trim().toLowerCase() : '';
+
+                    if ((usernameColJ.includes(inputVal) || usernameColG.includes(inputVal)) && statusColL === 'clear') {
+                        foundItem = {
+                            product: row.c[1] ? row.c[1].v : 'Supergrok',      // คอลัมน์ B: ประเภทสินค้า
+                            startDate: row.c[8] ? (row.c[8].f || row.c[8].v) : '-', // คอลัมน์ I: วันที่เริ่มต้น
+                            dayCount: row.c[3] ? row.c[3].v : '-',                // คอลัมน์ D: จำนวนวัน
+                            price: row.c[4] ? row.c[4].v : '0',                   // คอลัมน์ E: ราคา
+                            buyer: row.c[13] ? row.c[13].v : '-'                  // คอลัมน์ N: ชื่อผู้รับประโยชน์
+                        };
+                        break; // เจอรายการล่าสุดแล้วหยุด
+                    }
+                }
+
+                loadingEl.classList.add('hidden');
+
+                if (foundItem) {
+                    // แสดงผลข้อมูลลงในใบประกัน
+                    document.getElementById('res-package').textContent = foundItem.product;
+                    document.getElementById('res-duration').textContent = `เริ่มเช่าวันที่ ${foundItem.startDate} (ระยะเวลา ${foundItem.dayCount} วัน) สิ้นสุดเวลา 00.00 น.`;
+                    document.getElementById('res-price').textContent = `${Number(foundItem.price).toLocaleString()} บาท`;
+                    document.getElementById('res-buyer').textContent = maskBuyerName(foundItem.buyer);
+
+                    resultEl.classList.remove('hidden');
+                } else {
+                    errorEl.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Error fetching sheet data:', error);
+                loadingEl.classList.add('hidden');
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ Google Sheet กรุณาลองใหม่อีกครั้ง');
+            }
+        }
+    </script>
+</body>
+</html>
