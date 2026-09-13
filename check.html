@@ -83,7 +83,7 @@
             <p class="text-xs text-gray-400">กำลังตรวจสอบข้อมูลจากระบบ...</p>
         </div>
 
-        <!-- RESULT CONTAINER (ใบประกันสินค้า/ใบรับรองสิทธิ์) -->
+        <!-- RESULT CONTAINER ( popup ใบประกันสินค้า / ใบรับรองสิทธิ์ ) -->
         <div id="result-container" class="hidden space-y-4">
             <div class="cert-card rounded-2xl p-6 md:p-8 relative overflow-hidden">
                 <!-- ตราประทับสถานะ Clear -->
@@ -101,23 +101,27 @@
                     </div>
                 </div>
 
-                <!-- รายละเอียดข้อมูล -->
+                <!-- รายละเอียดข้อมูลตามที่คุณต้องการ -->
                 <div class="space-y-4 text-sm">
+                    <!-- 1. Supergrok หรือ Supergrok Lite (เช็คจาก คอลัมน์ B) -->
                     <div class="flex flex-col sm:flex-row justify-between border-b border-slate-800 pb-3 gap-1">
                         <span class="text-gray-400 text-xs">1. ประเภทแพ็กเกจ (Package):</span>
                         <span id="res-package" class="font-bold text-white text-base"></span>
                     </div>
 
+                    <!-- 2. ระยะเวลาเช่า เริ่มต้น (คอลัมน์ J) + ระยะเวลา (คอลัมน์ D) = วันหมดอายุ เวลา 00.00 น. -->
                     <div class="flex flex-col sm:flex-row justify-between border-b border-slate-800 pb-3 gap-1">
-                        <span class="text-gray-400 text-xs">2. ระยะเวลาเช่า & รอบเวลาสิ้นสุด (00:00 น.):</span>
+                        <span class="text-gray-400 text-xs">2. ระยะเวลาเช่า (เริ่มต้น ถึง วันหมดอายุ):</span>
                         <span id="res-duration" class="font-bold text-emerald-400 text-right"></span>
                     </div>
 
+                    <!-- 3. ราคา (เช็คจาก คอลัมน์ E) -->
                     <div class="flex flex-col sm:flex-row justify-between border-b border-slate-800 pb-3 gap-1">
                         <span class="text-gray-400 text-xs">3. อัตราค่าบริการ (Price):</span>
                         <span id="res-price" class="font-bold text-white"></span>
                     </div>
 
+                    <!-- 4. ชื่อผู้รับประโยชน์ประกัน (เช็คจาก คอลัมน์ O) พร้อมระบบเซ็นเซอร์ (ตัวแรก 1 ตัว + ดอกจัน) -->
                     <div class="flex flex-col sm:flex-row justify-between pb-1 gap-1">
                         <span class="text-gray-400 text-xs">4. ผู้รับประโยชน์ประกัน (Secured By):</span>
                         <span id="res-buyer" class="font-bold text-amber-300 font-mono tracking-wide"></span>
@@ -145,13 +149,13 @@
         <p>© 2026 Supergrok Store · Secure Verification System</p>
     </footer>
 
-    <!-- SCRIPT ดึงข้อมูลและระบบเซ็นเซอร์ชื่อ (เรียงตามลำดับคอลัมน์ G มากที่สุด = ล่าสุด) -->
+    <!-- SCRIPT โหลดและคำนวณข้อมูลจาก Google Sheet -->
     <script>
         const SHEET_ID = '1FZDa93Qn_N44biC3gugdPf2uaXh2-BeI';
         const SHEET_TITLE = 'ตารางคิวว่างเช่า AI';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TITLE)}`;
 
-        // ฟังก์ชันเซ็นเซอร์ชื่อ: เอาอักษรตัวแรก 1 ตัว แล้วตามด้วยเครื่องหมายดอกจัน
+        // ฟังก์ชันเซ็นเซอร์ชื่อ: แสดงตัวอักษรตัวแรก 1 ตัว แล้วตามด้วยเครื่องหมายดอกจัน
         function maskBuyerName(name) {
             if (!name || name === '-') return 'ไม่ระบุ';
             
@@ -164,6 +168,33 @@
             });
             
             return maskedParts.join(' ');
+        }
+
+        // ฟังก์ชันแปลงข้อความวันที่ให้เป็น Object วันที่ เพื่อนำมาบวกจำนวนวัน (D)
+        function parseDateObj(dateStr) {
+            if (!dateStr) return null;
+            // รองรับรูปแบบ DD/MM/YYYY หรือตัวเลข Serial ของ Google Sheet
+            const dmyMatch = String(dateStr).match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+            if (dmyMatch) {
+                let day = parseInt(dmyMatch[1]);
+                let month = parseInt(dmyMatch[2]) - 1;
+                let year = parseInt(dmyMatch[3]);
+                if (year > 2500) year -= 543;
+                if (year < 100) year += 2000;
+                return new Date(year, month, day);
+            }
+            let parsed = new Date(dateStr);
+            return !isNaN(parsed.getTime()) ? parsed : null;
+        }
+
+        // ฟังก์ชันจัดรูปแบบวันที่แสดงผลเป็นภาษาไทย
+        function formatDateThai(dateObj) {
+            if (!dateObj) return '-';
+            const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            let d = dateObj.getDate();
+            let m = thaiMonths[dateObj.getMonth()];
+            let y = dateObj.getFullYear() + 543;
+            return `${d} ${m} ${y}`;
         }
 
         async function checkRentalStatus() {
@@ -190,27 +221,47 @@
 
                 let matchedRows = [];
 
-                // วนลูปเก็บทุกแถวที่ตรงกับเงื่อนไข:
-                // 1. คอลัมน์ J (index 9) หรือ G (index 6 หรือคอลัมน์ลำดับอื่นๆ ตามโครงสร้าง) มี Username ตรงกัน
-                // 2. คอลัมน์ L (index 11) สถานะต้องเป็น "clear"
-                rows.forEach((row, index) => {
+                // วนลูปตรวจสอบข้อมูลทุกแถว
+                rows.forEach((row) => {
                     if (!row.c) return;
 
-                    // คอลัมน์ G (index 6) คือหมายเลขลำดับ
+                    // คอลัมน์ G (index 6): หมายเลขรหัสสินค้า (ใช้สำหรับเรียงเพื่อเอาค่าล่าสุด)
                     const seqNumber = row.c[6] && !isNaN(row.c[6].v) ? Number(row.c[6].v) : 0;
                     
-                    const usernameColJ = row.c[9] ? String(row.c[9].v).trim().toLowerCase() : '';
-                    const usernameColGText = row.c[6] ? String(row.c[6].v).trim().toLowerCase() : '';
-                    const statusColL = row.c[11] ? String(row.c[11].v).trim().toLowerCase() : '';
+                    // สมมติ Username ลูกค้าเก็บไว้ที่คอลัมน์ H (index 7) หรือคอลัมน์อื่นๆ ที่เกี่ยวข้อง
+                    const usernameColH = row.c[7] ? String(row.c[7].v).trim().toLowerCase() : '';
+                    const usernameColG = row.c[6] ? String(row.c[6].v).trim().toLowerCase() : '';
+                    
+                    // คอลัมน์ M (index 12): สถานะ (ต้องเป็น clear เท่านั้น)
+                    const statusColM = row.c[12] ? String(row.c[12].v).trim().toLowerCase() : '';
 
-                    if ((usernameColJ.includes(inputVal) || usernameColGText.includes(inputVal)) && statusColL === 'clear') {
+                    // ตรวจสอบว่า Username ตรงกัน และสถานะเป็น clear
+                    if ((usernameColH.includes(inputVal) || usernameColG.includes(inputVal)) && statusColM === 'clear') {
+                        
+                        const product = row.c[1] ? row.c[1].v : 'Supergrok'; // คอลัมน์ B: แพ็กเกจ
+                        const durationDays = row.c[3] && !isNaN(row.c[3].v) ? Number(row.c[3].v) : 0; // คอลัมน์ D: ระยะเวลาเช่า (วัน)
+                        const price = row.c[4] ? row.c[4].v : '0'; // คอลัมน์ E: ราคา
+                        const startDateRaw = row.c[9] ? (row.c[9].f || row.c[9].v) : ''; // คอลัมน์ J: วันเริ่มต้นเช่า
+                        const buyerName = row.c[14] ? row.c[14].v : '-'; // คอลัมน์ O: ชื่อผู้รับประโยชน์ประกัน
+
+                        // คำนวณวันหมดอายุ: J (วันเริ่มต้น) + D (ระยะเวลาเช่า) = วันหมดอายุ เวลา 00.00 น.
+                        let startDateObj = parseDateObj(startDateRaw);
+                        let expiryDateStr = '-';
+
+                        if (startDateObj && durationDays > 0) {
+                            let expiryObj = new Date(startDateObj);
+                            expiryObj.setDate(expiryObj.getDate() + durationDays);
+                            expiryDateStr = `${formatDateThai(startDateObj)} ถึง ${formatDateThai(expiryObj)} เวลา 00.00 น.`;
+                        } else if (startDateObj) {
+                            expiryDateStr = `เริ่ม ${formatDateThai(startDateObj)} เวลา 00.00 น.`;
+                        }
+
                         matchedRows.push({
                             seq: seqNumber,
-                            product: row.c[1] ? row.c[1].v : 'Supergrok',      // คอลัมน์ B
-                            startDate: row.c[8] ? (row.c[8].f || row.c[8].v) : '-', // คอลัมน์ I
-                            dayCount: row.c[3] ? row.c[3].v : '-',                // คอลัมน์ D
-                            price: row.c[4] ? row.c[4].v : '0',                   // คอลัมน์ E
-                            buyer: row.c[13] ? row.c[13].v : '-'                  // คอลัมน์ N
+                            product: product,
+                            durationText: expiryDateStr,
+                            price: price,
+                            buyer: buyerName
                         });
                     }
                 });
@@ -218,19 +269,19 @@
                 loadingEl.classList.add('hidden');
 
                 if (matchedRows.length > 0) {
-                    // เรียงลำดับจากค่าในคอลัมน์ G (seq) จาก "มากไปน้อย" เพื่อเลือกข้อมูลล่าสุดเสมอ
+                    // เรียงลำดับจากค่าในคอลัมน์ G (seq) จาก "มากไปน้อย" เพื่อเลือกข้อมูลล่าสุดเสมอตามที่คุณต้องการ
                     matchedRows.sort((a, b) => b.seq - a.seq);
                     const latestItem = matchedRows[0];
 
-                    // แสดงผลข้อมูลลงในใบประกัน
+                    // นำข้อมูลมาแสดงผลลงในหน้าเว็บ
                     document.getElementById('res-package').textContent = latestItem.product;
-                    document.getElementById('res-duration').textContent = `เริ่มเช่าวันที่ ${latestItem.startDate} (ระยะเวลา ${latestItem.dayCount} วัน) สิ้นสุดเวลา 00:00 น.`;
+                    document.getElementById('res-duration').textContent = latestItem.durationText;
                     document.getElementById('res-price').textContent = `${Number(latestItem.price).toLocaleString()} บาท`;
                     document.getElementById('res-buyer').textContent = maskBuyerName(latestItem.buyer);
 
                     resultEl.classList.remove('hidden');
                 } else {
-                    errorEl.classList.remove('hidden');
+                    errorEl.classList.0 ? '' : errorEl.classList.remove('hidden');
                 }
 
             } catch (error) {
