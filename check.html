@@ -54,7 +54,8 @@
                 <span class="font-bold text-lg md:text-xl tracking-wider text-white">SuperGrok<span class="text-grok-accent"> Insurance System</span></span>
             </div>
             <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium text-gray-300">
-                <a href="#" class="text-grok-accent hover:text-white transition">หน้าแรก</a>
+                <a href="index.html" class="hover:text-grok-accent transition">หน้าแรก</a>
+                <a href="#" class="text-grok-accent hover:text-white transition">ตรวจสอบประกัน</a>
                 <a href="https://www.facebook.com/TreethepGolf" target="_blank" class="hover:text-grok-accent transition">ติดต่อผู้ดูแล</a>
             </div>
         </div>
@@ -124,7 +125,7 @@
             <p class="text-rose-400 text-base font-semibold">❌ ไม่พบข้อมูล Username นี้ในระบบ หรือยังไม่เปิดใช้งานสถานะ Clear</p>
         </div>
 
-        <!-- SYSTEM 1: INSURANCE HISTORY SECTION (ประวัติประกัน) -->
+        <!-- INSURANCE HISTORY SECTION (ประวัติประกัน) -->
         <div class="border-t border-grok-border pt-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
@@ -173,12 +174,11 @@
             }
         }
 
-        // ฟังก์ชันแปลงข้อความวันที่รองรับภาษาไทยและรูปแบบต่างๆ
+        // ฟังก์ชันแปลงวันที่รองรับทั้งแบบสตริงไทย/สากล และ Google Sheets Date Object
         function parseDateString(dateStr) {
             if (!dateStr || dateStr === '-') return null;
             let targetDate = null;
 
-            // หากเป็นรูปแบบ Google Sheets Date Object หรือ Serial
             if (typeof dateStr === 'string' && dateStr.startsWith('Date(')) {
                 const match = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
                 if (match) {
@@ -186,7 +186,6 @@
                 }
             }
 
-            // รูปแบบตัวเลข / สลิด (DD/MM/YYYY)
             const dmyMatch = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
             if (dmyMatch) {
                 let day = parseInt(dmyMatch[1]);
@@ -197,10 +196,10 @@
                 targetDate = new Date(year, month, day);
             } else {
                 const thaiMonths = {
-                    'ม.ค': 0, 'มกราคม': 0, 'ก.พ': 1, 'กุมภาพันธ์': 1, 'มี.ค': 2, 'มีนาคม': 2,
-                    'เม.ย': 3, 'เมษายน': 3, 'พ.ค': 4, 'พฤษภาคม': 4, 'มิ.ย': 5, 'มิถุนายน': 5,
-                    'ก.ค': 6, 'กรกฎาคม': 6, 'ส.ค': 7, 'สิงหาคม': 7, 'ก.ย': 8, 'กันยายน': 8,
-                    'ต.ค': 9, 'ตุลาคม': 9, 'พ.ย': 10, 'พฤศจิกายน': 10, 'ธ.ค': 11, 'ธันวาคม': 11
+                    'มค': 0, 'มกราคม': 0, 'กพ': 1, 'กุมภาพันธ์': 1, 'มีค': 2, 'มีนาคม': 2,
+                    'เมย': 3, 'เมษายน': 3, 'พค': 4, 'พฤษภาคม': 4, 'มิย': 5, 'มิถุนายน': 5,
+                    'กค': 6, 'กรกฎาคม': 6, 'สค': 7, 'สิงหาคม': 7, 'กย': 8, 'กันยายน': 8,
+                    'ตค': 9, 'ตุลาคม': 9, 'พย': 10, 'พฤศจิกายน': 10, 'ธค': 11, 'ธันวาคม': 11
                 };
 
                 const cleanStr = dateStr.replace(/\./g, '').trim();
@@ -231,7 +230,7 @@
             }).join(' ');
         }
 
-        // --- ส่วนประวัติประกัน: แสดงสินค้าที่ Clear และเรียงตามวันที่ล่าสุด ---
+        // --- ส่วนประวัติประกัน: แสดงเฉพาะที่คอลัมน์ K เป็น clear และเรียงตามหมายเลข P ล่าสุด ---
         function renderClearProducts() {
             const grid = document.getElementById('clear-product-grid');
             grid.innerHTML = '';
@@ -241,11 +240,10 @@
             rawSheetData.forEach((row, index) => {
                 if (!row.c) return;
 
-                const product = row.c[1] ? row.c[1].v : ''; // แพลตฟอร์ม (Col B)
-                const pNum = row.c[15] ? parseInt(row.c[15].v) || 0 : index; // หมายเลข (Col P)
-                const usernameQ = row.c[16] ? String(row.c[16].v).trim() : ''; // Username (Col Q)
+                const product = row.c[1] ? row.c[1].v : ''; 
+                const pNum = row.c[15] ? parseInt(row.c[15].v) || 0 : index; 
+                const usernameQ = row.c[16] ? String(row.c[16].v).trim() : ''; 
                 
-                // เช็คสถานะ Clear จากคอลัมน์ K (Index 10)
                 const colKVal = row.c[10] ? String(row.c[10].v).trim().toLowerCase() : '';
                 const isClearInK = colKVal.includes('clear');
 
@@ -259,7 +257,7 @@
                 }
             });
 
-            // เรียงลำดับหมายเลข P ให้สูงขึ้น หรือตามการเคลียร์ล่าสุด
+            // เรียงลำดับหมายเลข P ให้สูงขึ้น (วันล่าสุด)
             clearList.sort((a, b) => b.pNum - a.pNum);
 
             if (clearList.length === 0) {
@@ -302,7 +300,7 @@
                 if (!row.c) return;
 
                 const colKVal = row.c[10] ? String(row.c[10].v).trim().toLowerCase() : '';
-                if (!colKVal.includes('clear')) return; // ต้องเป็น clear ในคอลัมน์ K เท่านั้น
+                if (!colKVal.includes('clear')) return; // คอลัมน์ K ต้องเป็น clear เท่านั้น
 
                 let isMatch = false;
                 row.c.forEach(cell => {
@@ -361,7 +359,7 @@
             const colE = foundRow[4] ? foundRow[4].v : '0';
             document.getElementById('res-price').textContent = `${Number(colE).toLocaleString()} บาท`;
 
-            // 5. ผู้รับประโยชน์ประกัน (Col M) พร้อมเซ็นเซอร์
+            // 5. ผู้รับประโยชน์ประกันสินค้า (Col M) พร้อมเซ็นเซอร์ชื่อ
             const colM = foundRow[12] ? String(foundRow[12].v) : '-';
             const censored = censorName(colM);
             document.getElementById('res-insurance').textContent = censored;
