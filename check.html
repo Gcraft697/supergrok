@@ -68,7 +68,7 @@
             <h1 class="text-2xl md:text-4xl font-extrabold mb-2">
                 ระบบตรวจสอบสถานะ Clear และข้อมูลลูกค้า
             </h1>
-            <p class="text-gray-400 text-xs md:text-sm">กรอก Username หรืออีเมล เพื่อตรวจสอบแพ็กเกจ ระยะเวลา และประกันความปลอดภัย</p>
+            <p class="text-gray-400 text-xs md:text-sm">กรอก Username หรืออีเมล เพื่อตรวจสอบข้อมูล (เฉพาะสถานะ Clear ในคอลัมน์ K)</p>
         </div>
 
         <!-- SEARCH BOX SECTION -->
@@ -96,7 +96,7 @@
         <!-- RESULT DISPLAY SECTION -->
         <div id="result-container" class="hidden bg-[#161e2e] border border-sky-500/40 rounded-2xl p-6 md:p-8 shadow-2xl mb-10 relative overflow-hidden">
             <div class="absolute top-0 right-0 bg-sky-500 text-slate-950 text-xs font-black px-4 py-1 rounded-bl-xl">
-                ผลการตรวจสอบสำเร็จ
+                ผลการตรวจสอบสำเร็จ (Clear)
             </div>
             <h3 class="text-lg md:text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-grok-border pb-3">
                 📋 ข้อมูลสมาชิกและบริการ
@@ -104,19 +104,23 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl">
-                    <span class="text-gray-400 text-xs block mb-1">1. ประเภทแพ็กเกจ (เช็คจากคอลัมน์ B):</span>
+                    <span class="text-gray-400 text-xs block mb-1">1. ประเภทแพ็กเกจ (คอลัมน์ B):</span>
                     <strong id="res-package" class="text-base text-sky-400 font-bold">-</strong>
                 </div>
                 <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl">
-                    <span class="text-gray-400 text-xs block mb-1">3. ราคา (เช็คจากคอลัมน์ E):</span>
-                    <strong id="res-price" class="text-base text-emerald-400 font-bold">-</strong>
+                    <span class="text-gray-400 text-xs block mb-1">2. หมายเลข (คอลัมน์ P):</span>
+                    <strong id="res-pnum" class="text-base text-grok-accent font-bold">-</strong>
                 </div>
                 <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl">
-                    <span class="text-gray-400 text-xs block mb-1">2. ระยะเวลา & วันหมดอายุ (H + D เวลา 0.00 น.):</span>
+                    <span class="text-gray-400 text-xs block mb-1">3. ระยะเวลา & วันหมดอายุ (H + D เวลา 0.00 น.):</span>
                     <p id="res-duration" class="text-gray-200 font-medium">-</p>
                 </div>
                 <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl">
-                    <span class="text-gray-400 text-xs block mb-1">4. ผู้รับประโยชน์ประกัน (คอลัมน์ M - เซ็นเซอร์ชื่อ):</span>
+                    <span class="text-gray-400 text-xs block mb-1">4. ราคา (คอลัมน์ E):</span>
+                    <strong id="res-price" class="text-base text-emerald-400 font-bold">-</strong>
+                </div>
+                <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl md:col-span-2">
+                    <span class="text-gray-400 text-xs block mb-1">5. ผู้รับประโยชน์ประกัน (คอลัมน์ M - เซ็นเซอร์ชื่อ):</span>
                     <strong id="res-insurance" class="text-base text-amber-300 font-bold">-</strong>
                 </div>
             </div>
@@ -124,10 +128,10 @@
 
         <!-- ERROR / NOT FOUND STATE -->
         <div id="error-container" class="hidden text-center py-10 bg-[#161e2e] border border-rose-500/30 rounded-2xl p-6 mb-10">
-            <p class="text-rose-400 text-base font-semibold">❌ ไม่พบข้อมูล Username นี้ในระบบ หรือข้อมูลยังไม่เป็น Clear</p>
+            <p class="text-rose-400 text-base font-semibold">❌ ไม่พบข้อมูล Username นี้ในระบบ หรือคอลัมน์ K ยังไม่ใช่สถานะ Clear</p>
         </div>
 
-        <!-- SYSTEM 1: CLEAR PRODUCTS LIST SECTION (ดึงข้อมูลจากคอลัมน์ K ที่เป็น clear เท่านั้น) -->
+        <!-- SYSTEM 1: CLEAR PRODUCTS LIST SECTION -->
         <div class="border-t border-grok-border pt-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
@@ -192,7 +196,7 @@
             return (targetDate && !isNaN(targetDate.getTime())) ? targetDate : null;
         }
 
-        // ฟังก์ชันเซ็นเซอร์ชื่อ (แสดงตัวอักษรแรกตามด้วยเครื่องหมายดอกจัน)
+        // ฟังก์ชันเซ็นเซอร์ชื่อ
         function censorName(fullName) {
             if (!fullName || fullName === '-') return '-';
             let parts = fullName.trim().split(/\s+/);
@@ -202,7 +206,7 @@
             }).join(' ');
         }
 
-        // --- ระบบที่ 1: ดึงข้อมูลจากคอลัมน์ K (Index 10) ที่เป็น clear เท่านั้น และเรียงหมายเลข P ให้เยอะขึ้น ---
+        // --- ระบบที่ 1: ดึงข้อมูลจากคอลัมน์ K (Index 10) ที่เป็น clear เท่านั้น และเรียงหมายเลข P ---
         function renderClearProducts() {
             const grid = document.getElementById('clear-product-grid');
             grid.innerHTML = '';
@@ -213,10 +217,10 @@
                 if (!row.c) return;
 
                 const product = row.c[1] ? row.c[1].v : ''; // Col B
-                const pNum = row.c[15] ? parseInt(row.c[15].v) || 0 : index; // Col P (Index 15) หมายเลข p
-                const usernameQ = row.c[16] ? String(row.c[16].v).trim() : ''; // Col Q (Index 16) Username Q
+                const pNum = row.c[15] ? parseInt(row.c[15].v) || 0 : index; // Col P (Index 15)
+                const usernameQ = row.c[16] ? String(row.c[16].v).trim() : ''; // Col Q (Index 16)
                 
-                // เช็คสถานะ Clear จากคอลัมน์ K (Index 10) โดยเฉพาะ
+                // เช็คสถานะ Clear จากคอลัมน์ K (Index 10) เท่านั้น
                 const colKVal = row.c[10] ? String(row.c[10].v).trim().toLowerCase() : '';
                 const isClearInK = colKVal.includes('clear');
 
@@ -230,7 +234,7 @@
                 }
             });
 
-            // เรียงลำดับหมายเลข p ให้เยอะขึ้น (น้อยไปมาก)
+            // เรียงลำดับหมายเลข p ให้เยอะขึ้น
             clearList.sort((a, b) => a.pNum - b.pNum);
 
             if (clearList.length === 0) {
@@ -256,7 +260,7 @@
             });
         }
 
-        // --- ระบบที่ 2: ค้นหาข้อมูลลูกค้าด้วย Username ---
+        // --- ระบบที่ 2: ค้นหาข้อมูลลูกค้าด้วย Username (ตรวจสอบเฉพาะแถวที่คอลัมน์ K เป็น clear) ---
         function testQuickSearch(email) {
             document.getElementById('username-input').value = email;
             searchCustomerData();
@@ -274,14 +278,23 @@
 
             let foundRow = null;
 
-            // ค้นหาในแถวที่มีข้อมูลตรงกับที่กรอก
+            // วนลูปค้นหาแถวที่ตรงกับ Username และคอลัมน์ K (Index 10) ต้องเป็น clear เท่านั้น
             rawSheetData.forEach(row => {
                 if (!row.c) return;
+
+                const colKVal = row.c[10] ? String(row.c[10].v).trim().toLowerCase() : '';
+                if (!colKVal.includes('clear')) return; // ข้ามแถวที่ไม่ได้เป็น clear ในคอลัมน์ K
+
+                let isMatch = false;
                 row.c.forEach(cell => {
                     if (cell && cell.v && String(cell.v).trim().toLowerCase().includes(inputVal)) {
-                        foundRow = row.c;
+                        isMatch = true;
                     }
                 });
+
+                if (isMatch) {
+                    foundRow = row.c;
+                }
             });
 
             if (!foundRow) {
@@ -293,15 +306,19 @@
             errorBox.classList.add('hidden');
             resultBox.classList.remove('hidden');
 
-            // 1. ประเภทแพ็กเกจ เช็คจากคอลัมน์ B (Index 1)
+            // 1. ประเภทแพ็กเกจ (คอลัมน์ B - Index 1)
             const colB = foundRow[1] ? String(foundRow[1].v) : 'Supergrok';
             document.getElementById('res-package').textContent = colB;
 
-            // 3. ราคา เช็คจากคอลัมน์ E (Index 4)
+            // 2. หมายเลข P (คอลัมน์ P - Index 15)
+            const colP = foundRow[15] ? foundRow[15].v : '-';
+            document.getElementById('res-pnum').textContent = `#${colP}`;
+
+            // 3. ราคา (คอลัมน์ E - Index 4)
             const colE = foundRow[4] ? foundRow[4].v : '0';
             document.getElementById('res-price').textContent = `${Number(colE).toLocaleString()} บาท`;
 
-            // 2. ระยะเวลา & วันหมดอายุ: H (วันเริ่มต้นเช่า - Index 7) + D (จำนวนวัน - Index 3)
+            // 4. ระยะเวลา & วันหมดอายุ: H (วันเริ่มต้นเช่า - Index 7) + D (จำนวนวัน - Index 3)
             const colHStr = foundRow[7] ? (foundRow[7].f || foundRow[7].v) : '-'; // คอลัมน์ H
             const colD = foundRow[3] ? parseInt(foundRow[3].v) || 0 : 0;         // คอลัมน์ D
 
@@ -315,7 +332,7 @@
                 
                 let dd = String(expDate.getDate()).padStart(2, '0');
                 let mm = String(expDate.getMonth() + 1).padStart(2, '0');
-                let yyyy = expDate.getFullYear() + 543; // แปลงเป็นปี พ.ศ.
+                let yyyy = expDate.getFullYear() + 543;
                 expiredDateText = `${dd}/${mm}/${yyyy}`;
             }
 
@@ -325,7 +342,7 @@
                 วันหมดอายุ (H + D): <span class="text-rose-400 font-bold">${expiredDateText} เวลา 0.00 น.</span>
             `;
 
-            // 4. ผู้รับประโยชน์ประกัน: ดึงจากคอลัมน์ M (Index 12) พร้อมเซ็นเซอร์ชื่อ
+            // 5. ผู้รับประโยชน์ประกัน: ดึงจากคอลัมน์ M (Index 12) พร้อมเซ็นเซอร์ชื่อ
             const colM = foundRow[12] ? String(foundRow[12].v) : '-'; // คอลัมน์ M
             const censored = censorName(colM);
             document.getElementById('res-insurance').textContent = censored;
