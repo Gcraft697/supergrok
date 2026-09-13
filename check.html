@@ -74,7 +74,7 @@
         <!-- SEARCH BOX SECTION (ระบบที่ 2) -->
         <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-6 md:p-8 shadow-2xl mb-10">
             <label for="username-input" class="block text-sm font-bold text-gray-300 mb-2">
-                🔍 กรอก Username / Email ลูกค้า (คอลัมน์ H):
+                🔍 กรอก Username / Email ลูกค้า:
             </label>
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="username-input" placeholder="เช่น golfcraft697@gmail.com หรือชื่อผู้ใช้" 
@@ -112,11 +112,11 @@
                     <strong id="res-price" class="text-base text-emerald-400 font-bold">-</strong>
                 </div>
                 <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl">
-                    <span class="text-gray-400 text-xs block mb-1">2. ระยะเวลา & วันหมดอายุ (คอลัมน์ J + D เวลา 05.00/0.00 น.):</span>
+                    <span class="text-gray-400 text-xs block mb-1">2. ระยะเวลา & วันหมดอายุ (H + D เวลา 0.00 น.):</span>
                     <p id="res-duration" class="text-gray-200 font-medium">-</p>
                 </div>
                 <div class="bg-[#0f172a] border border-grok-border p-4 rounded-xl">
-                    <span class="text-gray-400 text-xs block mb-1">4. ผู้รับประโยชน์ประกัน (คอลัมน์ O - เซ็นเซอร์ชื่อ):</span>
+                    <span class="text-gray-400 text-xs block mb-1">4. ผู้รับประโยชน์ประกัน (คอลัมน์ M - เซ็นเซอร์ชื่อ):</span>
                     <strong id="res-insurance" class="text-base text-amber-300 font-bold">-</strong>
                 </div>
             </div>
@@ -153,7 +153,7 @@
     <!-- SCRIPT LOGIC -->
     <script>
         const SHEET_ID = '1FZDa93Qn_N44biC3gugdPf2uaXh2-BeI';
-        const SHEET_TITLE = 'ตารางคิวว่างเช่า AI'; // หรือเปลี่ยนชื่อชีทตามจริง
+        const SHEET_TITLE = 'ตารางคิวว่างเช่า AI';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TITLE)}`;
 
         let rawSheetData = [];
@@ -192,7 +192,7 @@
             return (targetDate && !isNaN(targetDate.getTime())) ? targetDate : null;
         }
 
-        // ฟังก์ชันเซ็นเซอร์ชื่อ (เอาตัวอักษรแรก + ดอกจันตามพยางค์)
+        // ฟังก์ชันเซ็นเซอร์ชื่อ (แสดงตัวอักษรแรกตามด้วยเครื่องหมายดอกจัน)
         function censorName(fullName) {
             if (!fullName || fullName === '-') return '-';
             let parts = fullName.trim().split(/\s+/);
@@ -212,11 +212,7 @@
             rawSheetData.forEach((row, index) => {
                 if (!row.c) return;
 
-                // คอลัมน์ Q (Index 16) คือ Username / คิว
-                // คอลัมน์ K (Index 10 หรือตามโครงสร้าง คอลัมน์ K คือลำดับที่ 11 -> Index 10)
-                // ปรับตำแหน่ง Index ตามชีทจริงของคุณ (ตัวอย่าง K คือสถานะ clear, P คือหมายเลข)
                 const product = row.c[1] ? row.c[1].v : ''; // Col B
-                const status = row.c[2] ? String(row.c[2].v).trim().toLowerCase() : ''; // Col C หรือ K (ปรับตามตำแหน่งจริง)
                 const pNum = row.c[15] ? parseInt(row.c[15].v) || 0 : index; // Col P (Index 15) หมายเลข p
                 const usernameQ = row.c[16] ? String(row.c[16].v).trim() : ''; // Col Q (Index 16) Username Q
 
@@ -238,7 +234,7 @@
                 }
             });
 
-            // เรียงลำดับหมายเลข p ให้เยอะขึ้น (Ascending: น้อยไปมาก หรือ มากไปน้อยตามต้องการ ที่นี่เรียงจากน้อยไปมากเพื่อให้เลขเยอะขึ้นตามลำดับ)
+            // เรียงลำดับหมายเลข p ให้เยอะขึ้น (น้อยไปมาก)
             clearList.sort((a, b) => a.pNum - b.pNum);
 
             if (clearList.length === 0) {
@@ -264,7 +260,7 @@
             });
         }
 
-        // --- ระบบที่ 2: ค้นหาข้อมูลลูกค้าด้วย Username (H) ---
+        // --- ระบบที่ 2: ค้นหาข้อมูลลูกค้าด้วย Username ---
         function testQuickSearch(email) {
             document.getElementById('username-input').value = email;
             searchCustomerData();
@@ -282,7 +278,7 @@
 
             let foundRow = null;
 
-            // ค้นหาในคอลัมน์ H (Index 7 หรือช่องที่ตรงกับ Username ลูกค้า)
+            // ค้นหาในแถวที่มีข้อมูลตรงกับที่กรอก
             rawSheetData.forEach(row => {
                 if (!row.c) return;
                 row.c.forEach(cell => {
@@ -301,22 +297,22 @@
             errorBox.classList.add('hidden');
             resultBox.classList.remove('hidden');
 
-            // 1. เช็ค Supergrok หรือ Supergrok Lite จากคอลัมน์ B (Index 1)
+            // 1. ประเภทแพ็กเกจ เช็คจากคอลัมน์ B (Index 1)
             const colB = foundRow[1] ? String(foundRow[1].v) : 'Supergrok';
             document.getElementById('res-package').textContent = colB;
 
-            // 3. ราคา คอลัมน์ E (Index 4)
+            // 3. ราคา เช็คจากคอลัมน์ E (Index 4)
             const colE = foundRow[4] ? foundRow[4].v : '0';
             document.getElementById('res-price').textContent = `${Number(colE).toLocaleString()} บาท`;
 
-            // 2. ระยะเวลาเช่า เริ่มต้น คอลัมน์ J (Index 9) + ระยะเวลา คอลัมน์ D (Index 3)
-            const colJStr = foundRow[9] ? (foundRow[9].f || foundRow[9].v) : '-';
-            const colD = foundRow[3] ? parseInt(foundRow[3].v) || 0 : 0;
+            // 2. ระยะเวลา & วันหมดอายุ: H (วันเริ่มต้นเช่า - Index 7) + D (จำนวนวัน - Index 3)
+            const colHStr = foundRow[7] ? (foundRow[7].f || foundRow[7].v) : '-'; // คอลัมน์ H
+            const colD = foundRow[3] ? parseInt(foundRow[3].v) || 0 : 0;         // คอลัมน์ D
 
-            let startDateText = colJStr;
+            let startDateText = colHStr;
             let expiredDateText = '-';
 
-            let startDate = parseDateString(colJStr);
+            let startDate = parseDateString(colHStr);
             if (startDate && colD > 0) {
                 let expDate = new Date(startDate);
                 expDate.setDate(expDate.getDate() + colD);
@@ -328,14 +324,14 @@
             }
 
             document.getElementById('res-duration').innerHTML = `
-                เริ่มต้นเช่า: <span class="text-sky-300">${startDateText}</span><br>
-                ระยะเวลา: <span class="text-white font-bold">${colD} วัน</span><br>
-                วันหมดอายุ: <span class="text-rose-400 font-bold">${expiredDateText} เวลา 00.00 น.</span>
+                เริ่มต้นเช่า (คอลัมน์ H): <span class="text-sky-300">${startDateText}</span><br>
+                ระยะเวลา (คอลัมน์ D): <span class="text-white font-bold">${colD} วัน</span><br>
+                วันหมดอายุ (H + D): <span class="text-rose-400 font-bold">${expiredDateText} เวลา 0.00 น.</span>
             `;
 
-            // 4. ชื่อผู้รับประโยชน์ประกัน คอลัมน์ O (Index 14) พร้อมเซ็นเซอร์
-            const colO = foundRow[14] ? String(foundRow[14].v) : '-';
-            const censored = censorName(colO);
+            // 4. ผู้รับประโยชน์ประกัน: ดึงจากคอลัมน์ M (Index 12) พร้อมเซ็นเซอร์ชื่อ
+            const colM = foundRow[12] ? String(foundRow[12].v) : '-'; // คอลัมน์ M
+            const censored = censorName(colM);
             document.getElementById('res-insurance').textContent = censored;
         }
 
