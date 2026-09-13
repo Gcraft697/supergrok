@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th" class="scroll-smooth">
 <head>
@@ -34,7 +33,7 @@
         }
         .cert-card {
             background: linear-gradient(135deg, #161e2e 0%, #0f172a 100%);
-            border: 1px solid #38bdf8/30;
+            border: 1px solid rgba(56, 189, 248, 0.3);
             box-shadow: 0 10px 30px rgba(56, 189, 248, 0.1);
         }
     </style>
@@ -57,7 +56,7 @@
         <!-- HEADER TITLE -->
         <div class="text-center mb-8">
             <div class="inline-block bg-sky-500/10 text-grok-accent border border-sky-500/30 text-xs font-bold px-3 py-1 rounded-full mb-3">
-                SECURE VERIFICATION
+                SECURE VERIFICATION SYSTEM
             </div>
             <h1 class="text-2xl md:text-4xl font-extrabold mb-2 text-white">
                 ตรวจสอบสถานะการเช่าสินค้า
@@ -69,7 +68,8 @@
         <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-5 md:p-6 shadow-xl mb-8">
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="search-username" placeholder="กรอก Username / Email เช่น golfcraft697@gmail.com" 
-                       class="flex-grow bg-[#0f172a] border border-grok-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-grok-accent transition">
+                       class="flex-grow bg-[#0f172a] border border-grok-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-grok-accent transition"
+                       onkeypress="if(event.key === 'Enter') checkRentalStatus()">
                 <button onclick="checkRentalStatus()" 
                         class="bg-grok-accent hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-sky-500/20 shrink-0">
                     🔍 ค้นหาข้อมูล
@@ -86,7 +86,7 @@
         <!-- RESULT CONTAINER (ใบประกันสินค้า/ใบรับรองสิทธิ์) -->
         <div id="result-container" class="hidden space-y-4">
             <div class="cert-card rounded-2xl p-6 md:p-8 relative overflow-hidden">
-                <!-- ตราประทับจำลองสถานะ Clear -->
+                <!-- ตราประทับสถานะ Clear -->
                 <div class="absolute top-4 right-4 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] md:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                     ✓ ACTIVE / CLEAR
                 </div>
@@ -126,7 +126,7 @@
 
                 <!-- Footer ด้านล่างใบประกัน -->
                 <div class="mt-8 pt-4 border-t border-grok-border text-center">
-                    <p class="text-[11px] text-gray-500">ข้อมูลนี้ดึงแบบเรียลไทม์จากระบบฐานข้อมูล · หากพบปัญหาติดต่อแอดมินผ่านเพจ Facebook</p>
+                    <p class="text-[11px] text-gray-500">ข้อมูลนี้ดึงแบบเรียลไทม์จากระบบฐานข้อมูล · ติดต่อสอบถามเพิ่มเติมผ่านเพจ Facebook</p>
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@
         <div id="error-state" class="hidden text-center py-12 bg-[#161e2e] border border-grok-border rounded-2xl p-6">
             <span class="text-3xl block mb-2">⚠️</span>
             <h3 class="text-base font-bold text-white mb-1">ไม่พบข้อมูลการเช่า หรือสถานะยังไม่ Clear</h3>
-            <p class="text-xs text-gray-400">กรุณาตรวจสอบ Username ที่กรอกใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ</p>
+            <p class="text-xs text-gray-400">กรุณาตรวจสอบ Username / Email ที่กรอกใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ</p>
         </div>
 
     </main>
@@ -145,17 +145,16 @@
         <p>© 2026 Supergrok Store · Secure Verification System</p>
     </footer>
 
-    <!-- SCRIPT ดึงข้อมูลและระบบเซ็นเซอร์ชื่อ -->
+    <!-- SCRIPT ดึงข้อมูลและระบบเซ็นเซอร์ชื่อ (เรียงตามลำดับคอลัมน์ G มากที่สุด = ล่าสุด) -->
     <script>
         const SHEET_ID = '1FZDa93Qn_N44biC3gugdPf2uaXh2-BeI';
         const SHEET_TITLE = 'ตารางคิวว่างเช่า AI';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TITLE)}`;
 
-        // ฟังก์ชันเซ็นเซอร์ชื่อ: เอาอักษรตัวแรก 1 ตัว แล้วเปลี่ยนที่เหลือเป็นดอกจัน (รองรับนามสกุลด้วย)
+        // ฟังก์ชันเซ็นเซอร์ชื่อ: เอาอักษรตัวแรก 1 ตัว แล้วตามด้วยเครื่องหมายดอกจัน
         function maskBuyerName(name) {
             if (!name || name === '-') return 'ไม่ระบุ';
             
-            // แยกคำ (เผื่อมีชื่อ-นามสกุล หรือมีข้อความอื่นๆ เช่น / วาวิณี)
             let parts = name.trim().split(/[\s\/]+/);
             let maskedParts = parts.map(part => {
                 if (part.length <= 1) return part + '***';
@@ -189,38 +188,45 @@
                 const json = JSON.parse(jsonString);
                 const rows = json.table.rows;
 
-                let foundItem = null;
+                let matchedRows = [];
 
-                // วนลูปค้นหาแถวที่ตรงกับเงื่อนไข:
-                // 1. คอลัมน์ J (index 9) หรือ G (index 6) มี Username ตรงกัน
+                // วนลูปเก็บทุกแถวที่ตรงกับเงื่อนไข:
+                // 1. คอลัมน์ J (index 9) หรือ G (index 6 หรือคอลัมน์ลำดับอื่นๆ ตามโครงสร้าง) มี Username ตรงกัน
                 // 2. คอลัมน์ L (index 11) สถานะต้องเป็น "clear"
-                for (let row of rows) {
-                    if (!row.c) continue;
+                rows.forEach((row, index) => {
+                    if (!row.c) return;
 
+                    // คอลัมน์ G (index 6) คือหมายเลขลำดับ
+                    const seqNumber = row.c[6] && !isNaN(row.c[6].v) ? Number(row.c[6].v) : 0;
+                    
                     const usernameColJ = row.c[9] ? String(row.c[9].v).trim().toLowerCase() : '';
-                    const usernameColG = row.c[6] ? String(row.c[6].v).trim().toLowerCase() : '';
+                    const usernameColGText = row.c[6] ? String(row.c[6].v).trim().toLowerCase() : '';
                     const statusColL = row.c[11] ? String(row.c[11].v).trim().toLowerCase() : '';
 
-                    if ((usernameColJ.includes(inputVal) || usernameColG.includes(inputVal)) && statusColL === 'clear') {
-                        foundItem = {
-                            product: row.c[1] ? row.c[1].v : 'Supergrok',      // คอลัมน์ B: ประเภทสินค้า
-                            startDate: row.c[8] ? (row.c[8].f || row.c[8].v) : '-', // คอลัมน์ I: วันที่เริ่มต้น
-                            dayCount: row.c[3] ? row.c[3].v : '-',                // คอลัมน์ D: จำนวนวัน
-                            price: row.c[4] ? row.c[4].v : '0',                   // คอลัมน์ E: ราคา
-                            buyer: row.c[13] ? row.c[13].v : '-'                  // คอลัมน์ N: ชื่อผู้รับประโยชน์
-                        };
-                        break; // เจอรายการล่าสุดแล้วหยุด
+                    if ((usernameColJ.includes(inputVal) || usernameColGText.includes(inputVal)) && statusColL === 'clear') {
+                        matchedRows.push({
+                            seq: seqNumber,
+                            product: row.c[1] ? row.c[1].v : 'Supergrok',      // คอลัมน์ B
+                            startDate: row.c[8] ? (row.c[8].f || row.c[8].v) : '-', // คอลัมน์ I
+                            dayCount: row.c[3] ? row.c[3].v : '-',                // คอลัมน์ D
+                            price: row.c[4] ? row.c[4].v : '0',                   // คอลัมน์ E
+                            buyer: row.c[13] ? row.c[13].v : '-'                  // คอลัมน์ N
+                        });
                     }
-                }
+                });
 
                 loadingEl.classList.add('hidden');
 
-                if (foundItem) {
+                if (matchedRows.length > 0) {
+                    // เรียงลำดับจากค่าในคอลัมน์ G (seq) จาก "มากไปน้อย" เพื่อเลือกข้อมูลล่าสุดเสมอ
+                    matchedRows.sort((a, b) => b.seq - a.seq);
+                    const latestItem = matchedRows[0];
+
                     // แสดงผลข้อมูลลงในใบประกัน
-                    document.getElementById('res-package').textContent = foundItem.product;
-                    document.getElementById('res-duration').textContent = `เริ่มเช่าวันที่ ${foundItem.startDate} (ระยะเวลา ${foundItem.dayCount} วัน) สิ้นสุดเวลา 00.00 น.`;
-                    document.getElementById('res-price').textContent = `${Number(foundItem.price).toLocaleString()} บาท`;
-                    document.getElementById('res-buyer').textContent = maskBuyerName(foundItem.buyer);
+                    document.getElementById('res-package').textContent = latestItem.product;
+                    document.getElementById('res-duration').textContent = `เริ่มเช่าวันที่ ${latestItem.startDate} (ระยะเวลา ${latestItem.dayCount} วัน) สิ้นสุดเวลา 00:00 น.`;
+                    document.getElementById('res-price').textContent = `${Number(latestItem.price).toLocaleString()} บาท`;
+                    document.getElementById('res-buyer').textContent = maskBuyerName(latestItem.buyer);
 
                     resultEl.classList.remove('hidden');
                 } else {
