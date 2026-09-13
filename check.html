@@ -71,7 +71,7 @@
             <p class="text-gray-400 text-xs md:text-sm">กรอก Username หรืออีเมล เพื่อตรวจสอบแพ็กเกจ ระยะเวลา และประกันความปลอดภัย</p>
         </div>
 
-        <!-- SEARCH BOX SECTION (ระบบที่ 2) -->
+        <!-- SEARCH BOX SECTION -->
         <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-6 md:p-8 shadow-2xl mb-10">
             <label for="username-input" class="block text-sm font-bold text-gray-300 mb-2">
                 🔍 กรอก Username / Email ลูกค้า:
@@ -124,15 +124,15 @@
 
         <!-- ERROR / NOT FOUND STATE -->
         <div id="error-container" class="hidden text-center py-10 bg-[#161e2e] border border-rose-500/30 rounded-2xl p-6 mb-10">
-            <p class="text-rose-400 text-base font-semibold">❌ ไม่พบข้อมูล Username นี้ในระบบ หรือยังไม่มีสถานะ Clear</p>
+            <p class="text-rose-400 text-base font-semibold">❌ ไม่พบข้อมูล Username นี้ในระบบ หรือข้อมูลยังไม่เป็น Clear</p>
         </div>
 
-        <!-- SYSTEM 1: CLEAR PRODUCTS LIST SECTION -->
+        <!-- SYSTEM 1: CLEAR PRODUCTS LIST SECTION (ดึงข้อมูลจากคอลัมน์ M ที่เป็น clear เท่านั้น) -->
         <div class="border-t border-grok-border pt-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h2 class="text-xl font-bold text-white">✨ รายการสินค้าสถานะ Clear (ระบบที่ 1)</h2>
-                    <p class="text-xs text-gray-400">กรองเฉพาะสถานะ Clear และเรียงลำดับหมายเลข P ให้สูงขึ้น</p>
+                    <h2 class="text-xl font-bold text-white">✨ รายการสินค้าสถานะ Clear (จากคอลัมน์ M)</h2>
+                    <p class="text-xs text-gray-400">กรองเฉพาะแถวที่คอลัมน์ M เป็นสถานะ Clear และเรียงลำดับหมายเลข P ให้สูงขึ้น</p>
                 </div>
             </div>
             
@@ -202,7 +202,7 @@
             }).join(' ');
         }
 
-        // --- ระบบที่ 1: แสดงสินค้าที่มีสถานะ clear เท่านั้น และเรียงหมายเลข P ให้เยอะขึ้น ---
+        // --- ระบบที่ 1: ดึงข้อมูลจากคอลัมน์ M ที่เป็น clear เท่านั้น และเรียงหมายเลข P ให้เยอะขึ้น ---
         function renderClearProducts() {
             const grid = document.getElementById('clear-product-grid');
             grid.innerHTML = '';
@@ -215,16 +215,12 @@
                 const product = row.c[1] ? row.c[1].v : ''; // Col B
                 const pNum = row.c[15] ? parseInt(row.c[15].v) || 0 : index; // Col P (Index 15) หมายเลข p
                 const usernameQ = row.c[16] ? String(row.c[16].v).trim() : ''; // Col Q (Index 16) Username Q
+                
+                // เช็คสถานะ Clear จากคอลัมน์ M (Index 12) โดยเฉพาะ
+                const colMVal = row.c[12] ? String(row.c[12].v).trim().toLowerCase() : '';
+                const isClearInM = colMVal.includes('clear');
 
-                // เงื่อนไข: สถานะเป็น clear (ตรวจสอบคำว่า clear ในแถว)
-                let isClear = false;
-                row.c.forEach(cell => {
-                    if (cell && cell.v && String(cell.v).toLowerCase().includes('clear')) {
-                        isClear = true;
-                    }
-                });
-
-                if (isClear) {
+                if (isClearInM) {
                     clearList.push({
                         product: product || 'Supergrok AI',
                         pNum: pNum,
@@ -238,7 +234,7 @@
             clearList.sort((a, b) => a.pNum - b.pNum);
 
             if (clearList.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-xs">ไม่พบสินค้าที่มีสถานะ Clear ในขณะนี้</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-xs">ไม่พบสินค้าที่มีสถานะ Clear ในคอลัมน์ M ในขณะนี้</div>`;
                 return;
             }
 
@@ -247,7 +243,7 @@
                 card.className = "grok-card p-4 rounded-xl flex items-center justify-between";
                 card.innerHTML = `
                     <div>
-                        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/40">🟢 CLEAR STATUS</span>
+                        <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/40">🟢 CLEAR (COL M)</span>
                         <h4 class="font-bold text-white text-sm mt-1">${item.product}</h4>
                         <p class="text-xs text-gray-400">Username (Q): <span class="text-sky-300">${item.usernameQ}</span></p>
                     </div>
