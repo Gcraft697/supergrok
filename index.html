@@ -1,271 +1,368 @@
 <!DOCTYPE html>
-<html lang="th" class="scroll-smooth">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b2a5b">
     <title>Supergrok เช่ารายวัน / รายชั่วโมง</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Prompt', 'sans-serif'],
-                    },
-                    colors: {
-                        grok: {
-                            bg: '#0b0f17',
-                            card: '#161e2e',
-                            border: '#1e293b',
-                            accent: '#38bdf8',
-                            hover: '#0284c7',
-                            sale: '#f43f5e',
-                            queue: '#64748b'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #0b0f17;
-            color: #ffffff;
+        :root {
+            --navy: #0b2a5b; --navy-2: #123f86;
+            --fb: #1464d8; --green: #146c2e; --teal: #0f5f6e;
+            --red: #b3261e; --red-bg: #fdecea;
+            --amber: #92400e; --amber-bg: #fff4e0;
+            --ok: #146c2e; --ok-bg: #e8f5ec;
+            --gray: #4b5563; --line: #d1d5db; --bg: #f2f4f8; --text: #111827;
+            --lite: #0369a1; --grok: #4338ca;
         }
-        .grok-card {
-            background: #161e2e;
-            border: 1px solid #1e293b;
-            transition: all 0.3s ease;
+        * { box-sizing: border-box; }
+        html { font-size: 19px; }
+        body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.55;
+               font-family: 'Sarabun', 'Noto Sans Thai', 'Leelawadee UI', Tahoma, sans-serif; -webkit-text-size-adjust: 100%; }
+        button, input, a { font-family: inherit; }
+        .hidden { display: none !important; }
+        svg.ic { width: 1em; height: 1em; flex-shrink: 0; }
+        a { color: inherit; }
+
+        /* ส่วนหัว */
+        .header { background: var(--navy); color: #fff; padding: 14px 16px 16px; border-bottom: 5px solid #38bdf8; }
+        .header-inner { max-width: 760px; margin: 0 auto; }
+        .brand { font-size: 1.5rem; font-weight: 800; margin: 0; line-height: 1.2; }
+        .brand span { color: #7dd3fc; }
+        .tagline { margin: 4px 0 0; font-size: .95rem; color: #dbe6ff; }
+        .wrap { max-width: 760px; margin: 0 auto; padding: 14px 16px 40px; }
+        .card { background: #fff; border: 2px solid #e5e7eb; border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+        h2 { font-size: 1.5rem; margin: 0 0 8px; color: var(--navy); line-height: 1.3; }
+        h3 { font-size: 1.25rem; margin: 0 0 12px; color: var(--navy); display: flex; align-items: center; gap: 8px; line-height: 1.3; }
+        .lead { margin: 0 0 14px; font-size: 1.05rem; }
+
+        /* ประกาศ (ไม่วิ่ง เพื่อให้อ่านง่าย) */
+        .notice { background: #fffbea; border: 3px solid #f59e0b; border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; font-size: 1.02rem; }
+        .notice b { display: inline-block; background: var(--red); color: #fff; border-radius: 8px; padding: 0 10px; margin-bottom: 4px; font-size: .95rem; }
+
+        /* แถบโหลดข้อมูลแบบดาวน์โหลด */
+        .pg { background: #fff; border: 2px solid #c7d2fe; border-radius: 16px; padding: 14px 16px; margin: 0 0 16px;
+              overflow: hidden; max-height: 360px; transition: max-height .5s ease, opacity .5s ease, margin .5s ease, padding .5s ease; }
+        .pg-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; }
+        .pg-text { display: flex; align-items: center; gap: 8px; }
+        .pg-pct { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }
+        .pg-track { height: 16px; background: #e5e7eb; border-radius: 99px; margin-top: 10px; overflow: hidden; }
+        .pg-fill { height: 100%; width: 0; border-radius: 99px; transition: width .2s linear;
+                   background: repeating-linear-gradient(45deg, #1d4ed8 0 14px, #2563eb 14px 28px); background-size: 40px 40px; animation: stripes 1s linear infinite; }
+        @keyframes stripes { to { background-position: 40px 0; } }
+        .pg-note { font-size: .95rem; font-weight: 600; margin-top: 8px; color: #374151; }
+        .pg.ok { border-color: #86efac; background: var(--ok-bg); color: var(--ok); }
+        .pg.ok .pg-fill { background: #1a8a3b; animation: none; }
+        .pg.fail { border-color: #fca5a5; background: var(--red-bg); color: var(--red); }
+        .pg.fail .pg-fill { background: var(--red); animation: none; width: 100% !important; }
+        .pg.fail .pg-pct, .pg.ok .pg-note { display: none; }
+        .pg.collapsed { max-height: 0; opacity: 0; margin: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
+        .pg-admin { font-size: .9rem; font-weight: 600; color: #7f1d1d; margin-top: 6px; }
+        .retry-btn { margin-top: 12px; width: 100%; min-height: 60px; border: 0; border-radius: 14px; background: var(--red); color: #fff;
+                     font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+
+        /* นับถอยหลังคิวถัดไป */
+        .cd-box { background: #fff; border: 3px solid var(--navy-2); border-radius: 18px; padding: 14px; margin-bottom: 16px; }
+        .cd-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 800; font-size: 1.1rem; color: var(--navy); margin-bottom: 10px; }
+        .cd-head button { border: 0; background: none; color: var(--fb); font-weight: 800; font-size: 1rem; cursor: pointer; text-decoration: underline; padding: 6px 0; }
+        .cd-item { display: block; width: 100%; text-align: left; border: 2px solid #e5e7eb; background: #f8fafc; border-radius: 14px; padding: 12px; margin-top: 8px; cursor: pointer; color: var(--text); font-size: 1rem; }
+        .cd-tag { display: inline-block; background: var(--navy); color: #fff; font-weight: 800; border-radius: 8px; padding: 0 10px; margin-right: 6px; }
+        .cd-digits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+        .cd-digits div { background: var(--navy); color: #fff; border-radius: 12px; text-align: center; padding: 6px 2px; }
+        .cd-digits b { display: block; font-size: 1.6rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+        .cd-digits small { font-size: .9rem; color: #dbe6ff; }
+        .cd-digits div:last-child b { color: #fcd34d; }
+
+        /* ปุ่มใหญ่หน้าแรก */
+        .home-title { font-size: 1.35rem; font-weight: 800; color: var(--navy); margin: 6px 0 14px; text-align: center; }
+        .big-btn { width: 100%; min-height: 92px; border: 0; border-radius: 20px; color: #fff; cursor: pointer; text-align: left;
+                   display: flex; align-items: center; gap: 16px; padding: 16px 18px; margin: 0 0 16px; text-decoration: none;
+                   box-shadow: 0 6px 0 rgba(0,0,0,.25); transition: transform .08s, box-shadow .08s; font-size: 1rem; }
+        .big-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+        .big-btn .ic-wrap { width: 60px; height: 60px; border-radius: 16px; background: rgba(255,255,255,.18); display: grid; place-items: center; flex-shrink: 0; font-size: 36px; }
+        .big-btn .t { display: block; font-size: 1.45rem; font-weight: 800; line-height: 1.2; }
+        .big-btn .d { display: block; font-size: 1rem; opacity: .95; margin-top: 3px; line-height: 1.35; }
+        .big-btn.navy { background: var(--navy); } .big-btn.amber { background: #9a3412; } .big-btn.teal { background: var(--teal); }
+        .big-btn.fb { background: var(--fb); } .big-btn.green { background: var(--green); }
+        .big-btn.outline { background: #fff; color: var(--navy); border: 3px solid var(--navy); box-shadow: 0 5px 0 rgba(11,42,91,.25); }
+        .big-btn.outline .ic-wrap { background: #e0e7ff; }
+        .big-btn:focus-visible, .btn:focus-visible, .back-btn:focus-visible, .filter-btn:focus-visible, .p-card:focus-visible { outline: 4px solid #facc15; outline-offset: 3px; }
+
+        /* ปุ่มทั่วไป */
+        .back-btn { width: 100%; min-height: 64px; border: 3px solid var(--navy); background: #fff; color: var(--navy); border-radius: 16px;
+                    font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin: 0 0 16px; }
+        .btn { width: 100%; min-height: 64px; border: 0; border-radius: 16px; background: var(--navy); color: #fff; font-size: 1.3rem; font-weight: 800;
+               display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; text-decoration: none; padding: 10px 16px; }
+        .btn.fb { background: var(--fb); } .btn.red { background: var(--red); } .btn.gray { background: #fff; color: #374151; border: 2px solid var(--line); }
+        .btn.light { background: #fff; color: var(--navy); border: 3px solid var(--navy); font-size: 1.15rem; }
+
+        /* ตัวกรอง */
+        .filter-label { font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; }
+        .filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+        .filter-btn { min-height: 60px; border: 3px solid var(--navy); background: #fff; color: var(--navy); border-radius: 14px; font-size: 1.1rem; font-weight: 800; cursor: pointer; padding: 4px; }
+        .filter-btn[aria-pressed="true"] { background: var(--navy); color: #fff; }
+
+        /* การ์ดสินค้า */
+        .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .p-card { background: #fff; border: 3px solid #cbd5e1; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+        .p-card.sale { border-color: var(--red); }
+        .p-card.queue { border-color: #d6b37a; background: #fffdf8; }
+        .p-img { position: relative; background: #0b0f17; }
+        .p-img img { width: 100%; height: 200px; object-fit: cover; display: block; }
+        .p-card.queue .p-img img { filter: grayscale(.85); opacity: .75; }
+        .p-badge { position: absolute; top: 10px; left: 10px; font-weight: 800; font-size: 1rem; padding: 4px 12px; border-radius: 99px; color: #fff; }
+        .p-badge.ok { background: var(--green); } .p-badge.sale { background: var(--red); } .p-badge.queue { background: #374151; }
+        .p-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .p-name { font-size: 1.45rem; font-weight: 800; line-height: 1.25; word-break: break-word; margin: 0; }
+        .p-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 12px; padding: 4px 12px; font-size: 1.05rem; font-weight: 700; }
+        .chip.wait { background: var(--amber-bg); border-color: #f59e0b; color: var(--amber); }
+        .p-price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+        .p-price small { font-size: 1rem; color: var(--gray); font-weight: 700; }
+        .p-price b { font-size: 2.1rem; font-weight: 800; color: var(--navy); line-height: 1.1; }
+        .p-card.sale .p-price b { color: var(--red); }
+        .p-card.queue .p-price b { color: #374151; font-size: 1.8rem; }
+        .p-card .btn { margin-top: auto; }
+        .p-card.sale .btn { background: var(--red); }
+        .p-card.queue .btn { background: #fff; color: var(--amber); border: 3px solid var(--amber); }
+        .section { margin-bottom: 26px; }
+        .section-empty { background: #fff; border: 2px dashed var(--line); border-radius: 16px; padding: 18px; text-align: center; color: var(--gray); font-size: 1.05rem; }
+        .loading-box { background: #fff; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; text-align: center; font-size: 1.1rem; color: var(--gray); }
+        .more-btn { margin-top: 16px; }
+
+        /* ปฏิทิน */
+        .month-title { font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--navy); margin: 4px 0 10px; }
+        .month-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .month-nav .btn { min-height: 58px; font-size: 1.1rem; padding: 6px 8px; white-space: nowrap; gap: 6px; }
+        .month-nav .btn { min-width: 0; }
+        @media (max-width: 359px) { .month-nav .btn { font-size: 1rem; padding: 6px 4px; gap: 3px; } .month-nav .btn .ic { width: 22px; height: 22px; } .cal-head div { font-size: .85rem; } }
+        .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .95rem; margin-bottom: 10px; }
+        .legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .sw { width: 18px; height: 18px; border-radius: 5px; display: inline-block; }
+        .sw.lite, .bar.lite { background: var(--lite); } .sw.grok, .bar.grok { background: var(--grok); }
+        .sw.sale, .bar.sale { background: var(--red); } .sw.queue, .bar.queue { background: #d97706; }
+        .cal-head, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .cal-head div { text-align: center; font-weight: 800; font-size: .95rem; padding: 4px 0; }
+        .cal-head div:first-child { color: var(--red); } .cal-head div:last-child { color: var(--fb); }
+        .day { position: relative; min-height: 64px; border: 2px solid #e5e7eb; border-radius: 10px; background: #fff; padding: 3px; display: flex; flex-direction: column; gap: 3px; font: inherit; color: inherit; text-align: left; }
+        .day.muted { background: #f3f4f6; color: #9ca3af; border-color: #f3f4f6; }
+        .day.has { cursor: pointer; border-color: #93c5fd; background: #eff6ff; }
+        .day.today { border: 3px solid var(--navy); }
+        .day .n { font-weight: 800; font-size: 1rem; line-height: 1.1; }
+        .day .today-tag { display: block; font-size: .6rem; background: var(--navy); color: #fff; border-radius: 4px; text-align: center; margin-top: 1px; }
+        .day .bar { height: 7px; border-radius: 4px; }
+        .day .plus { font-size: .7rem; font-weight: 800; }
+        .tip { display: none; }
+        @media (hover: hover) and (min-width: 760px) {
+            .tip { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); width: 230px; background: #111827; color: #fff; border-radius: 12px;
+                   padding: 10px; font-size: .85rem; z-index: 20; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+            .day.has:hover .tip { display: block; }
+            .tip div + div { border-top: 1px solid #374151; margin-top: 6px; padding-top: 6px; }
         }
-        .grok-card:hover {
-            transform: translateY(-4px);
-            border-color: #38bdf8;
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2);
+        .month-list { margin-top: 18px; }
+        .ml-item { width: 100%; text-align: left; border: 2px solid #cbd5e1; background: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; display: block; color: var(--text); font-size: 1.05rem; }
+        .ml-item b { font-size: 1.15rem; color: var(--navy); display: block; }
+
+        /* หน้าต่างรายละเอียด */
+        .modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 12px; }
+        .modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,.65); }
+        .modal-box { position: relative; background: #fff; border-radius: 20px; width: 100%; max-width: 520px; max-height: calc(100vh - 24px); overflow-y: auto; padding: 18px; }
+        .modal-x { position: absolute; top: 10px; right: 10px; width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 26px; cursor: pointer; display: grid; place-items: center; color: #111827; z-index: 2; }
+        #modal-image { width: 100%; height: 190px; object-fit: cover; border-radius: 14px; display: block; margin-bottom: 12px; }
+        #modal-badge { display: inline-block; font-weight: 800; padding: 4px 14px; border-radius: 99px; color: #fff; margin-bottom: 6px; }
+        #modal-badge.sale { background: var(--red); } #modal-badge.queue { background: var(--amber); } #modal-badge.ok { background: var(--green); }
+        #modal-title { font-size: 1.6rem; font-weight: 800; margin: 2px 0 8px; line-height: 1.25; padding-right: 50px; word-break: break-word; }
+        #modal-day, #modal-queue { font-size: 1.1rem; font-weight: 700; background: #f1f5f9; border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; }
+        #modal-queue { background: var(--amber-bg); color: var(--amber); }
+        #modal-price { font-size: 2.2rem; font-weight: 800; color: var(--navy); margin: 6px 0 14px; }
+        .modal-close-btn { margin-top: 10px; }
+        #cal-modal-date { font-size: 1.35rem; font-weight: 800; color: var(--navy); margin: 0 50px 14px 0; }
+        .cm-item { border: 2px solid #e5e7eb; border-radius: 16px; padding: 12px; margin-bottom: 12px; }
+        .cm-top { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+        .cm-top img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; flex-shrink: 0; }
+        .cm-top h4 { margin: 0; font-size: 1.25rem; word-break: break-word; }
+        .cm-top p { margin: 2px 0 0; font-size: 1rem; color: #374151; }
+        .cm-top .pr { font-size: 1.3rem; font-weight: 800; color: var(--navy); }
+
+        .footer { text-align: center; color: #374151; font-size: .95rem; padding: 18px 16px 28px; }
+        .footer .counter { display: flex; justify-content: center; margin-bottom: 8px; }
+
+        @media (min-width: 760px) {
+            html { font-size: 20px; }
+            .grid { grid-template-columns: 1fr 1fr; }
+            .day { min-height: 84px; }
         }
-        .sale-card-large {
-            background: linear-gradient(135deg, #2a1221 0%, #161e2e 100%);
-            border: 2px solid #f43f5e;
-            box-shadow: 0 0 25px rgba(244, 63, 94, 0.3);
-            transition: all 0.3s ease;
-        }
-        .sale-card-large:hover {
-            transform: translateY(-4px);
-            border-color: #fb7185;
-            box-shadow: 0 10px 35px rgba(244, 63, 94, 0.5);
-        }
-        .queue-card-muted {
-            background: #111622;
-            border: 1px solid #334155;
-            opacity: 0.85;
-            transition: all 0.3s ease;
-        }
-        .queue-card-muted:hover {
-            opacity: 1;
-            border-color: #64748b;
-        }
-        .tooltip-box {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-            transform: translateY(4px);
-            z-index: 100;
-        }
-        .calendar-day-cell:hover .tooltip-box {
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        .animate-marquee {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
-        }
+        @media (prefers-reduced-motion: reduce) { .pg-fill { animation: none; transition: none; } .pg, .big-btn { transition: none; } }
     </style>
 </head>
-<body class="font-sans text-gray-100 antialiased min-h-screen flex flex-col justify-between">
+<body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="i-box" viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z M3 7.5l9 4.5 9-4.5 M12 12v9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+        <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+        <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></symbol>
+        <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-next" viewBox="0 0 24 24"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5 10-11" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3 2 20.5h20z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 10v5M12 17.8v.2" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+        <symbol id="i-retry" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 21c-4 0-7-2.8-7-6.6 0-3.1 2.1-5 3.6-7 .4 1.8 1.4 2.8 2.4 3.2C11 7 12.6 4.5 15 3c-.3 2.6.7 4.3 2 6 1.3 1.7 2 3.2 2 5.4 0 3.8-3 6.6-7 6.6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 3.5 21 11M5.5 9.5V20h13V9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    </svg>
 
-    <!-- LIVE STATUS BANNER -->
-    <div class="bg-gradient-to-r from-sky-900 via-indigo-900 to-rose-900 border-b border-sky-500/30 text-white py-2 px-4 overflow-hidden relative shadow-inner">
-        <div class="max-w-7xl mx-auto flex items-center gap-3">
-            <span class="bg-rose-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider animate-pulse shrink-0">ประกาศสำคัญ</span>
-            <div class="whitespace-nowrap overflow-hidden w-full">
-                <p class="text-xs md:text-sm font-medium animate-marquee">
-                    ⚡ บริการเช่า SuperGrok และ Lite รายวัน/ชั่วโมง ราคาหลักสิบ รับประกันตลอดอายุใช้งาน ใช้คนเดียว ไม่เเชร์ · สนใจติดต่อสอบถามผ่าน Inbox เพจ Facebook ได้ตลอด 24 ชม.
-                </p>
-            </div>
+    <header class="header">
+        <div class="header-inner">
+            <p class="brand">SuperGrok<span> By Treethep</span></p>
+            <p class="tagline">ข้อมูลอัปเดตแบบเรียลไทม์ รับประกันตลอดอายุใช้งาน ไม่หลุด ไม่เด้ง ไม่แชร์ ใช้คนเดียว</p>
         </div>
-    </div>
+    </header>
 
-    <!-- TOP NAVIGATION -->
-    <nav class="bg-[#111827] border-b border-grok-border sticky top-7 z-50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-lg md:text-xl tracking-wider text-white">SuperGrok<span class="text-grok-accent"> By Treethep</span></span>
-            </div>
-            <div class="flex items-center gap-3 md:gap-6 text-xs md:text-sm font-medium text-gray-300">
-                <a href="#" class="text-grok-accent hover:text-white transition">หน้าแรก</a>
-                <a href="/check.html" class="hover:text-grok-accent transition">ตรวจสอบประกัน</a>
-                <a href="#calendar-section" class="hover:text-grok-accent transition hidden sm:inline-block">ปฎิทินคิว</a>
-                <a href="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314" target="_blank" class="hover:text-grok-accent transition">เช็คเครดิต</a>
-            </div>
+    <main class="wrap">
+        <!-- แถบโหลดข้อมูล -->
+        <div id="load-pg" class="pg" role="status" aria-live="polite">
+            <div class="pg-row"><span class="pg-text" id="load-text">กำลังโหลดข้อมูลสินค้า...</span><span class="pg-pct" id="load-pct">0%</span></div>
+            <div class="pg-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="การโหลดข้อมูลสินค้า"><div class="pg-fill" id="load-fill"></div></div>
+            <div class="pg-note hidden" id="load-note">อินเทอร์เน็ตอาจช้า กรุณารอสักครู่...</div>
+            <div class="pg-admin hidden" id="load-admin">เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาตรวจสอบสิทธิ์การแชร์ Google Sheet</div>
+            <button type="button" class="retry-btn hidden" id="load-retry" onclick="fetchProducts()"><svg class="ic"><use href="#i-retry"/></svg> ลองใหม่</button>
         </div>
-    </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 py-6 md:py-10 w-full">
-        
-        <!-- COMPACT UNIFIED COUNTDOWN BAR -->
-        <div id="mini-countdown-wrapper" class="max-w-3xl mx-auto mb-6 hidden">
-            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3 md:p-3.5 shadow-xl relative overflow-hidden">
-                <div class="flex items-center justify-between mb-2 border-b border-grok-border pb-1.5">
-                    <span class="text-xs md:text-sm font-bold text-gray-200 flex items-center gap-1.5">
-                        ⏳ เวลานับถอยหลังคิวถัดไป
-                    </span>
-                    <a href="#calendar-section" class="text-xs text-grok-accent hover:underline font-semibold flex items-center gap-1">
-                        ดูปฏิทินใหญ่ ❯
-                    </a>
+        <!-- ===== หน้าแรก ===== -->
+        <section id="panel-home" class="panel">
+            <div class="notice">
+                <b>ประกาศสำคัญ</b><br>
+                ⚡ บริการเช่า SuperGrok และ Lite รายวัน/ชั่วโมง ราคาหลักสิบ รับประกันตลอดอายุใช้งาน ใช้คนเดียว ไม่เเชร์ · สนใจติดต่อสอบถามผ่าน Inbox เพจ Facebook ได้ตลอด 24 ชม.
+            </div>
+
+            <!-- นับถอยหลังคิวถัดไป -->
+            <div id="mini-countdown-wrapper" class="cd-box hidden">
+                <div class="cd-head">
+                    <span><svg class="ic"><use href="#i-clock"/></svg> เวลานับถอยหลังคิวถัดไป</span>
+                    <button type="button" onclick="goTo('calendar')">ดูปฏิทินใหญ่ ❯</button>
                 </div>
-                <div id="countdown-bar-container" class="grid grid-cols-1 gap-2">
-                    <!-- Javascript will render compact unified countdown cards here -->
-                </div>
+                <div id="countdown-bar-container"></div>
             </div>
-        </div>
 
-        <!-- HEADER SECTION -->
-        <div class="text-center mb-6 md:mb-8">
-            <h1 class="text-2xl md:text-4xl font-extrabold mb-2">
-                SuperGrok by Treethep
-            </h1>
-            <p class="text-gray-400 text-xs md:text-sm">ข้อมูลอัปเดตแบบเรียลไทม์ รับประกันตลอดอายุใช้งาน ไม่หลุด ไม่เด้ง ไม่แชร์ ใช้คนเดียว</p>
-        </div>
-
-        <!-- CATEGORY FILTER BUTTONS -->
-        <div class="flex justify-center items-center gap-2 md:gap-3 mb-8 md:mb-10">
-            <button onclick="setCategoryFilter('all')" id="btn-filter-all" 
-                    class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-accent bg-grok-accent text-slate-950 shadow-lg shadow-sky-500/20">
-                ทั้งหมด
+            <div class="home-title">ท่านต้องการทำอะไร?</div>
+            <button type="button" class="big-btn navy" id="go-products" onclick="goTo('products')">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-box"/></svg></span>
+                <span><span class="t">ดูสินค้า และราคา</span><span class="d">สินค้าพร้อมเช่าทันที และสินค้าลดราคา</span></span>
             </button>
-            <button onclick="setCategoryFilter('supergrok')" id="btn-filter-supergrok" 
-                    class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-border bg-[#161e2e] text-gray-300 hover:border-grok-accent hover:text-white">
-                Supergrok
+            <button type="button" class="big-btn amber" id="go-queue" onclick="goTo('products', 'queue-section')">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-clock"/></svg></span>
+                <span><span class="t">จองคิวล่วงหน้า</span><span class="d">รายการสินค้าที่ต้องรอคิว</span></span>
             </button>
-            <button onclick="setCategoryFilter('lite')" id="btn-filter-lite" 
-                    class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-border bg-[#161e2e] text-gray-300 hover:border-grok-accent hover:text-white">
-                Lite
+            <button type="button" class="big-btn teal" id="go-calendar" onclick="goTo('calendar')">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-cal"/></svg></span>
+                <span><span class="t">ปฏิทินคิวว่าง</span><span class="d">ดูว่าวันไหนมีคิว และจองล่วงหน้า</span></span>
             </button>
-        </div>
+            <a class="big-btn fb" id="go-contact" href="https://www.facebook.com/TreethepGolf" target="_blank" rel="noopener">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-fb"/></svg></span>
+                <span><span class="t">ติดต่อ / สอบถาม</span><span class="d">ทักแชทเพจ Facebook ได้ตลอด 24 ชม.</span></span>
+            </a>
+            <a class="big-btn outline" id="go-check" href="/check.html">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-shield"/></svg></span>
+                <span><span class="t">ตรวจสอบประกัน</span><span class="d">เช็คการรับประกันของท่าน</span></span>
+            </a>
+            <a class="big-btn outline" id="go-credit" href="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314" target="_blank" rel="noopener">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-star"/></svg></span>
+                <span><span class="t">เช็คเครดิต</span><span class="d">ดูความน่าเชื่อถือของร้าน (Facebook)</span></span>
+            </a>
+        </section>
 
-        <!-- HOT SALE SECTION -->
-        <div id="sale-section" class="hidden mb-10 md:mb-12">
-            <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-rose-500/30 pb-3">
-                <span class="bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">HOT SALE</span>
-                <h2 class="text-lg md:text-xl font-bold text-rose-400">🔥 สินค้าลดราคาพิเศษ</h2>
+        <!-- ===== สินค้า ===== -->
+        <section id="panel-products" class="panel hidden">
+            <button type="button" class="back-btn" onclick="goTo('home')"><svg class="ic"><use href="#i-back"/></svg> กลับหน้าแรก</button>
+            <h2>สินค้าและราคา</h2>
+            <div class="filter-label">เลือกประเภทสินค้า</div>
+            <div class="filters" role="group" aria-label="เลือกประเภทสินค้า">
+                <button type="button" class="filter-btn" id="btn-filter-all" aria-pressed="true" onclick="setCategoryFilter('all')">ทั้งหมด</button>
+                <button type="button" class="filter-btn" id="btn-filter-supergrok" aria-pressed="false" onclick="setCategoryFilter('supergrok')">Supergrok</button>
+                <button type="button" class="filter-btn" id="btn-filter-lite" aria-pressed="false" onclick="setCategoryFilter('lite')">Lite</button>
             </div>
-            <div id="sale-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
-        </div>
 
-        <!-- PRODUCTS SECTION -->
-        <div id="products-section" class="mb-10 md:mb-12">
-            <h2 class="text-lg md:text-xl font-bold text-white mb-4 md:mb-6 flex items-center gap-2 border-b border-grok-border pb-3">
-                <span>📦 สินค้าพร้อมขายทันที</span>
-            </h2>
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                <div class="col-span-full text-center py-16 text-gray-400">
-                    <div class="w-8 h-8 md:w-10 md:h-10 border-2 border-grok-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p class="text-xs md:text-sm">กำลังโหลดข้อมูลสินค้า...</p>
+            <div id="sale-section" class="section hidden">
+                <h3 style="color:var(--red)"><svg class="ic"><use href="#i-fire"/></svg> สินค้าลดราคาพิเศษ</h3>
+                <div id="sale-grid" class="grid"></div>
+            </div>
+
+            <div id="products-section" class="section">
+                <h3><svg class="ic"><use href="#i-box"/></svg> สินค้าพร้อมขายทันที</h3>
+                <div id="product-grid" class="grid"><div class="loading-box">กำลังโหลดข้อมูลสินค้า...</div></div>
+            </div>
+
+            <div id="queue-section" class="section">
+                <h3 style="color:var(--amber)"><svg class="ic"><use href="#i-clock"/></svg> รายการสินค้าที่ต้องรอคิว (จองล่วงหน้า)</h3>
+                <div id="queue-grid" class="grid"></div>
+                <div id="queue-more"></div>
+            </div>
+
+            <div id="empty-state" class="section-empty hidden">ไม่พบข้อมูลสินค้าที่เลือก</div>
+
+            <button type="button" class="back-btn" style="margin-top:8px" onclick="goTo('home')"><svg class="ic"><use href="#i-home"/></svg> กลับหน้าแรก</button>
+        </section>
+
+        <!-- ===== ปฏิทิน ===== -->
+        <section id="panel-calendar" class="panel hidden">
+            <button type="button" class="back-btn" onclick="goTo('home')"><svg class="ic"><use href="#i-back"/></svg> กลับหน้าแรก</button>
+            <div class="card" id="calendar-section">
+                <h2>ปฏิทินเช็คคิวว่าง</h2>
+                <p class="lead">แตะวันที่มีแถบสี เพื่อดูรายละเอียด และเช่าหรือจองล่วงหน้า</p>
+                <div class="month-title" id="calendar-month-year">กำลังโหลด...</div>
+                <div class="month-nav">
+                    <button type="button" class="btn light" onclick="changeMonth(-1)"><svg class="ic"><use href="#i-back"/></svg> เดือนก่อน</button>
+                    <button type="button" class="btn light" onclick="changeMonth(1)">เดือนถัดไป <svg class="ic"><use href="#i-next"/></svg></button>
+                </div>
+                <div class="legend">
+                    <span><i class="sw grok"></i> Supergrok</span><span><i class="sw lite"></i> Lite</span>
+                    <span><i class="sw sale"></i> ลดราคา</span><span><i class="sw queue"></i> รอคิว</span>
+                </div>
+                <div class="cal-head"><div>อา.</div><div>จ.</div><div>อ.</div><div>พ.</div><div>พฤ.</div><div>ศ.</div><div>ส.</div></div>
+                <div id="calendar-grid" class="cal-grid"></div>
+                <div class="month-list">
+                    <h3><svg class="ic"><use href="#i-cal"/></svg> คิวในเดือนนี้</h3>
+                    <div id="month-list"></div>
                 </div>
             </div>
-        </div>
-
-        <!-- FULL CALENDAR SECTION -->
-        <div id="calendar-section" class="border-t border-grok-border pt-10 mb-16 scroll-mt-24">
-            <div class="text-center mb-6 md:mb-8">
-                <h2 class="text-2xl md:text-3xl font-extrabold mb-2 text-white">
-                    📅 ปฏิทินเช็คคิวว่าง
-                </h2>
-                <p class="text-gray-400 text-xs md:text-sm">เอาเมาส์ชี้ดูข้อมูล และคลิกเพื่อเช่าหรือจองล่วงหน้าได้</p>
-            </div>
-
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#161e2e] border border-grok-border px-4 md:px-6 py-4 rounded-2xl mb-6 shadow-lg max-w-4xl mx-auto">
-                <button onclick="changeMonth(-1)" class="w-full sm:w-auto bg-[#0f172a] hover:bg-grok-accent hover:text-slate-950 border border-grok-border text-gray-300 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center justify-center gap-2">
-                    ❮ เดือนก่อนหน้า
-                </button>
-                <h3 id="calendar-month-year" class="text-base md:text-xl font-bold text-white tracking-wide">กำลังโหลด...</h3>
-                <button onclick="changeMonth(1)" class="w-full sm:w-auto bg-[#0f172a] hover:bg-grok-accent hover:text-slate-950 border border-grok-border text-gray-300 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition flex items-center justify-center gap-2">
-                    เดือนถัดไป ❯
-                </button>
-            </div>
-
-            <div class="bg-[#161e2e] border border-grok-border rounded-2xl p-3 md:p-6 shadow-2xl max-w-4xl mx-auto overflow-x-auto">
-                <div class="grid grid-cols-7 gap-1 md:gap-2 mb-3 text-center font-bold text-gray-400 text-xs md:text-sm min-w-[300px]">
-                    <div class="text-rose-400">อา.</div>
-                    <div>จ.</div>
-                    <div>อ.</div>
-                    <div>พ.</div>
-                    <div>พฤ.</div>
-                    <div>ศ.</div>
-                    <div class="text-sky-400">ส.</div>
-                </div>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1 md:gap-2 min-w-[300px]"></div>
-            </div>
-        </div>
-
-        <!-- QUEUE SECTION -->
-        <div id="queue-section" class="border-t border-grok-border pt-10 mb-16">
-            <div class="flex items-center gap-3 mb-4 md:mb-6 border-b border-slate-700/50 pb-3">
-                <span class="bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1 rounded-full">PRE-ORDER / WAITING</span>
-                <h2 class="text-lg md:text-xl font-bold text-slate-400">⏳ รายการสินค้าที่ต้องรอคิว</h2>
-            </div>
-            <div id="queue-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
-        </div>
-
-        <!-- EMPTY STATE -->
-        <div id="empty-state" class="hidden text-center py-20 text-gray-500">
-            <p class="text-base md:text-lg">ไม่พบข้อมูลสินค้าที่เลือก</p>
-        </div>
+            <button type="button" class="back-btn" onclick="goTo('home')"><svg class="ic"><use href="#i-home"/></svg> กลับหน้าแรก</button>
+        </section>
     </main>
 
-    <!-- PRODUCT DETAIL POPUP (MODAL) -->
-    <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeDetail()"></div>
-        <div class="relative bg-[#161e2e] border border-grok-border rounded-2xl max-w-md w-full p-5 md:p-6 shadow-2xl z-10">
-            <button onclick="closeDetail()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
-            <div class="flex flex-col items-center text-center">
-                <img id="modal-image" src="" alt="สินค้า" class="w-full h-40 md:h-48 object-cover rounded-xl border border-grok-border mb-4">
-                <span id="modal-badge" class="text-xs font-semibold px-3 py-1 rounded-full mb-2"></span>
-                <h3 id="modal-title" class="text-lg md:text-xl font-bold text-white mb-2"></h3>
-                <div id="modal-day" class="text-xs md:text-sm text-gray-400 mb-2 bg-[#0f172a] px-4 py-1.5 rounded-lg border border-grok-border"></div>
-                <div id="modal-queue" class="hidden text-xs font-semibold text-slate-300 bg-slate-800/80 border border-slate-700 px-4 py-2 rounded-lg mb-4 w-full"></div>
-                <div class="text-xl md:text-2xl font-extrabold text-grok-accent mb-6" id="modal-price"></div>
-                <a id="modal-facebook-link" href="https://www.facebook.com/TreethepGolf" target="_blank" 
-                   class="w-full bg-[#1877F2] hover:bg-[#166fe5] text-white font-semibold py-3 px-4 rounded-xl transition flex items-center justify-center gap-3 shadow-lg text-sm md:text-base">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                    <span>จองคิว / ติดต่อผ่าน Facebook</span>
-                </a>
-            </div>
+    <!-- หน้าต่างรายละเอียดสินค้า -->
+    <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-bg" onclick="closeDetail()"></div>
+        <div class="modal-box">
+            <button type="button" class="modal-x" onclick="closeDetail()" aria-label="ปิด">✕</button>
+            <img id="modal-image" src="" alt="สินค้า">
+            <span id="modal-badge"></span>
+            <h3 id="modal-title"></h3>
+            <div id="modal-day"></div>
+            <div id="modal-queue" class="hidden"></div>
+            <div id="modal-price"></div>
+            <a id="modal-facebook-link" class="btn fb" href="https://www.facebook.com/TreethepGolf" target="_blank" rel="noopener">
+                <svg class="ic"><use href="#i-fb"/></svg> จองคิว / ติดต่อผ่าน Facebook
+            </a>
+            <button type="button" class="btn gray modal-close-btn" onclick="closeDetail()">ปิดหน้าต่างนี้</button>
         </div>
     </div>
 
-    <!-- CALENDAR DAY DETAIL MODAL -->
-    <div id="calendar-day-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCalendarModal()"></div>
-        <div class="relative bg-[#161e2e] border border-grok-border rounded-2xl max-w-lg w-full p-5 md:p-6 shadow-2xl z-10">
-            <button onclick="closeCalendarModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">✕</button>
-            <h3 id="cal-modal-date" class="text-base md:text-lg font-bold text-grok-accent mb-4 border-b border-grok-border pb-2"></h3>
-            <div id="cal-modal-content" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2"></div>
+    <!-- หน้าต่างคิวรายวัน -->
+    <div id="calendar-day-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cal-modal-date">
+        <div class="modal-bg" onclick="closeCalendarModal()"></div>
+        <div class="modal-box">
+            <button type="button" class="modal-x" onclick="closeCalendarModal()" aria-label="ปิด">✕</button>
+            <h3 id="cal-modal-date"></h3>
+            <div id="cal-modal-content"></div>
+            <button type="button" class="btn gray modal-close-btn" onclick="closeCalendarModal()">ปิดหน้าต่างนี้</button>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="bg-[#111827] border-t border-grok-border py-6 text-center text-xs text-gray-500">
+    <footer class="footer">
         <!-- ตัวนับยอดคนเข้าชมเว็บไซต์ -->
-        <div class="mb-3 flex justify-center items-center">
+        <div class="counter">
             <div id="sfcttyawtjrunb8b5d82gatz6hejasjwtzn"></div>
         </div>
         <p>© 2026 Supergrok Store · All rights reserved.</p>
@@ -377,11 +474,84 @@
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
 
+        // ===== ส่วนเสริมสำหรับหน้าใหม่ =====
+        const THAI_MONTHS_FULL = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+            "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+        const FETCH_TIMEOUT_MS = 30000;
+        let isLoading = false;
+
+        // กันข้อความจากชีตไปเป็น HTML
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        }
+        function fmtPrice(p) {
+            const n = Number(p);
+            return isNaN(n) ? String(p) : n.toLocaleString();
+        }
+        function isLiteItem(item) { return item.product.toLowerCase().includes('lite'); }
+        function thaiDateFromKey(dateKey) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey || '');
+            if (!m) return dateKey;
+            return `${Number(m[3])} ${THAI_MONTHS_FULL[Number(m[2]) - 1]} ${Number(m[1]) + 543}`;
+        }
+        function itemKind(item) {
+            if (item.status.includes('รอคิว')) return 'queue';
+            if (item.role.includes('ลดราคา')) return 'sale';
+            return isLiteItem(item) ? 'lite' : 'grok';
+        }
+
+        // ===== แถบโหลดแบบดาวน์โหลด: วิ่งเข้าใกล้ 90% ระหว่างรอ แล้วกระโดดเป็น 100% เมื่อเสร็จ =====
+        const loadPg = (function () {
+            const box = document.getElementById('load-pg'), fill = document.getElementById('load-fill');
+            const pct = document.getElementById('load-pct'), text = document.getElementById('load-text');
+            const note = document.getElementById('load-note'), bar = fill.parentNode;
+            let raf = 0, hideTimer = 0;
+            function set(p) { fill.style.width = p + '%'; pct.textContent = Math.floor(p) + '%'; bar.setAttribute('aria-valuenow', String(Math.floor(p))); }
+            return {
+                start() {
+                    cancelAnimationFrame(raf); clearTimeout(hideTimer);
+                    box.classList.remove('ok', 'fail', 'collapsed', 'hidden');
+                    text.textContent = 'กำลังโหลดข้อมูลสินค้า...';
+                    note.classList.add('hidden');
+                    document.getElementById('load-admin').classList.add('hidden');
+                    document.getElementById('load-retry').classList.add('hidden');
+                    set(0);
+                    const t0 = performance.now();
+                    const tick = now => {
+                        const t = now - t0;
+                        set(Math.min(98, 90 * (1 - Math.exp(-t / 1200)) + 8 * (1 - Math.exp(-t / 20000))));
+                        if (t > 5000) note.classList.remove('hidden');
+                        raf = requestAnimationFrame(tick);
+                    };
+                    raf = requestAnimationFrame(tick);
+                },
+                ok() {
+                    cancelAnimationFrame(raf); set(100);
+                    box.classList.add('ok');
+                    text.innerHTML = '<svg class="ic"><use href="#i-check"/></svg> โหลดข้อมูลสินค้าสำเร็จ';
+                    hideTimer = setTimeout(() => box.classList.add('collapsed'), 1800);
+                },
+                fail() {
+                    cancelAnimationFrame(raf); set(100);
+                    box.classList.add('fail');
+                    text.innerHTML = '<svg class="ic"><use href="#i-warn"/></svg> โหลดข้อมูลสินค้าไม่สำเร็จ';
+                    document.getElementById('load-admin').classList.remove('hidden');
+                    document.getElementById('load-retry').classList.remove('hidden');
+                }
+            };
+        })();
+
         async function fetchProducts() {
+            if (isLoading) return;
+            isLoading = true;
+            loadPg.start();
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
             try {
-                const response = await fetch(SHEET_URL);
+                const response = await fetch(SHEET_URL, { signal: ctrl.signal });
                 const text = await response.text();
-                const jsonString = text.substring(47, text.length - 2);
+                // ตัดส่วนหัว/ท้ายของ gviz ออก (เหมือนเดิม แต่หาวงเล็บปีกกาแทนการนับ 47 ตัวอักษร)
+                const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
                 const json = JSON.parse(jsonString);
                 const rows = json.table.rows;
 
@@ -429,25 +599,23 @@
                 filterProducts();
                 renderCalendar();
                 setupUnifiedCountdownBar();
+                loadPg.ok();
 
             } catch (error) {
                 console.error('Error fetching sheet data:', error);
-                document.getElementById('product-grid').innerHTML = `
-                    <div class="col-span-full text-center py-16 text-red-400">
-                        เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาตรวจสอบสิทธิ์การแชร์ Google Sheet
-                    </div>`;
+                loadPg.fail();
+                document.getElementById('product-grid').innerHTML =
+                    '<div class="section-empty" style="color:var(--red)">โหลดข้อมูลสินค้าไม่สำเร็จ กรุณากด "ลองใหม่" ด้านบน</div>';
+            } finally {
+                clearTimeout(timer);
+                isLoading = false;
             }
         }
 
         function setCategoryFilter(category) {
             currentFilter = category;
             ['all', 'supergrok', 'lite'].forEach(cat => {
-                const btn = document.getElementById(`btn-filter-${cat}`);
-                if (cat === category) {
-                    btn.className = "px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-accent bg-grok-accent text-slate-950 shadow-lg shadow-sky-500/20";
-                } else {
-                    btn.className = "px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold transition border border-grok-border bg-[#161e2e] text-gray-300 hover:border-grok-accent hover:text-white";
-                }
+                document.getElementById(`btn-filter-${cat}`).setAttribute('aria-pressed', String(cat === category));
             });
             filterProducts();
         }
@@ -468,16 +636,19 @@
             renderProducts();
         }
 
+        let queueExpanded = false;
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             const saleGrid = document.getElementById('sale-grid');
             const queueGrid = document.getElementById('queue-grid');
+            const queueMore = document.getElementById('queue-more');
             const saleSection = document.getElementById('sale-section');
             const emptyState = document.getElementById('empty-state');
 
             grid.innerHTML = '';
             saleGrid.innerHTML = '';
             queueGrid.innerHTML = '';
+            queueMore.innerHTML = ''; // ลบปุ่ม "ดูคิวเพิ่มเติม" ของรอบก่อนทุกครั้ง
 
             if (filteredProducts.length === 0) {
                 saleSection.classList.add('hidden');
@@ -503,141 +674,88 @@
             if (normalProducts.length > 0) {
                 normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
             } else {
-                grid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีสินค้าพร้อมขายทันทีในรอบนี้</div>`;
+                grid.innerHTML = `<div class="section-empty">ไม่มีสินค้าพร้อมขายทันทีในรอบนี้</div>`;
             }
 
-            // ระบบจำกัดการแสดงผลรายการรอคิวแค่ 7 รายการแรก + ปุ่มเพิ่มเติม
+            // แสดงรายการรอคิว 7 รายการแรก + ปุ่มดูเพิ่มเติม (เหมือนเดิม)
             if (queueProducts.length > 0) {
                 const limitCount = 7;
-                const visibleQueue = queueProducts.slice(0, limitCount);
-                const hiddenQueue = queueProducts.slice(limitCount);
-
+                const visibleQueue = queueExpanded ? queueProducts : queueProducts.slice(0, limitCount);
+                const hiddenCount = queueProducts.length - limitCount;
                 visibleQueue.forEach(item => queueGrid.appendChild(createProductCard(item, 'queue')));
 
-                if (hiddenQueue.length > 0) {
-                    const oldBtnWrapper = document.getElementById('queue-toggle-wrapper');
-                    if (oldBtnWrapper) oldBtnWrapper.remove();
-
-                    const btnWrapper = document.createElement('div');
-                    btnWrapper.id = 'queue-toggle-wrapper';
-                    btnWrapper.className = 'col-span-full text-center mt-6';
-                    
+                if (hiddenCount > 0) {
                     const toggleBtn = document.createElement('button');
-                    toggleBtn.className = 'bg-[#161e2e] hover:bg-grok-accent hover:text-slate-950 text-gray-300 border border-grok-border text-xs md:text-sm font-semibold px-6 py-2.5 rounded-xl transition shadow-lg flex items-center gap-2 mx-auto';
-                    toggleBtn.innerHTML = `<span>📂 ดูคิวเพิ่มเติมทั้งหมดอีก (${hiddenQueue.length} รายการ)</span> <span>▼</span>`;
-                    
-                    let isExpanded = false;
+                    toggleBtn.type = 'button';
+                    toggleBtn.className = 'btn light more-btn';
+                    toggleBtn.id = 'queue-toggle-btn';
+                    toggleBtn.textContent = queueExpanded ? 'ซ่อนรายการเพิ่มเติม ▲' : `ดูคิวเพิ่มเติมทั้งหมดอีก (${hiddenCount} รายการ) ▼`;
                     toggleBtn.onclick = () => {
-                        isExpanded = !isExpanded;
-                        if (isExpanded) {
-                            hiddenQueue.forEach(item => {
-                                const hiddenCard = createProductCard(item, 'queue');
-                                queueGrid.appendChild(hiddenCard);
-                            });
-                            toggleBtn.innerHTML = `<span>🔼 ซ่อนรายการเพิ่มเติม</span>`;
-                        } else {
-                            renderProducts();
-                        }
+                        queueExpanded = !queueExpanded;
+                        renderProducts();
+                        if (!queueExpanded) document.getElementById('queue-section').scrollIntoView({ block: 'start' });
                     };
-
-                    btnWrapper.appendChild(toggleBtn);
-                    queueGrid.after(btnWrapper);
+                    queueMore.appendChild(toggleBtn);
                 }
             } else {
-                queueGrid.innerHTML = `<div class="col-span-full text-center py-6 text-gray-500 text-sm">ไม่มีรายการรอคิวในหมวดนี้</div>`;
+                queueGrid.innerHTML = `<div class="section-empty">ไม่มีรายการรอคิวในหมวดนี้</div>`;
             }
         }
 
         function createProductCard(item, type) {
-            const card = document.createElement('div');
-            
+            const card = document.createElement('article');
+            card.className = 'p-card ' + (type === 'sale' ? 'sale' : type === 'queue' ? 'queue' : 'normal');
+            const name = esc(item.product);
+            const price = esc(fmtPrice(item.price));
+            const img = `<img src="${esc(item.image)}" alt="${name}" loading="lazy">`;
+
             if (type === 'sale') {
-                card.className = "sale-card-large col-span-1 md:col-span-2 rounded-2xl p-4 flex flex-col sm:flex-row gap-4 items-center cursor-pointer shadow-xl relative overflow-hidden";
-                card.onclick = () => openDetail(item, type);
                 card.innerHTML = `
-                    <div class="w-full sm:w-1/2 h-36 md:h-40 bg-[#0f172a] rounded-xl overflow-hidden border border-rose-500/30 shrink-0 relative">
-                        <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover">
-                        <span class="absolute top-2 left-2 bg-rose-500 text-white text-[10px] font-extrabold tracking-wider px-2 py-0.5 rounded uppercase shadow-lg animate-pulse">🔥 DEAL</span>
-                    </div>
-                    <div class="flex flex-col justify-between w-full h-full py-1">
-                        <div>
-                            <span class="bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[11px] font-semibold px-2.5 py-0.5 rounded-full">ลดราคาพิเศษ</span>
-                            <h3 class="text-base md:text-lg font-bold text-white mb-1.5 leading-snug mt-1">${item.product}</h3>
-                            <div class="bg-[#0f172a]/80 border border-[#1e293b] rounded-lg px-2.5 py-1 text-xs text-gray-300 mb-3 inline-block">
-                                ระยะเวลา: <strong class="text-rose-300 font-bold">${item.day} วัน</strong>
-                            </div>
-                        </div>
-                        <div class="pt-2 border-t border-rose-500/20 flex items-center justify-between">
-                            <div>
-                                <span class="text-[10px] text-gray-400 block">ราคาพิเศษเพียง</span>
-                                <span class="text-lg md:text-xl font-black text-rose-400 leading-none">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-gray-400">บาท</span></span>
-                            </div>
-                            <span class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shadow-md">เช่าทันที →</span>
-                        </div>
+                    <div class="p-img">${img}<span class="p-badge sale">ลดราคาพิเศษ</span></div>
+                    <div class="p-body">
+                        <h4 class="p-name">${name}</h4>
+                        <div class="p-meta"><span class="chip">ระยะเวลา ${esc(item.day)} วัน</span></div>
+                        <div class="p-price"><small>ราคาพิเศษเพียง</small><b>${price}</b><small>บาท</small></div>
+                        <button type="button" class="btn">เช่าทันที</button>
                     </div>`;
-                return card;
-            }
-
-            if (type === 'queue') {
-                card.className = "queue-card-muted rounded-2xl p-3 flex flex-col justify-between cursor-pointer shadow overflow-hidden relative";
-                card.onclick = () => openDetail(item, type);
-                let daysLeftText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'คิวว่างวันนี้' : `รออีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
+            } else if (type === 'queue') {
+                const daysLeftText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'คิวว่างวันนี้' : `รออีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
                 card.innerHTML = `
-                    <div>
-                        <div class="w-full h-32 md:h-36 bg-[#090d14] rounded-xl overflow-hidden mb-3 border border-slate-800 relative">
-                            <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover grayscale opacity-50">
-                            <span class="absolute top-2 right-2 bg-slate-800/90 text-slate-400 border border-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">🚫 ไม่พร้อมใช้งาน</span>
-                        </div>
-                        <div class="flex items-center justify-between gap-2 mb-2">
-                            <h3 class="text-sm md:text-base font-bold text-slate-300 truncate">${item.product}</h3>
-                            <span class="bg-[#090d14] border border-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-md font-medium shrink-0">${item.day} วัน</span>
-                        </div>
-                        <div class="bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-400 mb-3 flex items-center justify-between">
-                            <span class="text-slate-500 text-[11px]">รอกี่วัน:</span>
-                            <strong class="text-amber-400 font-bold">${daysLeftText}</strong>
-                        </div>
-                    </div>
-                    <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center">
-                        <span class="text-xs text-slate-500">ราคาเช่า</span>
-                        <span class="text-sm md:text-base font-bold text-slate-400">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-slate-600">บาท</span></span>
+                    <div class="p-img">${img}<span class="p-badge queue">ต้องรอคิว</span></div>
+                    <div class="p-body">
+                        <h4 class="p-name">${name}</h4>
+                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip wait">${esc(daysLeftText)}</span></div>
+                        <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
+                        <button type="button" class="btn">ดูรายละเอียด / จองคิว</button>
                     </div>`;
-                return card;
+            } else {
+                card.innerHTML = `
+                    <div class="p-img">${img}<span class="p-badge ok">พร้อมขาย</span></div>
+                    <div class="p-body">
+                        <h4 class="p-name">${name}</h4>
+                        <div class="p-meta"><span class="chip">ระยะเวลา ${esc(item.day)} วัน</span></div>
+                        <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
+                        <button type="button" class="btn">เช่าเลย</button>
+                    </div>`;
             }
-
-            card.className = "grok-card rounded-2xl p-3 flex flex-col justify-between cursor-pointer shadow-lg overflow-hidden relative";
-            card.onclick = () => openDetail(item, type);
-            card.innerHTML = `
-                <div>
-                    <div class="w-full h-32 md:h-36 bg-[#0f172a] rounded-xl overflow-hidden mb-3 border border-grok-border relative">
-                        <img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover">
-                        <span class="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-md">พร้อมขาย</span>
-                    </div>
-                    <div class="flex items-center justify-between gap-2 mb-3">
-                        <h3 class="text-sm md:text-base font-bold text-white truncate">${item.product}</h3>
-                        <span class="bg-[#0f172a] border border-[#1e293b] text-gray-300 text-xs px-2.5 py-0.5 rounded-md font-medium shrink-0">${item.day} วัน</span>
-                    </div>
-                </div>
-                <div class="pt-2 border-t border-grok-border/80 flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] text-gray-400 block leading-tight">ราคาเช่า</span>
-                        <span class="text-base md:text-lg font-black text-grok-accent leading-none">${Number(item.price).toLocaleString()} <span class="text-xs font-normal text-gray-400">บาท</span></span>
-                    </div>
-                    <button class="bg-sky-500/10 hover:bg-grok-accent text-grok-accent hover:text-slate-950 border border-sky-500/30 text-xs font-bold px-2.5 py-1.5 rounded-lg transition">เช่าเลย</button>
-                </div>`;
+            card.querySelector('.btn').onclick = () => openDetail(item, type);
+            card.querySelector('.p-img').onclick = () => openDetail(item, type);
             return card;
         }
 
-        // --- COMPACT UNIFIED COUNTDOWN BAR (ซ่อนอัตโนมัติถ้าหมวดนั้นมีสินค้าพร้อมขายในสต็อกแล้ว) ---
+        // --- นับถอยหลังคิวถัดไป (ซ่อนอัตโนมัติถ้าหมวดนั้นมีสินค้าพร้อมขายแล้ว) ---
+        let countdownTargets = [];
         function setupUnifiedCountdownBar() {
             if (countdownInterval) clearInterval(countdownInterval);
-            updateCountdownContent();
-            countdownInterval = setInterval(updateCountdownContent, 1000);
+            buildCountdown();
+            countdownInterval = setInterval(tickCountdown, 1000);
         }
 
-        function updateCountdownContent() {
+        function buildCountdown() {
             const wrapper = document.getElementById('mini-countdown-wrapper');
             const container = document.getElementById('countdown-bar-container');
             container.innerHTML = '';
+            countdownTargets = [];
 
             let liteAvailable = allProducts.some(i => i.product.toLowerCase().includes('lite') && !i.status.includes('รอคิว'));
             let grokAvailable = allProducts.some(i => (!i.product.toLowerCase().includes('lite')) && !i.status.includes('รอคิว'));
@@ -653,54 +771,39 @@
             if (fastestLite) activeCards.push({ name: 'LITE', item: fastestLite });
             if (fastestGrok) activeCards.push({ name: 'SUPERGROK', item: fastestGrok });
 
-            if (activeCards.length === 0) {
-                wrapper.classList.add('hidden');
-                return;
-            }
-
-            wrapper.classList.remove('hidden');
-
             activeCards.forEach(target => {
-                let timeData = calculateRemainingTime(target.item.queue);
+                const timeData = calculateRemainingTime(target.item.queue);
                 if (!timeData || timeData.isReady) return;
-
-                let cardDiv = document.createElement('div');
-                cardDiv.className = "bg-[#0f172a] border border-grok-border rounded-xl p-2 md:p-2.5 flex flex-col md:flex-row items-center justify-between gap-2";
-                cardDiv.onclick = () => openDetail(target.item, 'queue');
-                cardDiv.style.cursor = 'pointer';
-
-                // แก้ไขให้บอกรายละเอียดสินค้า วันเช่า และราคาอยู่ในบรรทัดเดียวกัน
-                cardDiv.innerHTML = `
-                    <div class="flex items-center gap-2 w-full md:w-auto truncate">
-                        <span class="bg-grok-accent/20 text-grok-accent border border-grok-accent/40 text-[10px] md:text-xs font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider shrink-0">
-                            ${target.name}
-                        </span>
-                        <span class="text-xs text-gray-300 truncate font-medium">${target.item.product} | ${target.item.day} วัน | <strong class="text-grok-accent">${Number(target.item.price).toLocaleString()}฿</strong></span>
-                    </div>
-                    <div class="flex items-center gap-1 text-center shrink-0">
-                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
-                            <span class="text-xs md:text-sm font-black text-white">${String(timeData.days).padStart(2, '0')}</span>
-                            <span class="text-[8px] text-gray-400 block leading-none">วัน</span>
-                        </div>
-                        <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
-                            <span class="text-xs md:text-sm font-black text-white">${String(timeData.hours).padStart(2, '0')}</span>
-                            <span class="text-[8px] text-gray-400 block leading-none">ชม.</span>
-                        </div>
-                        <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
-                            <span class="text-xs md:text-sm font-black text-white">${String(timeData.minutes).padStart(2, '0')}</span>
-                            <span class="text-[8px] text-gray-400 block leading-none">นาที</span>
-                        </div>
-                        <span class="text-gray-500 font-bold">:</span>
-                        <div class="bg-[#161e2e] border border-grok-border px-1.5 py-0.5 rounded-md min-w-[38px]">
-                            <span class="text-xs md:text-sm font-black text-amber-400">${String(timeData.seconds).padStart(2, '0')}</span>
-                            <span class="text-[8px] text-gray-400 block leading-none">วินาที</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(cardDiv);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'cd-item';
+                btn.onclick = () => openDetail(target.item, 'queue');
+                btn.innerHTML = `
+                    <div><span class="cd-tag">${esc(target.name)}</span>${esc(target.item.product)} · ${esc(target.item.day)} วัน · <b>${esc(fmtPrice(target.item.price))} บาท</b></div>
+                    <div class="cd-digits">
+                        <div><b data-u="days"></b><small>วัน</small></div>
+                        <div><b data-u="hours"></b><small>ชม.</small></div>
+                        <div><b data-u="minutes"></b><small>นาที</small></div>
+                        <div><b data-u="seconds"></b><small>วินาที</small></div>
+                    </div>`;
+                container.appendChild(btn);
+                countdownTargets.push({ el: btn, item: target.item });
             });
+            wrapper.classList.toggle('hidden', countdownTargets.length === 0);
+            tickCountdown();
+        }
+
+        // อัปเดตเฉพาะตัวเลขทุกวินาที (ไม่สร้างปุ่มใหม่ ทำให้กดได้ไม่พลาด)
+        function tickCountdown() {
+            let needRebuild = false;
+            countdownTargets.forEach(t => {
+                const d = calculateRemainingTime(t.item.queue);
+                if (!d || d.isReady) { needRebuild = true; return; }
+                ['days', 'hours', 'minutes', 'seconds'].forEach(u => {
+                    t.el.querySelector(`[data-u="${u}"]`).textContent = String(d[u]).padStart(2, '0');
+                });
+            });
+            if (needRebuild) buildCountdown();
         }
 
         function getClosestQueueItem(items) {
@@ -730,12 +833,7 @@
             const grid = document.getElementById('calendar-grid');
             const titleEl = document.getElementById('calendar-month-year');
             grid.innerHTML = '';
-
-            const thaiMonthNames = [
-                "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
-            ];
-            titleEl.textContent = `${thaiMonthNames[currentMonth]} ${currentYear + 543}`;
+            titleEl.textContent = `${THAI_MONTHS_FULL[currentMonth]} ${currentYear + 543}`;
 
             const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
             const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -748,15 +846,15 @@
                 grid.appendChild(createDayCellElement(prevTotalDays - i + 1, true, null));
             }
 
+            const monthDays = [];
             for (let day = 1; day <= totalDays; day++) {
                 let cellDate = new Date(currentYear, currentMonth, day);
                 cellDate.setHours(0, 0, 0, 0);
-
                 const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 let itemsOnThisDay = dateProductMap[dateKey] || [];
                 let isToday = (cellDate.getTime() === now.getTime());
-
                 grid.appendChild(createDayCellElement(day, false, itemsOnThisDay, isToday, dateKey));
+                if (itemsOnThisDay.length) monthDays.push({ dateKey, items: itemsOnThisDay });
             }
 
             let totalCells = firstDayIndex + totalDays;
@@ -764,133 +862,149 @@
             for (let i = 1; i <= nextDaysCount; i++) {
                 grid.appendChild(createDayCellElement(i, true, null));
             }
+
+            // รายการแบบตัวใหญ่ใต้ปฏิทิน (อ่านง่ายกว่าช่องเล็กบนมือถือ)
+            const list = document.getElementById('month-list');
+            list.innerHTML = '';
+            if (!monthDays.length) {
+                list.innerHTML = '<div class="section-empty">เดือนนี้ยังไม่มีคิว</div>';
+            }
+            monthDays.forEach(({ dateKey, items }) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'ml-item';
+                b.innerHTML = `<b>${esc(thaiDateFromKey(dateKey))}</b>` +
+                    items.map(it => `${esc(it.product)} · ${esc(it.status)} · ${esc(it.day)} วัน · ${esc(fmtPrice(it.price))} บาท`).join('<br>');
+                b.onclick = () => openCalendarDayModal(dateKey, items);
+                list.appendChild(b);
+            });
         }
 
         function createDayCellElement(dayNum, isMuted, items, isToday = false, dateKey = '') {
-            const cell = document.createElement('div');
-            let baseClass = "calendar-day-cell relative min-h-[75px] md:min-h-[110px] rounded-xl p-1.5 md:p-2 border transition flex flex-col justify-between ";
-            
+            const hasItems = !isMuted && items && items.length > 0;
+            const cell = document.createElement(hasItems ? 'button' : 'div');
+            if (hasItems) cell.type = 'button';
+            cell.className = 'day' + (isMuted ? ' muted' : '') + (hasItems ? ' has' : '') + (isToday ? ' today' : '');
             if (isMuted) {
-                cell.className = baseClass + "bg-[#0f172a]/40 border-[#1e293b]/50 opacity-30";
-                cell.innerHTML = `<span class="text-[10px] md:text-xs font-semibold text-gray-500">${dayNum}</span>`;
+                cell.innerHTML = `<span class="n">${dayNum}</span>`;
                 return cell;
             }
-
-            let hasItems = items && items.length > 0;
-
-            // เอาสีพื้นหลังทึบของช่องวันออก ให้ช่องวันโปร่งสะอาดตาตามปกติ เเต่ใส่เเบจป้ายสีประเภทสินค้าข้างในแทน
-            cell.className = baseClass + "bg-[#0f172a] border-[#1e293b] hover:border-slate-700";
-
-            let todayBadge = isToday ? `<span class="bg-sky-500 text-slate-950 text-[9px] font-black px-1 rounded ml-0.5">วันนี้</span>` : '';
-            let badgesHTML = '';
-            
+            let html = `<span class="n">${dayNum}${isToday ? '<span class="today-tag">วันนี้</span>' : ''}</span>`;
             if (hasItems) {
-                items.forEach(item => {
-                    let isLite = item.product.toLowerCase().includes('lite');
-                    let badgeColor = isLite ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40';
-                    if (item.role.includes('ลดราคา')) badgeColor = 'bg-rose-500 text-white';
-                    if (item.status.includes('รอคิว')) badgeColor = 'bg-amber-500/20 text-amber-300 border border-amber-500/40';
-                    
-                    badgesHTML += `<div class="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded truncate ${badgeColor} mb-0.5">⚡ ${item.product}</div>`;
-                });
-
-                let tooltipContent = '';
-                items.forEach(item => {
-                    tooltipContent += `
-                        <div class="mb-2 pb-2 border-b border-gray-700 last:border-0 last:mb-0 last:pb-0">
-                            <div class="font-bold text-white text-xs md:text-sm">${item.product}</div>
-                            <div class="text-[11px] text-gray-300">สถานะ: ${item.status} (${item.day} วัน)</div>
-                            <div class="text-[11px] text-sky-400 font-extrabold">ราคา: ${Number(item.price).toLocaleString()} บาท</div>
-                        </div>`;
-                });
-
-                const tooltip = document.createElement('div');
-                tooltip.className = "tooltip-box absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 md:w-56 bg-[#1e293b] border border-grok-accent text-white p-2.5 rounded-xl shadow-2xl pointer-events-none hidden sm:block";
-                tooltip.innerHTML = `
-                    <div class="text-[11px] font-bold text-grok-accent mb-1 border-b border-slate-700 pb-1">รายละเอียดวันนี้</div>
-                    ${tooltipContent}
-                    <div class="text-[9px] text-gray-400 mt-1 text-center">💡 คลิกเพื่อดูรายละเอียด</div>`;
-                cell.appendChild(tooltip);
-
+                items.slice(0, 3).forEach(item => { html += `<span class="bar ${itemKind(item)}"></span>`; });
+                if (items.length > 3) html += `<span class="plus">+${items.length - 3}</span>`;
+                html += '<div class="tip"><b>รายละเอียดวันนี้</b>' + items.map(item =>
+                    `<div><b>${esc(item.product)}</b><br>สถานะ: ${esc(item.status)} (${esc(item.day)} วัน)<br>ราคา: ${esc(fmtPrice(item.price))} บาท</div>`).join('') +
+                    '<div>คลิกเพื่อดูรายละเอียด</div></div>';
+                cell.setAttribute('aria-label', `${thaiDateFromKey(dateKey)} มี ${items.length} รายการ`);
                 cell.onclick = () => openCalendarDayModal(dateKey, items);
-                cell.style.cursor = 'pointer';
             }
-
-            cell.innerHTML += `
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] md:text-sm font-bold ${isToday ? 'text-sky-400' : 'text-gray-300'}">${dayNum}${todayBadge}</span>
-                    ${hasItems ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>' : ''}
-                </div>
-                <div class="my-auto overflow-hidden">${badgesHTML}</div>`;
-
+            cell.innerHTML = html;
             return cell;
+        }
+
+        let lastFocus = null;
+        function openModal(id) {
+            lastFocus = document.activeElement;
+            document.getElementById(id).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            document.querySelector(`#${id} .modal-x`).focus();
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.body.style.overflow = '';
+            if (lastFocus && lastFocus.focus) lastFocus.focus();
         }
 
         function openDetail(item, type) {
             document.getElementById('modal-image').src = item.image;
+            document.getElementById('modal-image').alt = item.product;
             document.getElementById('modal-title').textContent = item.product;
             document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน`;
-            document.getElementById('modal-price').textContent = `${Number(item.price).toLocaleString()} บาท`;
+            document.getElementById('modal-price').textContent = `${fmtPrice(item.price)} บาท`;
             document.getElementById('modal-facebook-link').href = FACEBOOK_LINK;
 
             const modalBadge = document.getElementById('modal-badge');
             const modalQueue = document.getElementById('modal-queue');
 
             if (type === 'sale') {
-                modalBadge.className = 'bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '🔥 ลดราคาพิเศษ';
+                modalBadge.className = 'sale';
+                modalBadge.textContent = 'ลดราคาพิเศษ';
                 modalQueue.classList.add('hidden');
             } else if (type === 'queue') {
-                modalBadge.className = 'bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '⏳ เคาน์ดาวน์รอคิว (จองล่วงหน้า)';
-                modalQueue.textContent = `📅 วันกำหนด/คิวว่าง: ${item.queue}`;
+                modalBadge.className = 'queue';
+                modalBadge.textContent = 'รอคิว (จองล่วงหน้า)';
+                modalQueue.textContent = `วันกำหนด/คิวว่าง: ${item.queue}`;
                 modalQueue.classList.remove('hidden');
             } else {
-                modalBadge.className = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold px-3 py-1 rounded-full mb-2';
-                modalBadge.textContent = '🟢 พร้อมขายทันที';
+                modalBadge.className = 'ok';
+                modalBadge.textContent = 'พร้อมขายทันที';
                 modalQueue.classList.add('hidden');
             }
-            document.getElementById('detail-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            openModal('detail-modal');
         }
 
-        function closeDetail() {
-            document.getElementById('detail-modal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
+        function closeDetail() { closeModal('detail-modal'); }
 
         function openCalendarDayModal(dateKey, items) {
-            document.getElementById('cal-modal-date').textContent = `📅 คิววันที่: ${dateKey}`;
+            document.getElementById('cal-modal-date').textContent = `คิววันที่ ${thaiDateFromKey(dateKey)}`;
             const container = document.getElementById('cal-modal-content');
             container.innerHTML = '';
 
             items.forEach(item => {
-                const cardDiv = document.createElement('div');
-                cardDiv.className = "bg-[#0f172a] border border-grok-border p-3.5 rounded-xl flex flex-col sm:flex-row gap-3 items-center justify-between";
-                cardDiv.innerHTML = `
-                    <div class="flex items-center gap-3 w-full">
-                        <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg border border-grok-border shrink-0">
+                const div = document.createElement('div');
+                div.className = 'cm-item';
+                div.innerHTML = `
+                    <div class="cm-top">
+                        <img src="${esc(item.image)}" alt="${esc(item.product)}">
                         <div>
-                            <h4 class="font-bold text-white text-sm md:text-base">${item.product}</h4>
-                            <p class="text-[11px] text-gray-400">สถานะ: ${item.status} | ระยะเวลา: ${item.day} วัน</p>
-                            <p class="text-xs md:text-sm font-extrabold text-grok-accent mt-0.5">ราคา: ${Number(item.price).toLocaleString()} บาท</p>
+                            <h4>${esc(item.product)}</h4>
+                            <p>สถานะ: ${esc(item.status)} · ระยะเวลา ${esc(item.day)} วัน</p>
+                            <p class="pr">${esc(fmtPrice(item.price))} บาท</p>
                         </div>
                     </div>
-                    <a href="${FACEBOOK_LINK}" target="_blank" class="w-full sm:w-auto bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-semibold py-2 px-3.5 rounded-lg transition text-center shrink-0">
-                        จองคิว / ติดต่อ
-                    </a>`;
-                container.appendChild(cardDiv);
+                    <a href="${esc(FACEBOOK_LINK)}" target="_blank" rel="noopener" class="btn fb"><svg class="ic"><use href="#i-fb"/></svg> จองคิว / ติดต่อ</a>`;
+                container.appendChild(div);
             });
-
-            document.getElementById('calendar-day-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            openModal('calendar-day-modal');
         }
 
-        function closeCalendarModal() {
-            document.getElementById('calendar-day-modal').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
+        function closeCalendarModal() { closeModal('calendar-day-modal'); }
 
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            if (!document.getElementById('detail-modal').classList.contains('hidden')) closeDetail();
+            else if (!document.getElementById('calendar-day-modal').classList.contains('hidden')) closeCalendarModal();
+        });
+
+        // ===== สลับหน้า (ใช้ #hash ให้ปุ่มย้อนกลับของมือถือกลับหน้าแรกได้) =====
+        const PANELS = ['home', 'products', 'calendar'];
+        function panelFromHash() {
+            const h = location.hash.slice(1);
+            if (h === 'calendar-section') return 'calendar'; // ลิงก์เดิม #calendar-section ยังใช้ได้
+            if (h === 'queue') return 'products';
+            return PANELS.includes(h) ? h : 'home';
+        }
+        function showPanel(name, anchorId) {
+            PANELS.forEach(n => document.getElementById('panel-' + n).classList.toggle('hidden', n !== name));
+            if (anchorId) {
+                const el = document.getElementById(anchorId);
+                if (el) { el.scrollIntoView({ block: 'start' }); return; }
+            }
+            window.scrollTo({ top: 0 });
+        }
+        function goTo(name, anchorId) {
+            const hash = name === 'home' ? '' : '#' + (anchorId === 'queue-section' ? 'queue' : name);
+            if (location.hash !== hash) {
+                if (hash) history.pushState(null, '', hash);
+                else history.pushState(null, '', location.pathname + location.search);
+            }
+            showPanel(name, anchorId);
+        }
+        window.addEventListener('popstate', () => showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null));
+        window.addEventListener('hashchange', () => showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null));
+
+        showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null);
         fetchProducts();
     </script>
 </body>
