@@ -37,12 +37,25 @@
         h3 { font-size: 1.25rem; margin: 0 0 12px; color: var(--navy); display: flex; align-items: center; gap: 8px; line-height: 1.3; }
         .lead { margin: 0 0 14px; font-size: 1.05rem; }
 
-        /* สินค้าพร้อมขายบนหน้าแรก */
-        .home-ready { margin: 0 0 20px; }
-        .home-ready h3 { font-size: 1.35rem; }
-        .none-box { background: #fffbea; border: 3px solid #f59e0b; border-radius: 16px; padding: 18px 16px; text-align: center; }
-        .none-box p { margin: 0 0 14px; font-size: 1.2rem; font-weight: 700; color: #7c2d12; line-height: 1.5; }
-        .none-box .big-btn { margin-bottom: 0; text-align: left; }
+        /* สินค้าหน้าแรก: 2 ช่อง (SuperGrok / Lite) + ลดราคาเต็มแถว */
+        .home-h { font-size: 1.35rem; }
+        .slot-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 0 0 22px; align-items: stretch; }
+        .slot-grid .span-all { grid-column: 1 / -1; }
+        .slot { display: flex; flex-direction: column; }
+        .slot-cat { display: flex; align-items: center; gap: 8px; font-size: 1.3rem; font-weight: 800; color: var(--navy); margin: 0 0 6px 4px; }
+        .slot-cat .pill { font-size: .95rem; font-weight: 800; border-radius: 99px; padding: 2px 12px; color: #fff; background: var(--green); }
+        .slot-cat .pill.wait { background: var(--amber); } .slot-cat .pill.none { background: #6b7280; }
+        .slot .p-card { flex: 1; }
+        .sale-top { border-width: 4px; box-shadow: 0 0 0 4px #fee2e2; }
+        .sale-top .p-badge.sale { font-size: 1.15rem; padding: 6px 16px; }
+        .sale-top .p-price b { font-size: 2.5rem; }
+        .wait-label { font-size: 1.25rem; font-weight: 800; color: var(--amber); display: flex; align-items: center; gap: 8px; }
+        .wait-date { font-size: 1.05rem; font-weight: 700; color: #374151; }
+        .wait-note { font-size: 1.2rem; font-weight: 800; color: #7c2d12; background: var(--amber-bg); border-radius: 12px; padding: 10px 12px; text-align: center; }
+        .p-card.queue .btn.book { background: var(--amber); color: #fff; border: 0; }
+        .p-card.none-card { border-color: #9ca3af; }
+        .p-card.none-card .p-img img { filter: grayscale(1); opacity: .6; }
+        .none-msg { font-size: 1.25rem; font-weight: 800; color: #374151; background: #f3f4f6; border-radius: 12px; padding: 12px; text-align: center; line-height: 1.45; }
 
         /* แถบโหลดข้อมูลแบบดาวน์โหลด */
         .pg { background: #fff; border: 2px solid #c7d2fe; border-radius: 16px; padding: 14px 16px; margin: 0 0 16px;
@@ -66,14 +79,10 @@
                      font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
 
         /* นับถอยหลังคิวถัดไป */
-        .cd-box { background: #fff; border: 3px solid var(--navy-2); border-radius: 18px; padding: 14px; margin-bottom: 16px; }
-        .cd-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 800; font-size: 1.1rem; color: var(--navy); margin-bottom: 10px; }
-        .cd-head button { border: 0; background: none; color: var(--fb); font-weight: 800; font-size: 1rem; cursor: pointer; text-decoration: underline; padding: 6px 0; }
-        .cd-item { display: block; width: 100%; text-align: left; border: 2px solid #e5e7eb; background: #f8fafc; border-radius: 14px; padding: 12px; margin-top: 8px; cursor: pointer; color: var(--text); font-size: 1rem; }
-        .cd-tag { display: inline-block; background: var(--navy); color: #fff; font-weight: 800; border-radius: 8px; padding: 0 10px; margin-right: 6px; }
-        .cd-digits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
-        .cd-digits div { background: var(--navy); color: #fff; border-radius: 12px; text-align: center; padding: 6px 2px; }
-        .cd-digits b { display: block; font-size: 1.6rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+        /* ตัวเลขนับถอยหลัง (ใช้ในการ์ดรอคิวบนหน้าแรก) */
+        .cd-digits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
+        .cd-digits div { background: var(--navy); color: #fff; border-radius: 12px; text-align: center; padding: 8px 2px; min-width: 0; }
+        .cd-digits b { display: block; font-size: 2rem; line-height: 1.15; font-variant-numeric: tabular-nums; }
         .cd-digits small { font-size: .9rem; color: #dbe6ff; }
         .cd-digits div:last-child b { color: #fcd34d; }
 
@@ -182,6 +191,12 @@
         #modal-title { font-size: 1.6rem; font-weight: 800; margin: 2px 0 8px; line-height: 1.25; padding-right: 50px; word-break: break-word; }
         #modal-day, #modal-queue { font-size: 1.1rem; font-weight: 700; background: #f1f5f9; border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; }
         #modal-queue { background: var(--amber-bg); color: var(--amber); }
+        .deposit-box { background: #fff7ed; border: 4px solid #ea580c; border-radius: 16px; padding: 14px 16px; margin: 0 0 14px; font-size: 1.15rem; line-height: 1.5; color: #1f2937; }
+        .deposit-box .dep-title { display: flex; align-items: center; gap: 8px; font-size: 1.35rem; font-weight: 800; color: #9a3412; margin-bottom: 6px; }
+        .deposit-box .dep-title b { color: #c2410c; font-size: 1.6rem; white-space: nowrap; }
+        .deposit-box ul { margin: 0; padding-left: 1.2em; font-weight: 700; }
+        .deposit-box li { margin: 2px 0; }
+        .deposit-box .dep-pay { margin-top: 10px; background: #fff; border: 2px dashed #ea580c; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; font-weight: 800; color: #7c2d12; }
         #modal-price { font-size: 2.2rem; font-weight: 800; color: var(--navy); margin: 6px 0 14px; }
         .modal-close-btn { margin-top: 10px; }
         #cal-modal-date { font-size: 1.35rem; font-weight: 800; color: var(--navy); margin: 0 50px 14px 0; }
@@ -198,6 +213,10 @@
         @media (min-width: 760px) {
             html { font-size: 20px; }
             .grid { grid-template-columns: 1fr 1fr; }
+            .slot-grid { grid-template-columns: 1fr 1fr; }
+            .sale-top { flex-direction: row; }
+            .sale-top .p-img { flex: 0 0 44%; }
+            .sale-top .p-img img { height: 100%; min-height: 240px; }
             .day { min-height: 84px; }
         }
         @media (prefers-reduced-motion: reduce) { .pg-fill { animation: none; transition: none; } .pg, .big-btn { transition: none; } }
@@ -240,25 +259,10 @@
         <!-- ===== หน้าแรก ===== -->
         <section id="panel-home" class="panel">
 
-            <!-- นับถอยหลังคิวถัดไป -->
-            <div id="mini-countdown-wrapper" class="cd-box hidden">
-                <div class="cd-head">
-                    <span><svg class="ic"><use href="#i-clock"/></svg> สินค้าพร้อมขายในอีก</span>
-                    <button type="button" onclick="goTo('calendar')">ดูปฏิทินใหญ่ ❯</button>
-                </div>
-                <div id="countdown-bar-container"></div>
-            </div>
-
-            <!-- สินค้าพร้อมขาย (แสดงบนหน้าแรก) -->
-            <div id="home-ready" class="home-ready">
-                <div id="home-sale-wrap" class="hidden">
-                    <h3 style="color:var(--red)"><svg class="ic"><use href="#i-fire"/></svg> สินค้าลดราคาพิเศษ</h3>
-                    <div id="home-sale-grid" class="grid"></div>
-                </div>
-                <div id="home-ready-wrap">
-                    <h3><svg class="ic"><use href="#i-box"/></svg> สินค้าพร้อมขายทันที</h3>
-                    <div id="home-ready-grid" class="grid"><div class="loading-box">กำลังโหลดข้อมูลสินค้า...</div></div>
-                </div>
+            <!-- สินค้าหน้าแรก: ลดราคาพิเศษ (เต็มแถว) + 2 ช่อง SuperGrok / Lite -->
+            <h3 class="home-h"><svg class="ic"><use href="#i-box"/></svg> สินค้าของเรา</h3>
+            <div id="home-slots" class="slot-grid" aria-live="polite">
+                <div class="loading-box span-all">กำลังโหลดข้อมูลสินค้า...</div>
             </div>
 
             <div class="home-title">ท่านต้องการทำอะไร?</div>
@@ -357,6 +361,7 @@
             <div id="modal-day"></div>
             <div id="modal-queue" class="hidden"></div>
             <div id="modal-price"></div>
+            <div id="modal-deposit" class="deposit-box hidden" role="note"></div>
             <a id="modal-facebook-link" class="btn fb" href="https://www.facebook.com/TreethepGolf" target="_blank" rel="noopener">
                 <svg class="ic"><use href="#i-fb"/></svg> จองคิว / ติดต่อผ่าน Facebook
             </a>
@@ -400,6 +405,10 @@
         };
 
         const FACEBOOK_LINK = 'https://www.facebook.com/TreethepGolf';
+
+        // ค่ามัดจำการจองคิว (บาท) — แก้ตัวเลขตรงนี้ได้เลย
+        const DEPOSIT_SUPERGROK = 40;
+        const DEPOSIT_LITE = 20;
 
         let allProducts = [];
         let filteredProducts = [];
@@ -720,48 +729,6 @@
             }
         }
 
-        // --- สินค้าพร้อมขายบนหน้าแรก (ใช้เงื่อนไขเดียวกับหน้าสินค้า: ไม่ใช่ "รอคิว", แยกลดราคา) — แสดงทุกหมวด ---
-        function renderHomeReady(state) {
-            const saleWrap = document.getElementById('home-sale-wrap');
-            const saleGrid = document.getElementById('home-sale-grid');
-            const readyWrap = document.getElementById('home-ready-wrap');
-            const grid = document.getElementById('home-ready-grid');
-            saleGrid.innerHTML = '';
-            grid.innerHTML = '';
-            saleWrap.classList.add('hidden');
-            readyWrap.classList.remove('hidden');
-            if (state === 'loading') {
-                grid.innerHTML = '<div class="loading-box">กำลังโหลดข้อมูลสินค้า...</div>';
-                return;
-            }
-            if (state === 'error') {
-                grid.innerHTML = '<div class="section-empty" style="color:var(--red)">โหลดข้อมูลสินค้าไม่สำเร็จ กรุณากด "ลองใหม่" ด้านบน</div>';
-                return;
-            }
-            const availableProducts = allProducts.filter(item => !item.status.includes('รอคิว'));
-            const saleProducts = availableProducts.filter(item => item.role.includes('ลดราคา'));
-            const normalProducts = availableProducts.filter(item => !item.role.includes('ลดราคา'));
-
-            if (saleProducts.length > 0) {
-                saleWrap.classList.remove('hidden');
-                saleProducts.forEach(item => saleGrid.appendChild(createProductCard(item, 'sale')));
-            }
-            if (normalProducts.length > 0) {
-                normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
-            } else if (saleProducts.length > 0) {
-                readyWrap.classList.add('hidden');
-            } else {
-                grid.innerHTML = `
-                    <div class="none-box" id="home-none">
-                        <p>ไม่มีสินค้าพร้อมขาย<br>จองได้เพื่อล็อคสิทธิ์ไม่ให้มีใครแย่ง</p>
-                        <button type="button" class="big-btn amber" onclick="goTo('products', 'queue-section')">
-                            <span class="ic-wrap"><svg class="ic"><use href="#i-clock"/></svg></span>
-                            <span><span class="t">จองคิวล่วงหน้า</span><span class="d">ดูรายการคิวและจองได้เลย</span></span>
-                        </button>
-                    </div>`;
-            }
-        }
-
         // ข้อความ "ว่างในอีก ..." บนปุ่มการ์ดรอคิว (ใช้ค่าวันเดียวกับชิป "รออีก X วัน" เดิม)
         function queueWaitText(item) {
             const d = item.remainingDays;
@@ -821,57 +788,130 @@
             return card;
         }
 
-        // --- นับถอยหลังคิวถัดไป (ซ่อนอัตโนมัติถ้าหมวดนั้นมีสินค้าพร้อมขายแล้ว) ---
+        // ===== หน้าแรก: สินค้าลดราคา (เต็มแถว) + 2 ช่อง SuperGrok / Lite =====
+        // แยกหมวดแบบเดียวกับตัวกรองเดิม (ช่อง SuperGrok ไม่นับสินค้าที่มีคำว่า lite เพื่อไม่ให้ซ้ำกับช่อง Lite)
+        const isGrokItem = item => {
+            const n = item.product.toLowerCase();
+            return (n.includes('supergrok') || n.includes('grok')) && !n.includes('lite');
+        };
+        const HOME_SLOTS = [
+            { key: 'supergrok', label: 'SuperGrok', match: isGrokItem, img: PRODUCT_IMAGES['supergrok'] },
+            { key: 'lite', label: 'Lite', match: isLiteItem, img: PRODUCT_IMAGES['lite'] }
+        ];
         let countdownTargets = [];
-        function setupUnifiedCountdownBar() {
-            if (countdownInterval) clearInterval(countdownInterval);
-            buildCountdown();
-            countdownInterval = setInterval(tickCountdown, 1000);
+
+        function renderHomeReady(state) {
+            const box = document.getElementById('home-slots');
+            countdownTargets = [];
+            box.innerHTML = '';
+            if (state === 'loading') {
+                box.innerHTML = '<div class="loading-box span-all">กำลังโหลดข้อมูลสินค้า...</div>';
+                return;
+            }
+            if (state === 'error') {
+                box.innerHTML = '<div class="section-empty span-all" style="color:var(--red)">โหลดข้อมูลสินค้าไม่สำเร็จ กรุณากด "ลองใหม่" ด้านบน</div>';
+                return;
+            }
+            const available = allProducts.filter(item => !item.status.includes('รอคิว'));
+            const saleItems = available.filter(item => item.role.includes('ลดราคา'));
+            const normalItems = available.filter(item => !item.role.includes('ลดราคา'));
+            const queueItems = allProducts.filter(item => item.status.includes('รอคิว'));
+
+            // 1) ลดราคาพิเศษ: ทุกรายการ เต็มความกว้าง อยู่บนสุด
+            saleItems.forEach(item => {
+                const card = createProductCard(item, 'sale');
+                card.classList.add('sale-top', 'span-all');
+                box.appendChild(card);
+            });
+
+            // 2) ช่องละหมวด
+            HOME_SLOTS.forEach(slot => {
+                const wrap = document.createElement('section');
+                wrap.className = 'slot';
+                wrap.id = 'slot-' + slot.key;
+                const ready = normalItems.find(slot.match);             // รายการแรกตามลำดับเดิมในชีต
+                const saleReady = saleItems.find(slot.match);
+                const nextQueue = getClosestQueueItem(queueItems.filter(slot.match));
+                let pill, card;
+                if (ready) {
+                    pill = '<span class="pill">พร้อมขาย</span>';
+                    card = createProductCard(ready, 'normal');
+                } else if (saleReady) {
+                    pill = '<span class="pill">พร้อมขาย</span>';
+                    card = document.createElement('article');
+                    card.className = 'p-card sale';
+                    card.innerHTML = `
+                        <div class="p-img"><img src="${esc(saleReady.image)}" alt="${esc(saleReady.product)}" loading="lazy"><span class="p-badge sale">ลดราคาพิเศษ</span></div>
+                        <div class="p-body">
+                            <h4 class="p-name">${esc(saleReady.product)}</h4>
+                            <div class="wait-note" style="color:var(--red);background:#fee2e2">มีสินค้าพร้อมขายในราคาลดพิเศษ ด้านบน</div>
+                            <button type="button" class="btn">ดูสินค้าลดราคา</button>
+                        </div>`;
+                    card.querySelector('.btn').onclick = () => openDetail(saleReady, 'sale');
+                } else if (nextQueue) {
+                    pill = '<span class="pill wait">รอคิว</span>';
+                    card = createWaitingCard(nextQueue);
+                } else {
+                    pill = '<span class="pill none">ยังไม่มีคิว</span>';
+                    card = document.createElement('article');
+                    card.className = 'p-card none-card';
+                    card.innerHTML = `
+                        <div class="p-img"><img src="${esc(slot.img)}" alt="${esc(slot.label)}" loading="lazy"></div>
+                        <div class="p-body">
+                            <h4 class="p-name">${esc(slot.label)}</h4>
+                            <div class="none-msg">ยังไม่มีคิว<br>สอบถามได้ทางเพจ</div>
+                            <a class="btn fb" href="${esc(FACEBOOK_LINK)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-fb"/></svg> ติดต่อสอบถามทางเพจ</a>
+                        </div>`;
+                }
+                wrap.innerHTML = `<div class="slot-cat">${esc(slot.label)} ${pill}</div>`;
+                wrap.appendChild(card);
+                box.appendChild(wrap);
+            });
+            tickCountdown();
         }
 
-        function buildCountdown() {
-            const wrapper = document.getElementById('mini-countdown-wrapper');
-            const container = document.getElementById('countdown-bar-container');
-            container.innerHTML = '';
-            countdownTargets = [];
-
-            let liteAvailable = allProducts.some(i => i.product.toLowerCase().includes('lite') && !i.status.includes('รอคิว'));
-            let grokAvailable = allProducts.some(i => (!i.product.toLowerCase().includes('lite')) && !i.status.includes('รอคิว'));
-
-            let queueItems = allProducts.filter(i => i.status.includes('รอคิว'));
-            let liteQueue = queueItems.filter(i => i.product.toLowerCase().includes('lite'));
-            let grokQueue = queueItems.filter(i => !i.product.toLowerCase().includes('lite'));
-
-            let fastestLite = liteAvailable ? null : getClosestQueueItem(liteQueue);
-            let fastestGrok = grokAvailable ? null : getClosestQueueItem(grokQueue);
-
-            let activeCards = [];
-            if (fastestLite) activeCards.push({ name: 'LITE', item: fastestLite });
-            if (fastestGrok) activeCards.push({ name: 'SUPERGROK', item: fastestGrok });
-
-            activeCards.forEach(target => {
-                const timeData = calculateRemainingTime(target.item.queue);
-                if (!timeData || timeData.isReady) return;
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'cd-item';
-                btn.onclick = () => openDetail(target.item, 'queue');
-                btn.innerHTML = `
-                    <div><span class="cd-tag">${esc(target.name)}</span>${esc(target.item.product)} · ${esc(target.item.day)} วัน · <b>${esc(fmtPrice(target.item.price))} บาท</b></div>
-                    <div class="cd-digits">
+        // การ์ดรอคิว: รูป + ชื่อ + นับถอยหลังสด (วัน ชม. นาที วินาที) ถึงคิวที่ใกล้ที่สุดของหมวด + ปุ่มจองคิว
+        function createWaitingCard(item) {
+            const card = document.createElement('article');
+            card.className = 'p-card queue';
+            const t = calculateRemainingTime(item.queue);
+            let timeHtml;
+            if (!t) {
+                timeHtml = `<div class="wait-note">คิวถัดไป: ${esc(item.queue)}</div>`;
+            } else if (t.isReady) {
+                timeHtml = `<div class="wait-note">ว่างวันนี้</div>`;
+            } else {
+                timeHtml = `
+                    <div class="wait-label"><svg class="ic"><use href="#i-clock"/></svg> ว่างในอีก</div>
+                    <div class="cd-digits" role="timer" aria-label="เวลาที่เหลือก่อนคิวว่าง">
                         <div><b data-u="days"></b><small>วัน</small></div>
                         <div><b data-u="hours"></b><small>ชม.</small></div>
                         <div><b data-u="minutes"></b><small>นาที</small></div>
                         <div><b data-u="seconds"></b><small>วินาที</small></div>
                     </div>`;
-                container.appendChild(btn);
-                countdownTargets.push({ el: btn, item: target.item });
-            });
-            wrapper.classList.toggle('hidden', countdownTargets.length === 0);
-            tickCountdown();
+            }
+            card.innerHTML = `
+                <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">ต้องรอคิว</span></div>
+                <div class="p-body">
+                    <h4 class="p-name">${esc(item.product)}</h4>
+                    <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip">${esc(fmtPrice(item.price))} บาท</span></div>
+                    ${timeHtml}
+                    <div class="wait-date">คิวว่าง: ${esc(item.queue)}</div>
+                    <button type="button" class="btn book"><svg class="ic"><use href="#i-clock"/></svg> จองคิวล่วงหน้า</button>
+                </div>`;
+            card.querySelector('.btn').onclick = () => openDetail(item, 'queue');
+            card.querySelector('.p-img').onclick = () => openDetail(item, 'queue');
+            if (t && !t.isReady) countdownTargets.push({ el: card, item });
+            return card;
         }
 
-        // อัปเดตเฉพาะตัวเลขทุกวินาที (ไม่สร้างปุ่มใหม่ ทำให้กดได้ไม่พลาด)
+        function setupUnifiedCountdownBar() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            tickCountdown();
+            countdownInterval = setInterval(tickCountdown, 1000);
+        }
+
+        // อัปเดตเฉพาะตัวเลขทุกวินาที (ไม่สร้างปุ่มใหม่ ทำให้กดได้ไม่พลาด); ถึงเวลาแล้ววาดหน้าแรกใหม่
         function tickCountdown() {
             let needRebuild = false;
             countdownTargets.forEach(t => {
@@ -881,7 +921,7 @@
                     t.el.querySelector(`[data-u="${u}"]`).textContent = String(d[u]).padStart(2, '0');
                 });
             });
-            if (needRebuild) buildCountdown();
+            if (needRebuild) renderHomeReady();
         }
 
         function getClosestQueueItem(items) {
@@ -995,6 +1035,8 @@
         }
 
         function openDetail(item, type) {
+            const depBox = document.getElementById('modal-deposit');
+            depBox.classList.add('hidden'); depBox.innerHTML = '';
             document.getElementById('modal-image').src = item.image;
             document.getElementById('modal-image').alt = item.product;
             document.getElementById('modal-title').textContent = item.product;
@@ -1014,12 +1056,36 @@
                 modalBadge.textContent = 'รอคิว (จองล่วงหน้า)';
                 modalQueue.textContent = `วันกำหนด/คิวว่าง: ${item.queue}`;
                 modalQueue.classList.remove('hidden');
+                renderDeposit(item);
             } else {
                 modalBadge.className = 'ok';
                 modalBadge.textContent = 'พร้อมขายทันที';
                 modalQueue.classList.add('hidden');
             }
             openModal('detail-modal');
+        }
+
+        // กล่องอธิบายเงินมัดจำ (เฉพาะสินค้ารอคิว/จองล่วงหน้า)
+        function depositFor(item) {
+            if (isLiteItem(item)) return DEPOSIT_LITE;
+            if (isGrokItem(item)) return DEPOSIT_SUPERGROK;
+            return null; // หมวดอื่น: ไม่ระบุยอด (ไม่เดาตัวเลข)
+        }
+        function renderDeposit(item) {
+            const box = document.getElementById('modal-deposit');
+            const dep = depositFor(item);
+            const price = Number(item.price);
+            let html = dep !== null
+                ? `<div class="dep-title"><svg class="ic"><use href="#i-shield"/></svg><span>การจองคิว คือการวางมัดจำ <b>${esc(fmtPrice(dep))} บาท</b></span></div>`
+                : `<div class="dep-title"><svg class="ic"><use href="#i-shield"/></svg><span>การจองคิว คือการวางมัดจำ (สอบถามยอดทางเพจ)</span></div>`;
+            html += `<ul><li>เพื่อล็อคสิทธิ์ไม่ให้ใครแย่งคิวนี้</li><li>เงินมัดจำนี้จะนำไปลดราคาในวันที่รับรหัส</li></ul>`;
+            if (dep !== null && isFinite(price) && price > 0) {
+                html += price > dep
+                    ? `<div class="dep-pay">จ่ายวันนี้ ${esc(fmtPrice(dep))} บาท · วันรับรหัสจ่ายอีก ${esc(fmtPrice(price - dep))} บาท</div>`
+                    : `<div class="dep-pay">จ่ายวันนี้ ${esc(fmtPrice(dep))} บาท</div>`;
+            }
+            box.innerHTML = html;
+            box.classList.remove('hidden');
         }
 
         function closeDetail() { closeModal('detail-modal'); }
