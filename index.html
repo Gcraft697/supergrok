@@ -37,9 +37,12 @@
         h3 { font-size: 1.25rem; margin: 0 0 12px; color: var(--navy); display: flex; align-items: center; gap: 8px; line-height: 1.3; }
         .lead { margin: 0 0 14px; font-size: 1.05rem; }
 
-        /* ประกาศ (ไม่วิ่ง เพื่อให้อ่านง่าย) */
-        .notice { background: #fffbea; border: 3px solid #f59e0b; border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; font-size: 1.02rem; }
-        .notice b { display: inline-block; background: var(--red); color: #fff; border-radius: 8px; padding: 0 10px; margin-bottom: 4px; font-size: .95rem; }
+        /* สินค้าพร้อมขายบนหน้าแรก */
+        .home-ready { margin: 0 0 20px; }
+        .home-ready h3 { font-size: 1.35rem; }
+        .none-box { background: #fffbea; border: 3px solid #f59e0b; border-radius: 16px; padding: 18px 16px; text-align: center; }
+        .none-box p { margin: 0 0 14px; font-size: 1.2rem; font-weight: 700; color: #7c2d12; line-height: 1.5; }
+        .none-box .big-btn { margin-bottom: 0; text-align: left; }
 
         /* แถบโหลดข้อมูลแบบดาวน์โหลด */
         .pg { background: #fff; border: 2px solid #c7d2fe; border-radius: 16px; padding: 14px 16px; margin: 0 0 16px;
@@ -126,6 +129,10 @@
         .p-card .btn { margin-top: auto; }
         .p-card.sale .btn { background: var(--red); }
         .p-card.queue .btn { background: #fff; color: var(--amber); border: 3px solid var(--amber); }
+        .p-card.queue .q-btn { flex-direction: column; gap: 2px; min-height: 84px; padding: 10px 12px; background: var(--amber-bg); line-height: 1.25; }
+        .q-btn .q-big { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1.7rem; font-weight: 800; }
+        .q-btn .q-big .ic { width: 30px; height: 30px; }
+        .q-btn .q-sub { font-size: 1rem; font-weight: 700; color: #7c2d12; }
         .section { margin-bottom: 26px; }
         .section-empty { background: #fff; border: 2px dashed var(--line); border-radius: 16px; padding: 18px; text-align: center; color: var(--gray); font-size: 1.05rem; }
         .loading-box { background: #fff; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; text-align: center; font-size: 1.1rem; color: var(--gray); }
@@ -232,28 +239,36 @@
 
         <!-- ===== หน้าแรก ===== -->
         <section id="panel-home" class="panel">
-            <div class="notice">
-                <b>ประกาศสำคัญ</b><br>
-                ⚡ บริการเช่า SuperGrok และ Lite รายวัน/ชั่วโมง ราคาหลักสิบ รับประกันตลอดอายุใช้งาน ใช้คนเดียว ไม่เเชร์ · สนใจติดต่อสอบถามผ่าน Inbox เพจ Facebook ได้ตลอด 24 ชม.
-            </div>
 
             <!-- นับถอยหลังคิวถัดไป -->
             <div id="mini-countdown-wrapper" class="cd-box hidden">
                 <div class="cd-head">
-                    <span><svg class="ic"><use href="#i-clock"/></svg> เวลานับถอยหลังคิวถัดไป</span>
+                    <span><svg class="ic"><use href="#i-clock"/></svg> สินค้าพร้อมขายในอีก</span>
                     <button type="button" onclick="goTo('calendar')">ดูปฏิทินใหญ่ ❯</button>
                 </div>
                 <div id="countdown-bar-container"></div>
             </div>
 
+            <!-- สินค้าพร้อมขาย (แสดงบนหน้าแรก) -->
+            <div id="home-ready" class="home-ready">
+                <div id="home-sale-wrap" class="hidden">
+                    <h3 style="color:var(--red)"><svg class="ic"><use href="#i-fire"/></svg> สินค้าลดราคาพิเศษ</h3>
+                    <div id="home-sale-grid" class="grid"></div>
+                </div>
+                <div id="home-ready-wrap">
+                    <h3><svg class="ic"><use href="#i-box"/></svg> สินค้าพร้อมขายทันที</h3>
+                    <div id="home-ready-grid" class="grid"><div class="loading-box">กำลังโหลดข้อมูลสินค้า...</div></div>
+                </div>
+            </div>
+
             <div class="home-title">ท่านต้องการทำอะไร?</div>
-            <button type="button" class="big-btn navy" id="go-products" onclick="goTo('products')">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-box"/></svg></span>
-                <span><span class="t">ดูสินค้า และราคา</span><span class="d">สินค้าพร้อมเช่าทันที และสินค้าลดราคา</span></span>
-            </button>
             <button type="button" class="big-btn amber" id="go-queue" onclick="goTo('products', 'queue-section')">
                 <span class="ic-wrap"><svg class="ic"><use href="#i-clock"/></svg></span>
                 <span><span class="t">จองคิวล่วงหน้า</span><span class="d">รายการสินค้าที่ต้องรอคิว</span></span>
+            </button>
+            <button type="button" class="big-btn navy" id="go-products" onclick="goTo('products')">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-box"/></svg></span>
+                <span><span class="t">ดูสินค้า และราคา</span><span class="d">สินค้าพร้อมเช่าทันที และสินค้าลดราคา</span></span>
             </button>
             <button type="button" class="big-btn teal" id="go-calendar" onclick="goTo('calendar')">
                 <span class="ic-wrap"><svg class="ic"><use href="#i-cal"/></svg></span>
@@ -545,6 +560,7 @@
             if (isLoading) return;
             isLoading = true;
             loadPg.start();
+            renderHomeReady('loading');
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
             try {
@@ -597,6 +613,7 @@
                 });
 
                 filterProducts();
+                renderHomeReady();
                 renderCalendar();
                 setupUnifiedCountdownBar();
                 loadPg.ok();
@@ -604,6 +621,7 @@
             } catch (error) {
                 console.error('Error fetching sheet data:', error);
                 loadPg.fail();
+                renderHomeReady('error');
                 document.getElementById('product-grid').innerHTML =
                     '<div class="section-empty" style="color:var(--red)">โหลดข้อมูลสินค้าไม่สำเร็จ กรุณากด "ลองใหม่" ด้านบน</div>';
             } finally {
@@ -702,6 +720,63 @@
             }
         }
 
+        // --- สินค้าพร้อมขายบนหน้าแรก (ใช้เงื่อนไขเดียวกับหน้าสินค้า: ไม่ใช่ "รอคิว", แยกลดราคา) — แสดงทุกหมวด ---
+        function renderHomeReady(state) {
+            const saleWrap = document.getElementById('home-sale-wrap');
+            const saleGrid = document.getElementById('home-sale-grid');
+            const readyWrap = document.getElementById('home-ready-wrap');
+            const grid = document.getElementById('home-ready-grid');
+            saleGrid.innerHTML = '';
+            grid.innerHTML = '';
+            saleWrap.classList.add('hidden');
+            readyWrap.classList.remove('hidden');
+            if (state === 'loading') {
+                grid.innerHTML = '<div class="loading-box">กำลังโหลดข้อมูลสินค้า...</div>';
+                return;
+            }
+            if (state === 'error') {
+                grid.innerHTML = '<div class="section-empty" style="color:var(--red)">โหลดข้อมูลสินค้าไม่สำเร็จ กรุณากด "ลองใหม่" ด้านบน</div>';
+                return;
+            }
+            const availableProducts = allProducts.filter(item => !item.status.includes('รอคิว'));
+            const saleProducts = availableProducts.filter(item => item.role.includes('ลดราคา'));
+            const normalProducts = availableProducts.filter(item => !item.role.includes('ลดราคา'));
+
+            if (saleProducts.length > 0) {
+                saleWrap.classList.remove('hidden');
+                saleProducts.forEach(item => saleGrid.appendChild(createProductCard(item, 'sale')));
+            }
+            if (normalProducts.length > 0) {
+                normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
+            } else if (saleProducts.length > 0) {
+                readyWrap.classList.add('hidden');
+            } else {
+                grid.innerHTML = `
+                    <div class="none-box" id="home-none">
+                        <p>ไม่มีสินค้าพร้อมขาย<br>จองได้เพื่อล็อคสิทธิ์ไม่ให้มีใครแย่ง</p>
+                        <button type="button" class="big-btn amber" onclick="goTo('products', 'queue-section')">
+                            <span class="ic-wrap"><svg class="ic"><use href="#i-clock"/></svg></span>
+                            <span><span class="t">จองคิวล่วงหน้า</span><span class="d">ดูรายการคิวและจองได้เลย</span></span>
+                        </button>
+                    </div>`;
+            }
+        }
+
+        // ข้อความ "ว่างในอีก ..." บนปุ่มการ์ดรอคิว (ใช้ค่าวันเดียวกับชิป "รออีก X วัน" เดิม)
+        function queueWaitText(item) {
+            const d = item.remainingDays;
+            if (d === null || d === undefined || isNaN(d)) return '';
+            if (d <= 0) return 'ว่างวันนี้';
+            if (d === 1) {
+                // เหลือไม่ถึง 1 วัน (ถึงเที่ยงคืนของวันคิว) → แสดงเป็นชั่วโมง
+                const t = calculateRemainingTime(item.queue);
+                if (!t || t.isReady) return 'ว่างวันนี้';
+                if (t.days >= 1) return 'ว่างในอีก 1 วัน';
+                return t.hours >= 1 ? `ว่างในอีก ${t.hours} ชม.` : 'ว่างในอีกไม่ถึง 1 ชม.';
+            }
+            return `ว่างในอีก ${d} วัน`;
+        }
+
         function createProductCard(item, type) {
             const card = document.createElement('article');
             card.className = 'p-card ' + (type === 'sale' ? 'sale' : type === 'queue' ? 'queue' : 'normal');
@@ -719,14 +794,17 @@
                         <button type="button" class="btn">เช่าทันที</button>
                     </div>`;
             } else if (type === 'queue') {
-                const daysLeftText = item.remainingDays !== null ? (item.remainingDays <= 0 ? 'คิวว่างวันนี้' : `รออีก ${item.remainingDays} วัน`) : `คิว: ${item.queue}`;
+                const waitText = queueWaitText(item);
                 card.innerHTML = `
                     <div class="p-img">${img}<span class="p-badge queue">ต้องรอคิว</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
-                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip wait">${esc(daysLeftText)}</span></div>
+                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span>${waitText ? '' : `<span class="chip wait">คิว: ${esc(item.queue)}</span>`}</div>
                         <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
-                        <button type="button" class="btn">ดูรายละเอียด / จองคิว</button>
+                        <button type="button" class="btn q-btn" aria-label="${esc((waitText || 'ดูรายละเอียด') + ' แตะเพื่อดูรายละเอียดและจองคิว')}">
+                            <span class="q-big"><svg class="ic"><use href="#i-clock"/></svg> ${esc(waitText || 'ดูรายละเอียด / จองคิว')}</span>
+                            <span class="q-sub">แตะเพื่อดูรายละเอียด / จองคิว</span>
+                        </button>
                     </div>`;
             } else {
                 card.innerHTML = `
