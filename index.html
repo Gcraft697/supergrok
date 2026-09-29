@@ -130,7 +130,7 @@
         .p-meta { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 12px; padding: 4px 12px; font-size: 1.05rem; font-weight: 700; }
         .chip.wait { background: var(--amber-bg); border-color: #f59e0b; color: var(--amber); }
-        .chip.feature { background: #ecfdf5; border-color: #34d399; color: #047857; font-size: .92rem; padding: 3px 10px; }
+        .chip.feature { background: #f1f5f9; border-color: #cbd5e1; color: inherit; font-size: .88rem; padding: 2px 8px; font-weight: 700; }
         .chip.price { background: #eff6ff; border-color: #93c5fd; color: var(--navy); }
         .contact-actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 4px; }
         .contact-actions .btn { min-height: 56px; font-size: 1.15rem; }
@@ -140,7 +140,7 @@
             .contact-actions.triple { grid-template-columns: 1fr 1fr 1fr; }
             .contact-actions.triple .btn { font-size: 1.02rem; padding: 8px 6px; }
         }
-        /* สลิปมัดจำ — อนิเมชันปริ้นออกมา */
+        /* กล่องมัดจำ — อนิเมชันปริ้นแบบใบเสร็จ (ไม่มีป้ายข้อความ) */
         .deposit-box.receipt {
             position: relative;
             overflow: hidden;
@@ -150,18 +150,6 @@
             border-style: dashed;
             background: repeating-linear-gradient(0deg,#fff7ed,#fff7ed 12px,#fffbeb 12px,#fffbeb 24px);
             animation: receipt-print .85s cubic-bezier(.2,.8,.2,1) forwards;
-        }
-        .deposit-box.receipt::before {
-            content: "🧾 สลิปมัดจำ";
-            display: block;
-            text-align: center;
-            font-weight: 800;
-            font-size: .95rem;
-            letter-spacing: .04em;
-            color: #9a3412;
-            margin: -4px 0 8px;
-            padding-bottom: 6px;
-            border-bottom: 2px dashed #fdba74;
         }
         .deposit-box.receipt::after {
             content: "";
@@ -262,7 +250,6 @@
         .cm-top .pr { font-size: 1.3rem; font-weight: 800; color: var(--navy); }
 
         .footer { text-align: center; color: #374151; font-size: .95rem; padding: 18px 16px 28px; }
-        .footer .counter { display: flex; justify-content: center; margin-bottom: 8px; }
 
         @media (min-width: 760px) {
             html { font-size: 20px; }
@@ -440,16 +427,8 @@
     </div>
 
     <footer class="footer">
-        <!-- ตัวนับยอดคนเข้าชมเว็บไซต์ -->
-        <div class="counter">
-            <div id="sfcttyawtjrunb8b5d82gatz6hejasjwtzn"></div>
-        </div>
         <p>© 2026 Supergrok Store · All rights reserved.</p>
     </footer>
-
-    <!-- OPTISTATS COUNTER SCRIPT -->
-    <script type="text/javascript" src="https://counter11.optistats.ovh/private/counter.js?c=ttyawtjrunb8b5d82gatz6hejasjwtzn&down=async" async></script>
-    <noscript><a href="https://www.freecounterstat.com" title="web counter"><img src="https://counter11.optistats.ovh/private/freecounterstat.php?c=ttyawtjrunb8b5d82gatz6hejasjwtzn" border="0" title="web counter" alt="web counter"></a></noscript>
 
     <!-- SCRIPT -->
     <script>
