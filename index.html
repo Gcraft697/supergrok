@@ -130,6 +130,60 @@
         .p-meta { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 12px; padding: 4px 12px; font-size: 1.05rem; font-weight: 700; }
         .chip.wait { background: var(--amber-bg); border-color: #f59e0b; color: var(--amber); }
+        .chip.feature { background: #ecfdf5; border-color: #34d399; color: #047857; font-size: .92rem; padding: 3px 10px; }
+        .chip.price { background: #eff6ff; border-color: #93c5fd; color: var(--navy); }
+        .contact-actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 4px; }
+        .contact-actions .btn { min-height: 56px; font-size: 1.15rem; }
+        .btn.msg { background: #0084ff; }
+        .btn.call { background: #059669; }
+        @media (min-width: 420px) {
+            .contact-actions.triple { grid-template-columns: 1fr 1fr 1fr; }
+            .contact-actions.triple .btn { font-size: 1.02rem; padding: 8px 6px; }
+        }
+        /* สลิปมัดจำ — อนิเมชันปริ้นออกมา */
+        .deposit-box.receipt {
+            position: relative;
+            overflow: hidden;
+            transform-origin: top center;
+            max-height: 0;
+            opacity: 0;
+            border-style: dashed;
+            background: repeating-linear-gradient(0deg,#fff7ed,#fff7ed 12px,#fffbeb 12px,#fffbeb 24px);
+            animation: receipt-print .85s cubic-bezier(.2,.8,.2,1) forwards;
+        }
+        .deposit-box.receipt::before {
+            content: "🧾 สลิปมัดจำ";
+            display: block;
+            text-align: center;
+            font-weight: 800;
+            font-size: .95rem;
+            letter-spacing: .04em;
+            color: #9a3412;
+            margin: -4px 0 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px dashed #fdba74;
+        }
+        .deposit-box.receipt::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; top: 0;
+            height: 10px;
+            background: linear-gradient(180deg,rgba(255,255,255,.9),transparent);
+            pointer-events: none;
+            animation: receipt-scan .85s ease-out;
+        }
+        @keyframes receipt-print {
+            0% { max-height: 0; opacity: 0; transform: translateY(-12px) scaleY(.92); }
+            35% { opacity: 1; }
+            100% { max-height: 420px; opacity: 1; transform: none; }
+        }
+        @keyframes receipt-scan {
+            0% { top: 0; opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .deposit-box.receipt, .deposit-box.receipt::after { animation: none; max-height: none; opacity: 1; transform: none; }
+        }
         .p-price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
         .p-price small { font-size: 1rem; color: var(--gray); font-weight: 700; }
         .p-price b { font-size: 2.1rem; font-weight: 800; color: var(--navy); line-height: 1.1; }
@@ -228,6 +282,8 @@
         <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
         <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
         <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></symbol>
+        <symbol id="i-msg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.29 3.14 6.87V22l3.05-1.68c.95.27 1.97.41 3.01.41 5.64 0 10.2-4.13 10.2-9.7S17.64 2 12 2zm1.02 12.98-2.6-2.77-5.08 2.77 5.59-5.93 2.66 2.77 5.02-2.77-5.59 5.93z"/></symbol>
+        <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 3h4l1 4-2.5 1.5a12 12 0 0 0 5 5L16 11l4 1v4c0 1.1-.9 2-2 2A15 15 0 0 1 3 5c0-1.1.9-2 2-2z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
         <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
         <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/></symbol>
         <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -278,15 +334,20 @@
                 <span class="ic-wrap"><svg class="ic"><use href="#i-cal"/></svg></span>
                 <span><span class="t">ปฏิทินคิวว่าง</span><span class="d">ดูว่าวันไหนมีคิว และจองล่วงหน้า</span></span>
             </button>
-            <a class="big-btn fb" id="go-contact" href="https://www.facebook.com/TreethepGolf" target="_blank" rel="noopener">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-fb"/></svg></span>
-                <span><span class="t">ติดต่อ / สอบถาม</span><span class="d">ทักแชทเพจ Facebook ได้ตลอด 24 ชม.</span></span>
+            <a class="big-btn fb" id="go-contact" href="https://m.me/100012830647735" data-ext="https://m.me/100012830647735">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-msg"/></svg></span>
+                <span>จองคิว / ติดต่อ<br><small>Messenger · เสถียรบน iPhone</small></span>
             </a>
+            <a class="big-btn outline" id="go-call" href="tel:0973151708">
+                <span class="ic-wrap"><svg class="ic"><use href="#i-phone"/></svg></span>
+                <span>โทรด่วน<br><small>097-315-1708</small></span>
+            </a>
+
             <a class="big-btn outline" id="go-check" href="/check.html">
                 <span class="ic-wrap"><svg class="ic"><use href="#i-shield"/></svg></span>
                 <span><span class="t">ตรวจสอบประกัน</span><span class="d">เช็คการรับประกันของท่าน</span></span>
             </a>
-            <a class="big-btn outline" id="go-credit" href="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314" target="_blank" rel="noopener">
+            <a class="big-btn outline" id="go-credit" href="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314" data-ext="https://www.facebook.com/photo/?fbid=122110833825294855&set=gm.1845946719709892&idorvanity=1664012517903314">
                 <span class="ic-wrap"><svg class="ic"><use href="#i-star"/></svg></span>
                 <span><span class="t">เช็คเครดิต</span><span class="d">ดูความน่าเชื่อถือของร้าน (Facebook)</span></span>
             </a>
@@ -362,9 +423,7 @@
             <div id="modal-queue" class="hidden"></div>
             <div id="modal-price"></div>
             <div id="modal-deposit" class="deposit-box hidden" role="note"></div>
-            <a id="modal-facebook-link" class="btn fb" href="https://www.facebook.com/TreethepGolf" target="_blank" rel="noopener">
-                <svg class="ic"><use href="#i-fb"/></svg> จองคิว / ติดต่อผ่าน Facebook
-            </a>
+            <div id="modal-contact" class="contact-actions triple"></div>
             <button type="button" class="btn gray modal-close-btn" onclick="closeDetail()">ปิดหน้าต่างนี้</button>
         </div>
     </div>
@@ -405,10 +464,58 @@
         };
 
         const FACEBOOK_LINK = 'https://www.facebook.com/TreethepGolf';
+        // Messenger deep link — บน iOS เปิดแอป Messenger ได้เสถียรกว่าเพจ facebook.com + target=_blank
+        const MESSENGER_LINK = 'https://www.facebook.com/messages/t/100012830647735';
+        const MESSENGER_APP_LINK = 'https://m.me/100012830647735';
+        const PHONE_NUMBER = '0973151708';
+        const TEL_LINK = 'tel:0973151708';
 
         // ค่ามัดจำการจองคิว (บาท) — แก้ตัวเลขตรงนี้ได้เลย
         const DEPOSIT_SUPERGROK = 40;
         const DEPOSIT_LITE = 20;
+
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+        // iOS Safari มักพังกับ facebook.com + target=_blank → เปิดแท็บเดิม / ใช้ m.me
+        function openExternal(url, e) {
+            if (e) e.preventDefault();
+            if (isIOS()) {
+                window.location.href = url;
+            } else {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+            return false;
+        }
+        function messengerHref() {
+            // m.me เปิดแอป Messenger บนมือถือได้ดีกว่า; desktop ใช้ messages/t ก็ได้
+            return isIOS() ? MESSENGER_APP_LINK : MESSENGER_LINK;
+        }
+        function benefitChipsHtml() {
+            return '<span class="chip feature">มีประกันตลอดการใช้งาน</span>' +
+                   '<span class="chip feature">ใช้ส่วนตัว</span>' +
+                   '<span class="chip feature">ไม่แชร์</span>';
+        }
+        function contactActionsHtml(opts) {
+            opts = opts || {};
+            const msgLabel = opts.msgLabel || 'Messenger';
+            const fbLabel = opts.fbLabel || 'Facebook';
+            const callLabel = opts.callLabel || 'โทรด่วน';
+            const msg = esc(messengerHref());
+            const fb = esc(FACEBOOK_LINK);
+            const tel = esc(TEL_LINK);
+            return `<div class="contact-actions triple">
+                <a class="btn msg" href="${msg}" data-ext="${msg}"><svg class="ic"><use href="#i-msg"/></svg> ${esc(msgLabel)}</a>
+                <a class="btn fb" href="${fb}" data-ext="${fb}"><svg class="ic"><use href="#i-fb"/></svg> ${esc(fbLabel)}</a>
+                <a class="btn call" href="${tel}"><svg class="ic"><use href="#i-phone"/></svg> ${esc(callLabel)}</a>
+            </div>`;
+        }
+        function bindExternalLinks(root) {
+            (root || document).querySelectorAll('a[data-ext]').forEach(a => {
+                a.addEventListener('click', e => openExternal(a.getAttribute('data-ext') || a.href, e));
+            });
+        }
 
         let allProducts = [];
         let filteredProducts = [];
@@ -756,7 +863,7 @@
                     <div class="p-img">${img}<span class="p-badge sale">ลดราคาพิเศษ</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
-                        <div class="p-meta"><span class="chip">ระยะเวลา ${esc(item.day)} วัน</span></div>
+                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาพิเศษเพียง</small><b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn">เช่าทันที</button>
                     </div>`;
@@ -766,7 +873,7 @@
                     <div class="p-img">${img}<span class="p-badge queue">ต้องรอคิว</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
-                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span>${waitText ? '' : `<span class="chip wait">คิว: ${esc(item.queue)}</span>`}</div>
+                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${waitText ? '' : `<span class="chip wait">คิว: ${esc(item.queue)}</span>`}${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn q-btn" aria-label="${esc((waitText || 'ดูรายละเอียด') + ' แตะเพื่อดูรายละเอียดและจองคิว')}">
                             <span class="q-big"><svg class="ic"><use href="#i-clock"/></svg> ${esc(waitText || 'ดูรายละเอียด / จองคิว')}</span>
@@ -778,7 +885,7 @@
                     <div class="p-img">${img}<span class="p-badge ok">พร้อมขาย</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
-                        <div class="p-meta"><span class="chip">ระยะเวลา ${esc(item.day)} วัน</span></div>
+                        <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn">เช่าเลย</button>
                     </div>`;
@@ -860,12 +967,13 @@
                         <div class="p-body">
                             <h4 class="p-name">${esc(slot.label)}</h4>
                             <div class="none-msg">ยังไม่มีคิว<br>สอบถามได้ทางเพจ</div>
-                            <a class="btn fb" href="${esc(FACEBOOK_LINK)}" target="_blank" rel="noopener"><svg class="ic"><use href="#i-fb"/></svg> ติดต่อสอบถามทางเพจ</a>
+                            ${contactActionsHtml({ msgLabel: 'Messenger', fbLabel: 'Facebook', callLabel: 'โทรด่วน' })}
                         </div>`;
                 }
                 wrap.innerHTML = `<div class="slot-cat">${esc(slot.label)} ${pill}</div>`;
                 wrap.appendChild(card);
                 box.appendChild(wrap);
+                bindExternalLinks(wrap);
             });
             tickCountdown();
         }
@@ -894,7 +1002,7 @@
                 <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">ต้องรอคิว</span></div>
                 <div class="p-body">
                     <h4 class="p-name">${esc(item.product)}</h4>
-                    <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip">${esc(fmtPrice(item.price))} บาท</span></div>
+                    <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${esc(fmtPrice(item.price))} บาท</span>${benefitChipsHtml()}</div>
                     ${timeHtml}
                     <div class="wait-date">คิวว่าง: ${esc(item.queue)}</div>
                     <button type="button" class="btn book"><svg class="ic"><use href="#i-clock"/></svg> จองคิวล่วงหน้า</button>
@@ -1042,7 +1150,17 @@
             document.getElementById('modal-title').textContent = item.product;
             document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน`;
             document.getElementById('modal-price').textContent = `${fmtPrice(item.price)} บาท`;
-            document.getElementById('modal-facebook-link').href = FACEBOOK_LINK;
+            const contact = document.getElementById('modal-contact');
+            const tmp = document.createElement('div');
+            tmp.innerHTML = contactActionsHtml({
+                msgLabel: type === 'queue' ? 'จองทาง Messenger' : 'Messenger',
+                fbLabel: 'Facebook',
+                callLabel: 'โทรด่วน'
+            });
+            contact.innerHTML = '';
+            const row = tmp.firstElementChild;
+            while (row.firstChild) contact.appendChild(row.firstChild);
+            bindExternalLinks(contact);
 
             const modalBadge = document.getElementById('modal-badge');
             const modalQueue = document.getElementById('modal-queue');
@@ -1084,8 +1202,13 @@
                     ? `<div class="dep-pay">จ่ายวันนี้ ${esc(fmtPrice(dep))} บาท · วันรับรหัสจ่ายอีก ${esc(fmtPrice(price - dep))} บาท</div>`
                     : `<div class="dep-pay">จ่ายวันนี้ ${esc(fmtPrice(dep))} บาท</div>`;
             }
+            box.classList.add('hidden');
+            box.classList.remove('receipt');
             box.innerHTML = html;
+            // รีสตาร์ทอนิเมชันสลิปทุกครั้งที่เปิด
+            void box.offsetWidth;
             box.classList.remove('hidden');
+            box.classList.add('receipt');
         }
 
         function closeDetail() { closeModal('detail-modal'); }
@@ -1107,9 +1230,10 @@
                             <p class="pr">${esc(fmtPrice(item.price))} บาท</p>
                         </div>
                     </div>
-                    <a href="${esc(FACEBOOK_LINK)}" target="_blank" rel="noopener" class="btn fb"><svg class="ic"><use href="#i-fb"/></svg> จองคิว / ติดต่อ</a>`;
+                    ${contactActionsHtml({ msgLabel: 'Messenger', fbLabel: 'Facebook', callLabel: 'โทรด่วน' })}`;
                 container.appendChild(div);
             });
+            bindExternalLinks(container);
             openModal('calendar-day-modal');
         }
 
@@ -1149,6 +1273,7 @@
         window.addEventListener('hashchange', () => showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null));
 
         showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null);
+        bindExternalLinks(document);
         fetchProducts();
     </script>
 </body>
