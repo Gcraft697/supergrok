@@ -250,6 +250,52 @@
         .cm-top .pr { font-size: 1.3rem; font-weight: 800; color: var(--navy); }
 
         .footer { text-align: center; color: #374151; font-size: .95rem; padding: 18px 16px 28px; }
+        .visit-badge {
+            margin: 18px auto 0; max-width: 320px; padding: 16px 22px 14px;
+            position: relative; overflow: hidden; isolation: isolate;
+            border-radius: 999px; text-align: center;
+            background:
+                linear-gradient(#fff, #fff) padding-box,
+                linear-gradient(135deg, #0b2a5b 0%, #1e3a8a 35%, #d4a017 55%, #f59e0b 75%, #0b2a5b 100%) border-box;
+            border: 3px solid transparent;
+            box-shadow: 0 8px 24px rgba(11,42,91,.18), 0 2px 6px rgba(212,160,23,.25);
+        }
+        .visit-badge::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+            transform: translateX(-120%);
+            animation: visit-shine 1.6s ease-out .4s 1;
+        }
+        @keyframes visit-shine { to { transform: translateX(120%); } }
+        .visit-badge-label {
+            display: block; font-size: .85rem; font-weight: 700; letter-spacing: .04em;
+            color: #92400e; text-transform: none; margin-bottom: 2px;
+        }
+        .visit-badge-num {
+            display: block; font-size: 2.15rem; font-weight: 800; line-height: 1.15;
+            color: var(--navy); font-variant-numeric: tabular-nums;
+            text-shadow: 0 1px 0 rgba(255,255,255,.8);
+        }
+        .visit-badge-unit {
+            display: block; font-size: .9rem; font-weight: 700; color: #4b5563; margin-top: 2px;
+        }
+
+        /* แผงติดต่อสอบถาม (details + summary เป็น big-btn) */
+        details.contact-panel { margin: 0 0 16px; }
+        details.contact-panel > summary.big-btn {
+            list-style: none; -webkit-appearance: none; appearance: none;
+            box-sizing: border-box;
+        }
+        details.contact-panel > summary.big-btn::-webkit-details-marker { display: none; }
+        details.contact-panel > summary.big-btn::marker { content: ''; }
+        details.contact-panel > .contact-actions {
+            margin: -6px 0 4px; padding: 12px 4px 2px;
+            animation: contact-reveal .22s ease-out;
+        }
+        @keyframes contact-reveal {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         @media (min-width: 760px) {
             html { font-size: 20px; }
@@ -260,7 +306,7 @@
             .sale-top .p-img img { height: 100%; min-height: 240px; }
             .day { min-height: 84px; }
         }
-        @media (prefers-reduced-motion: reduce) { .pg-fill { animation: none; transition: none; } .pg, .big-btn { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .pg-fill { animation: none; transition: none; } .pg, .big-btn { transition: none; } .visit-badge::after, details.contact-panel > .contact-actions { animation: none; } }
     </style>
 </head>
 <body>
@@ -321,14 +367,17 @@
                 <span class="ic-wrap"><svg class="ic"><use href="#i-cal"/></svg></span>
                 <span><span class="t">ปฏิทินคิวว่าง</span><span class="d">ดูว่าวันไหนมีคิว และจองล่วงหน้า</span></span>
             </button>
-            <a class="big-btn fb" id="go-contact" href="https://m.me/100012830647735" data-ext="https://m.me/100012830647735">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-msg"/></svg></span>
-                <span>จองคิว / ติดต่อ<br><small>Messenger · เสถียรบน iPhone</small></span>
-            </a>
-            <a class="big-btn outline" id="go-call" href="tel:0973151708">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-phone"/></svg></span>
-                <span>โทรด่วน<br><small>097-315-1708</small></span>
-            </a>
+            <details class="contact-panel">
+                <summary class="big-btn fb" id="go-contact">
+                    <span class="ic-wrap"><svg class="ic"><use href="#i-msg"/></svg></span>
+                    <span><span class="t">ติดต่อสอบถาม</span><span class="d">Messenger · Facebook · โทร</span></span>
+                </summary>
+                <div class="contact-actions">
+                    <a class="btn msg" href="https://m.me/100012830647735" data-ext="https://m.me/100012830647735"><svg class="ic"><use href="#i-msg"/></svg> Messenger</a>
+                    <a class="btn fb" href="https://www.facebook.com/messages/t/100012830647735" data-ext="https://www.facebook.com/messages/t/100012830647735"><svg class="ic"><use href="#i-fb"/></svg> Facebook</a>
+                    <a class="btn call" href="tel:0973151708"><svg class="ic"><use href="#i-phone"/></svg> โทรด่วน · 097-315-1708</a>
+                </div>
+            </details>
 
             <a class="big-btn outline" id="go-check" href="/check.html">
                 <span class="ic-wrap"><svg class="ic"><use href="#i-shield"/></svg></span>
@@ -398,8 +447,6 @@
         </section>
     </main>
 
-    <script defer src="/_vercel/insights/script.js"></script>
-
     <!-- หน้าต่างรายละเอียดสินค้า -->
     <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-bg" onclick="closeDetail()"></div>
@@ -430,6 +477,11 @@
 
     <footer class="footer">
         <p>© 2026 Supergrok Store · All rights reserved.</p>
+        <div class="visit-badge" id="visit-count" aria-live="polite">
+            <span class="visit-badge-label">ยอดเข้าชมรวม</span>
+            <span class="visit-badge-num" id="visit-count-num">—</span>
+            <span class="visit-badge-unit">คน</span>
+        </div>
     </footer>
 
     <!-- SCRIPT -->
@@ -1256,6 +1308,23 @@
         showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null);
         bindExternalLinks(document);
         fetchProducts();
+        bumpVisitCount();
+
+        // ตัวนับแสดงผลท้ายหน้า (นับทุกครั้งที่โหลด/รีเฟรช รวม F5) — เริ่มต่อจาก 1,730
+        async function bumpVisitCount() {
+            const num = document.getElementById('visit-count-num');
+            if (!num) return;
+            const BASE = 1729; // hit ครั้งแรก → แสดง 1,730
+            try {
+                const res = await fetch('https://abacus.jasoncameron.dev/hit/golfcraft-shop/pageviews-v1', { cache: 'no-store' });
+                const data = await res.json();
+                const n = BASE + (Number(data && data.value) || 0);
+                num.textContent = n.toLocaleString('th-TH');
+            } catch (e) {
+                num.textContent = (1730).toLocaleString('th-TH');
+            }
+        }
     </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
