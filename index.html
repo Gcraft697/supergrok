@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b2a5b">
-    <title>Supergrok เช่ารายวัน / รายชั่วโมง</title>
+    <title>SuperGolf เช่ารายวัน / รายชั่วโมง</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -131,6 +131,8 @@
         .chip { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 12px; padding: 4px 12px; font-size: 1.05rem; font-weight: 700; }
         .chip.wait { background: var(--amber-bg); border-color: #f59e0b; color: var(--amber); }
         .chip.feature { background: #f1f5f9; border-color: #cbd5e1; color: inherit; font-size: .88rem; padding: 2px 8px; font-weight: 700; }
+        .p-note { font-size: 1.05rem; font-weight: 800; color: #7c2d12; background: var(--amber-bg); border: 2px solid #f59e0b; border-radius: 12px; padding: 8px 12px; line-height: 1.4; }
+        #modal-note { margin: 0 0 10px; }
         .chip.price { background: #eff6ff; border-color: #93c5fd; color: var(--navy); }
         .contact-actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 4px; }
         .contact-actions .btn { min-height: 56px; font-size: 1.15rem; }
@@ -455,6 +457,7 @@
             <img id="modal-image" src="" alt="สินค้า">
             <span id="modal-badge"></span>
             <h3 id="modal-title"></h3>
+            <div id="modal-note" class="p-note hidden"></div>
             <div id="modal-day"></div>
             <div id="modal-queue" class="hidden"></div>
             <div id="modal-price"></div>
@@ -524,6 +527,16 @@
         function messengerHref() {
             // m.me เปิดแอป Messenger บนมือถือได้ดีกว่า; desktop ใช้ messages/t ก็ได้
             return isIOS() ? MESSENGER_APP_LINK : MESSENGER_LINK;
+        }
+        // คอลัมน์ G หมายเหตุ: ว่างหรือขีด = ไม่แสดง, มีข้อความ = ขึ้นแจ้งบนสินค้า
+        function noteText(item) {
+            const n = String(item && item.note != null ? item.note : '').trim();
+            if (!n || n === '-' || n === '—' || n === '–') return '';
+            return n;
+        }
+        function noteHtml(item) {
+            const n = noteText(item);
+            return n ? `<div class="p-note">${esc(n)}</div>` : '';
         }
         function benefitChipsHtml() {
             return '<span class="chip feature">มีประกันตลอดการใช้งาน</span>' +
@@ -731,6 +744,9 @@
                     const day = row.c[3] ? row.c[3].v : '-';    
                     const price = row.c[4] ? row.c[4].v : '0';  
                     const role = row.c[5] ? String(row.c[5].v).trim() : ''; 
+                    const noteCell = row.c[6];
+                    const noteRaw = noteCell ? (noteCell.f != null && String(noteCell.f).trim() !== '' ? noteCell.f : noteCell.v) : '';
+                    const note = noteRaw == null ? '' : String(noteRaw).trim();
                     const queue = row.c[7] ? (row.c[7].f || row.c[7].v) : '-';
 
                     const image = getProductImage(product);
@@ -743,6 +759,7 @@
                         day: day,
                         price: price,
                         role: role,
+                        note: note,
                         queue: queue,
                         remainingDays: remainingDays,
                         image: image,
@@ -896,6 +913,7 @@
                     <div class="p-img">${img}<span class="p-badge sale">ลดราคาพิเศษ</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
+                        ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาพิเศษเพียง</small><b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn">เช่าทันที</button>
@@ -906,6 +924,7 @@
                     <div class="p-img">${img}<span class="p-badge queue">ต้องรอคิว</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
+                        ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${waitText ? '' : `<span class="chip wait">คิว: ${esc(item.queue)}</span>`}${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn q-btn" aria-label="${esc((waitText || 'ดูรายละเอียด') + ' แตะเพื่อดูรายละเอียดและจองคิว')}">
@@ -918,6 +937,7 @@
                     <div class="p-img">${img}<span class="p-badge ok">พร้อมขาย</span></div>
                     <div class="p-body">
                         <h4 class="p-name">${name}</h4>
+                        ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn">เช่าเลย</button>
@@ -984,6 +1004,7 @@
                         <div class="p-img"><img src="${esc(saleReady.image)}" alt="${esc(saleReady.product)}" loading="lazy"><span class="p-badge sale">ลดราคาพิเศษ</span></div>
                         <div class="p-body">
                             <h4 class="p-name">${esc(saleReady.product)}</h4>
+                            ${noteHtml(saleReady)}
                             <div class="wait-note" style="color:var(--red);background:#fee2e2">มีสินค้าพร้อมขายในราคาลดพิเศษ ด้านบน</div>
                             <button type="button" class="btn">ดูสินค้าลดราคา</button>
                         </div>`;
@@ -1035,6 +1056,7 @@
                 <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">ต้องรอคิว</span></div>
                 <div class="p-body">
                     <h4 class="p-name">${esc(item.product)}</h4>
+                    ${noteHtml(item)}
                     <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${esc(fmtPrice(item.price))} บาท</span>${benefitChipsHtml()}</div>
                     ${timeHtml}
                     <div class="wait-date">คิวว่าง: ${esc(item.queue)}</div>
@@ -1133,7 +1155,7 @@
                 b.type = 'button';
                 b.className = 'ml-item';
                 b.innerHTML = `<b>${esc(thaiDateFromKey(dateKey))}</b>` +
-                    items.map(it => `${esc(it.product)} · ${esc(it.status)} · ${esc(it.day)} วัน · ${esc(fmtPrice(it.price))} บาท`).join('<br>');
+                    items.map(it => `${esc(it.product)} · ${esc(it.status)} · ${esc(it.day)} วัน · ${esc(fmtPrice(it.price))} บาท${noteText(it) ? ' · ' + esc(noteText(it)) : ''}`).join('<br>');
                 b.onclick = () => openCalendarDayModal(dateKey, items);
                 list.appendChild(b);
             });
@@ -1181,6 +1203,10 @@
             document.getElementById('modal-image').src = item.image;
             document.getElementById('modal-image').alt = item.product;
             document.getElementById('modal-title').textContent = item.product;
+            const modalNote = document.getElementById('modal-note');
+            const note = noteText(item);
+            modalNote.textContent = note;
+            modalNote.classList.toggle('hidden', !note);
             document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน`;
             document.getElementById('modal-price').textContent = `${fmtPrice(item.price)} บาท`;
             const contact = document.getElementById('modal-contact');
@@ -1259,6 +1285,7 @@
                         <img src="${esc(item.image)}" alt="${esc(item.product)}">
                         <div>
                             <h4>${esc(item.product)}</h4>
+                            ${noteHtml(item)}
                             <p>สถานะ: ${esc(item.status)} · ระยะเวลา ${esc(item.day)} วัน</p>
                             <p class="pr">${esc(fmtPrice(item.price))} บาท</p>
                         </div>
