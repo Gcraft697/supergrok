@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b2a5b">
-    <title>SuperGolf เช่ารายวัน / รายชั่วโมง</title>
+    <title>Supergrok เช่ารายวัน / รายชั่วโมง</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -106,7 +106,7 @@
                     font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin: 0 0 16px; }
         .btn { width: 100%; min-height: 64px; border: 0; border-radius: 16px; background: var(--navy); color: #fff; font-size: 1.3rem; font-weight: 800;
                display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; text-decoration: none; padding: 10px 16px; }
-        .btn.fb { background: var(--fb); } .btn.red { background: var(--red); } .btn.gray { background: #fff; color: #374151; border: 2px solid var(--line); }
+        .btn.fb { background: var(--fb); } .btn.red { background: var(--red); } .btn.rent { background: var(--green); } .btn.gray { background: #fff; color: #374151; border: 2px solid var(--line); }
         .btn.light { background: #fff; color: var(--navy); border: 3px solid var(--navy); font-size: 1.15rem; }
 
         /* ตัวกรอง */
@@ -619,12 +619,58 @@
             return (targetDate && !isNaN(targetDate.getTime())) ? targetDate : null;
         }
 
-        function calculateRemainingTime(dateStr) {
+
+        // คอลัมน์ L เวลารีเซ็ต เช่น 20:54, 5.00 am, 2ทุ่ม — ไม่มีเวลา = นับถึงเที่ยงคืนของวันคิว
+        function parseResetClock(raw) {
+            if (raw == null) return null;
+            let s = String(raw).trim();
+            if (!s || s === '-' || s === '—' || s === '–') return null;
+            const thum = s.match(/(\d+)\s*ทุ่ม/);
+            if (thum) {
+                const n = parseInt(thum[1], 10);
+                if (n >= 1 && n <= 5) return { h: 18 + n, m: 0 };
+            }
+            const ti = s.match(/ตี\s*(\d{1,2})/);
+            if (ti) {
+                const n = parseInt(ti[1], 10);
+                if (n >= 0 && n <= 5) return { h: n, m: 0 };
+            }
+            const m = s.match(/(\d{1,2})[:.](\d{2})\s*(am|pm|a\.m\.|p\.m\.)?/i);
+            if (m) {
+                let h = parseInt(m[1], 10);
+                const min = parseInt(m[2], 10);
+                const ap = (m[3] || '').toLowerCase();
+                if (ap.startsWith('p') && h < 12) h += 12;
+                if (ap.startsWith('a') && h === 12) h = 0;
+                if (h <= 23 && min <= 59) return { h, m: min };
+            }
+            const hm = s.match(/(?:^|\s)(\d{3,4})(?:\s|$)/);
+            if (hm) {
+                const n = hm[1].padStart(4, '0');
+                const h = parseInt(n.slice(0, 2), 10);
+                const min = parseInt(n.slice(2), 10);
+                if (h <= 23 && min <= 59) return { h, m: min };
+            }
+            return null;
+        }
+        function clockLabel(raw) {
+            const t = parseResetClock(raw);
+            if (!t) return '';
+            return String(t.h).padStart(2, '0') + ':' + String(t.m).padStart(2, '0');
+        }
+        function queueTarget(dateStr, clockStr) {
+            const targetDate = parseDateString(dateStr);
+            if (!targetDate) return null;
+            const t = parseResetClock(clockStr);
+            if (t) targetDate.setHours(t.h, t.m, 0, 0);
+            else targetDate.setHours(0, 0, 0, 0);
+            return targetDate;
+        }
+        function calculateRemainingTime(dateStr, clockStr) {
             if (!dateStr || dateStr === '-') return null;
-            let targetDate = parseDateString(dateStr);
+            let targetDate = queueTarget(dateStr, clockStr);
             if (!targetDate) return null;
 
-            targetDate.setHours(0, 0, 0, 0);
             const now = new Date();
 
             const diffTime = targetDate - now;
@@ -638,15 +684,15 @@
             return { days, hours, minutes, seconds, isReady: false };
         }
 
-        function calculateRemainingDays(dateStr) {
+        function calculateRemainingDays(dateStr, clockStr) {
             if (!dateStr || dateStr === '-') return null;
-            let targetDate = parseDateString(dateStr);
+            let targetDate = queueTarget(dateStr, clockStr);
             if (!targetDate) return null;
 
             const now = new Date();
-            now.setHours(0, 0, 0, 0);
-            targetDate.setHours(0, 0, 0, 0);
-
+            if (!parseResetClock(clockStr)) {
+                now.setHours(0, 0, 0, 0);
+            }
             const diffTime = targetDate - now;
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
@@ -748,9 +794,12 @@
                     const noteRaw = noteCell ? (noteCell.f != null && String(noteCell.f).trim() !== '' ? noteCell.f : noteCell.v) : '';
                     const note = noteRaw == null ? '' : String(noteRaw).trim();
                     const queue = row.c[7] ? (row.c[7].f || row.c[7].v) : '-';
+                    const resetCell = row.c[11];
+                    const resetRaw = resetCell ? (resetCell.f != null && String(resetCell.f).trim() !== '' ? resetCell.f : resetCell.v) : '';
+                    const resetClock = resetRaw == null ? '' : String(resetRaw).trim();
 
                     const image = getProductImage(product);
-                    const remainingDays = calculateRemainingDays(queue);
+                    const remainingDays = calculateRemainingDays(queue, resetClock);
                     const parsedDate = parseDateString(queue);
 
                     const item = {
@@ -761,6 +810,7 @@
                         role: role,
                         note: note,
                         queue: queue,
+                        resetClock: resetClock,
                         remainingDays: remainingDays,
                         image: image,
                         parsedDate: parsedDate
@@ -893,7 +943,7 @@
             if (d <= 0) return 'ว่างวันนี้';
             if (d === 1) {
                 // เหลือไม่ถึง 1 วัน (ถึงเที่ยงคืนของวันคิว) → แสดงเป็นชั่วโมง
-                const t = calculateRemainingTime(item.queue);
+                const t = calculateRemainingTime(item.queue, item.resetClock);
                 if (!t || t.isReady) return 'ว่างวันนี้';
                 if (t.days >= 1) return 'ว่างในอีก 1 วัน';
                 return t.hours >= 1 ? `ว่างในอีก ${t.hours} ชม.` : 'ว่างในอีกไม่ถึง 1 ชม.';
@@ -940,7 +990,7 @@
                         ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
                         <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
-                        <button type="button" class="btn">เช่าเลย</button>
+                        <button type="button" class="btn rent">เช่าเลย</button>
                     </div>`;
             }
             card.querySelector('.btn').onclick = () => openDetail(item, type);
@@ -1036,7 +1086,7 @@
         function createWaitingCard(item) {
             const card = document.createElement('article');
             card.className = 'p-card queue';
-            const t = calculateRemainingTime(item.queue);
+            const t = calculateRemainingTime(item.queue, item.resetClock);
             let timeHtml;
             if (!t) {
                 timeHtml = `<div class="wait-note">คิวถัดไป: ${esc(item.queue)}</div>`;
@@ -1059,7 +1109,7 @@
                     ${noteHtml(item)}
                     <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${esc(fmtPrice(item.price))} บาท</span>${benefitChipsHtml()}</div>
                     ${timeHtml}
-                    <div class="wait-date">คิวว่าง: ${esc(item.queue)}</div>
+                    <div class="wait-date">คิวว่าง: ${esc(item.queue)}${clockLabel(item.resetClock) ? " เวลา " + esc(clockLabel(item.resetClock)) : ""}</div>
                     <button type="button" class="btn book"><svg class="ic"><use href="#i-clock"/></svg> จองคิวล่วงหน้า</button>
                 </div>`;
             card.querySelector('.btn').onclick = () => openDetail(item, 'queue');
@@ -1078,7 +1128,7 @@
         function tickCountdown() {
             let needRebuild = false;
             countdownTargets.forEach(t => {
-                const d = calculateRemainingTime(t.item.queue);
+                const d = calculateRemainingTime(t.item.queue, t.item.resetClock);
                 if (!d || d.isReady) { needRebuild = true; return; }
                 ['days', 'hours', 'minutes', 'seconds'].forEach(u => {
                     t.el.querySelector(`[data-u="${u}"]`).textContent = String(d[u]).padStart(2, '0');
