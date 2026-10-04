@@ -1281,7 +1281,7 @@
             } else if (type === 'queue') {
                 modalBadge.className = 'queue';
                 modalBadge.textContent = 'รอคิว (จองล่วงหน้า)';
-                modalQueue.textContent = `วันกำหนด/คิวว่าง: ${item.queue}`;
+                modalQueue.textContent = `วันกำหนด/คิวว่าง: ${item.queue}${clockLabel(item.resetClock) ? ' เวลา ' + clockLabel(item.resetClock) : ''}`;
                 modalQueue.classList.remove('hidden');
                 renderDeposit(item);
             } else {
