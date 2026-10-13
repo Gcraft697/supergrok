@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b2a5b">
-    <title>Supergrok เช่ารายวัน / รายชั่วโมง</title>
+    <title>ร้าน SuperGolf · เช่า SuperGrok รายวัน / รายชั่วโมง</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -309,6 +309,45 @@
             .day { min-height: 84px; }
         }
         @media (prefers-reduced-motion: reduce) { .pg-fill { animation: none; transition: none; } .pg, .big-btn { transition: none; } .visit-badge::after, details.contact-panel > .contact-actions { animation: none; } }
+
+        .slot-grid .p-card .chip.price { display:none; }
+        .slot-grid .p-card .p-meta { gap:6px; }
+
+        /* แบบ 2: ไอคอน 3 ช่อง + ป้ายราคา */
+        .slot-grid .p-card { border-radius:22px; }
+        .slot-grid .p-card .p-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+        .slot-grid .p-card .p-meta .chip:first-child { grid-column:1/-1; justify-content:center; background:#eef2ff; border-color:#c7d2fe; color:var(--navy); font-size:1.15rem; }
+        .slot-grid .p-card .chip.feature { flex-direction:column; justify-content:flex-start; text-align:center; background:#fff; border:2px solid #e2e8f0; border-radius:14px; padding:8px 4px; font-size:.85rem; line-height:1.25; gap:2px; }
+        .slot-grid .p-card .chip.feature:nth-of-type(3)::before { content:'🛡️'; font-size:1.6rem; }
+        .slot-grid .p-card .chip.feature:nth-of-type(4)::before { content:'👤'; font-size:1.6rem; }
+        .slot-grid .p-card .chip.feature:nth-of-type(5)::before { content:'🔒'; font-size:1.6rem; }
+        .slot-grid .p-card .p-price { background:var(--navy); color:#fff; border-radius:16px; padding:10px 14px; justify-content:center; }
+        .slot-grid .p-card .p-price small { color:#cbd5e1; } .slot-grid .p-card .p-price b, .slot-grid .p-card.queue .p-price b, .slot-grid .p-card.sale .p-price b { color:#fff; font-size:2.6rem; }
+
+        /* ปุ่มนับถอยหลังในตัว */
+        .slot-grid .p-card .cd-btn { flex-direction:column; gap:2px; min-height:84px; line-height:1.25; padding:10px 12px; background:var(--amber); color:#fff; border:0; margin-top:auto; }
+        .cd-btn .cd-btn-t { display:flex; align-items:center; gap:8px; font-size:1.35rem; font-weight:800; }
+        .q-date { text-align:center; font-size:1.1rem; font-weight:700; color:#374151; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:6px 10px; }
+        .q-date b { color:var(--navy); font-size:1.2rem; }
+        .cd-btn .cd-btn-time { font-size:1.3rem; font-weight:800; background:rgba(0,0,0,.22); border-radius:99px; padding:2px 14px; font-variant-numeric:tabular-nums; }
+        .cd-btn .cd-btn-time b { color:#fde68a; font-size:1.25rem; }
+        .cd-btn .cd-btn-s { font-size:.9rem; font-weight:600; opacity:.9; }
+        .slot-grid .p-card .cd-btn.ready { background:var(--green); }
+        .cd-btn.ready .cd-btn-t { font-size:1.6rem; }
+
+        .q-days { font-size:1.1rem; font-weight:800; color:#fff; background:var(--navy); border-radius:99px; padding:2px 10px; vertical-align:middle; white-space:nowrap; }
+        .slot-grid .p-card.queue .p-meta .chip.feature:nth-of-type(1)::before { content:'🛡️'; font-size:1.6rem; }
+        .slot-grid .p-card.queue .p-meta .chip.feature:nth-of-type(2)::before { content:'👤'; font-size:1.6rem; }
+        .slot-grid .p-card.queue .p-meta .chip.feature:nth-of-type(3)::before { content:'🔒'; font-size:1.6rem; }
+        .slot-grid .p-card.queue .p-meta .chip.feature:first-child { grid-column:auto; justify-content:flex-start; background:#fff; border-color:#e2e8f0; color:inherit; font-size:.85rem; }
+        .q-head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+        .q-price { font-size:1.1rem; font-weight:700; color:#374151; white-space:nowrap; }
+        .q-price b { font-size:2.2rem; color:var(--navy); font-weight:800; }
+        .q-wait { background:var(--amber-bg); border:2px solid #f59e0b; border-radius:14px; padding:8px 12px; text-align:center; }
+        .q-wait-main { font-size:1.05rem; white-space:nowrap; font-weight:800; color:var(--amber); }
+        .q-wait-main b { font-size:1.3rem; color:#7c2d12; font-variant-numeric:tabular-nums; }
+        .q-wait-date { font-size:1rem; font-weight:700; color:#374151; }
+        .slot-grid .p-card .cd-btn { min-height:64px; font-size:1.35rem; }
     </style>
 </head>
 <body>
@@ -332,7 +371,7 @@
 
     <header class="header">
         <div class="header-inner">
-            <p class="brand">SuperGrok<span> By Treethep</span></p>
+            <p class="brand">SuperGolf<span> · เช่า SuperGrok</span></p>
             <p class="tagline">ข้อมูลอัปเดตแบบเรียลไทม์ รับประกันตลอดอายุใช้งาน ไม่หลุด ไม่เด้ง ไม่แชร์ ใช้คนเดียว</p>
         </div>
     </header>
@@ -479,7 +518,7 @@
     </div>
 
     <footer class="footer">
-        <p>© 2026 Supergrok Store · All rights reserved.</p>
+        <p>© 2026 ร้าน SuperGolf · All rights reserved.</p>
         <div class="visit-badge" id="visit-count" aria-live="polite">
             <span class="visit-badge-label">ยอดเข้าชมรวม</span>
             <span class="visit-badge-num" id="visit-count-num">—</span>
@@ -1087,30 +1126,28 @@
             const card = document.createElement('article');
             card.className = 'p-card queue';
             const t = calculateRemainingTime(item.queue, item.resetClock);
-            let timeHtml;
-            if (!t) {
-                timeHtml = `<div class="wait-note">คิวถัดไป: ${esc(item.queue)}</div>`;
-            } else if (t.isReady) {
-                timeHtml = `<div class="wait-note">ว่างวันนี้</div>`;
-            } else {
-                timeHtml = `
-                    <div class="wait-label"><svg class="ic"><use href="#i-clock"/></svg> ว่างในอีก</div>
-                    <div class="cd-digits" role="timer" aria-label="เวลาที่เหลือก่อนคิวว่าง">
-                        <div><b data-u="days"></b><small>วัน</small></div>
-                        <div><b data-u="hours"></b><small>ชม.</small></div>
-                        <div><b data-u="minutes"></b><small>นาที</small></div>
-                        <div><b data-u="seconds"></b><small>วินาที</small></div>
-                    </div>`;
+            const ready = t && t.isReady;
+            const qd = parseDateString(item.queue);
+            const p2 = n => String(n).padStart(2, '0');
+            const qDateTxt = qd ? `${p2(qd.getDate())}/${p2(qd.getMonth() + 1)}/${p2((qd.getFullYear() + 543) % 100)}` : esc(item.queue);
+            const qClock = clockLabel(item.resetClock) ? ` เวลา ${esc(clockLabel(item.resetClock))} น.` : '';
+            let waitHtml = '';
+            if (!ready) {
+                waitHtml = t
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main">⏱ <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
             }
+            const btnHtml = ready
+                ? `<button type="button" class="btn rent cd-btn ready">เช่าเลย</button>`
+                : `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจองล่วงหน้า</button>`;
             card.innerHTML = `
-                <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">ต้องรอคิว</span></div>
+                <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">${ready ? 'พร้อมเช่า' : 'ต้องรอคิว'}</span></div>
                 <div class="p-body">
-                    <h4 class="p-name">${esc(item.product)}</h4>
+                    <div class="q-head"><h4 class="p-name">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div></div>
                     ${noteHtml(item)}
-                    <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${esc(fmtPrice(item.price))} บาท</span>${benefitChipsHtml()}</div>
-                    ${timeHtml}
-                    <div class="wait-date">คิวว่าง: ${esc(item.queue)}${clockLabel(item.resetClock) ? " เวลา " + esc(clockLabel(item.resetClock)) : ""}</div>
-                    <button type="button" class="btn book"><svg class="ic"><use href="#i-clock"/></svg> จองคิวล่วงหน้า</button>
+                    <div class="p-meta">${benefitChipsHtml()}</div>
+                    ${waitHtml}
+                    ${btnHtml}
                 </div>`;
             card.querySelector('.btn').onclick = () => openDetail(item, 'queue');
             card.querySelector('.p-img').onclick = () => openDetail(item, 'queue');
@@ -1129,9 +1166,13 @@
             let needRebuild = false;
             countdownTargets.forEach(t => {
                 const d = calculateRemainingTime(t.item.queue, t.item.resetClock);
-                if (!d || d.isReady) { needRebuild = true; return; }
+                if (!d || d.isReady) {
+                    const btn = t.el.querySelector('.cd-btn');
+                    if (btn) { btn.className = 'btn rent cd-btn ready'; btn.textContent = 'เช่าเลย'; } const w = t.el.querySelector('.q-wait'); if (w) w.remove();
+                    needRebuild = true; return;
+                }
                 ['days', 'hours', 'minutes', 'seconds'].forEach(u => {
-                    t.el.querySelector(`[data-u="${u}"]`).textContent = String(d[u]).padStart(2, '0');
+                    const el = t.el.querySelector(`[data-u="${u}"]`); if (el) el.textContent = String(d[u]).padStart(2, '0');
                 });
             });
             if (needRebuild) renderHomeReady();
