@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#0b2a5b">
     <title>ร้าน SuperGolf · เช่า SuperGrok รายวัน / รายชั่วโมง</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans+Thai:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --navy: #0b2a5b; --navy-2: #123f86;
@@ -311,75 +310,39 @@
         }
         @media (prefers-reduced-motion: reduce) { .pg-fill { animation: none; transition: none; } .pg, .big-btn { transition: none; } .visit-badge::after, details.contact-panel > .contact-actions { animation: none; } }
 
-        /* ===== ธีม xAI (ดำขาวมินิมอล) ===== */
-        :root { --navy:#ffffff; --navy-2:#e5e5e5; --fb:#ffffff; --green:#ffffff; --teal:#ffffff; --red:#ff5a4f; --red-bg:#1a0a09;
-                --amber:#f5c26b; --amber-bg:#17130a; --ok:#9ef0b0; --ok-bg:#0b140e; --gray:#8a8a8a; --line:#2a2a2a; --bg:#000; --text:#f5f5f5; --lite:#a3a3a3; --grok:#ffffff; }
-        body { background:#000 radial-gradient(ellipse at 50% -10%, #ffffff18, transparent 55%) no-repeat; color:var(--text);
-               font-family:'Space Grotesk','IBM Plex Sans Thai','Sarabun',sans-serif; }
-        .header { background:transparent; border-bottom:1px solid #222; }
-        .brand { font-weight:500; letter-spacing:-1px; } .brand span { color:#777; }
-        .tagline { color:#888; font-family:'JetBrains Mono','IBM Plex Sans Thai',monospace; font-size:.8rem; letter-spacing:1px; }
-        .card, .p-card, .pg, .loading-box, .section-empty, .ml-item, .modal-box, .cm-item, .day { background:#0a0a0a; border-color:#2a2a2a; color:var(--text); }
-        .p-card { border-width:1px; border-radius:24px; }
-        .p-card.queue { background:#0a0a0a; border-color:#3a3a3a; }
-        .p-card.sale { border-color:#fff; }
-        h2, h3, .slot-cat, .home-title, .month-title, #cal-modal-date, .p-name, .ml-item b { color:#fff; font-weight:500; letter-spacing:-.5px; }
-        .p-price b, #modal-price, .cm-top .pr { color:#fff; font-weight:500; letter-spacing:-1px; }
-        .p-card.queue .p-price b, .p-card.sale .p-price b { color:#fff; }
-        .chip, .chip.feature, .chip.price { background:transparent; border:1px solid #333; color:#ddd; border-radius:99px; }
-        .chip.wait { background:transparent; border-color:#5a4520; color:var(--amber); }
-        .slot-cat .pill, .p-badge.ok, #modal-badge.ok { background:#fff; color:#000; }
-        .slot-cat .pill.wait, .p-badge.queue, #modal-badge.queue { background:#222; color:#f5c26b; }
-        .p-badge.sale, #modal-badge.sale { background:var(--red); color:#fff; }
-        .btn, .big-btn, .big-btn.navy, .big-btn.green, .big-btn.fb, .big-btn.teal, .big-btn.amber, .btn.rent, .btn.fb, .btn.msg, .btn.call
-          { background:#fff; color:#000; box-shadow:none; border-radius:99px; }
-        .big-btn { border-radius:24px; } .big-btn .ic-wrap { background:#0000000f; }
-        .big-btn.outline, .btn.light, .btn.gray, .back-btn, .filter-btn, .p-card.queue .btn
-          { background:transparent; color:#fff; border:1px solid #444; box-shadow:none; }
-        .big-btn.outline .ic-wrap { background:#ffffff12; }
-        .p-card.queue .q-btn { background:transparent; } .q-btn .q-sub { color:#aaa; }
-        .p-card.sale .btn, .btn.red, .retry-btn { background:var(--red); color:#fff; }
-        .filter-btn[aria-pressed="true"] { background:#fff; color:#000; }
-        .cd-digits div { background:#111; border:1px solid #2a2a2a; } .cd-digits b { font-family:'Space Grotesk'; font-weight:500; }
-        .cd-digits small { color:#888; } .cd-digits div:last-child b { color:#fff; }
-        .wait-date, .none-msg, .cm-top p, .pg-note { color:#aaa; }
-        .wait-note, .p-note, .none-msg { background:#111; border-color:#333; color:#f5c26b; }
-        .pg-track { background:#1a1a1a; } .pg-fill { background:repeating-linear-gradient(45deg,#fff 0 14px,#bbb 14px 28px); }
-        .day.muted { background:#050505; border-color:#111; color:#444; } .day.has { background:#141414; border-color:#555; } .day.today { border-color:#fff; }
-        .day .today-tag { background:#fff; color:#000; }
-        .modal-x { background:#111; color:#fff; border-color:#333; }
-        #modal-day { background:#141414; } #modal-queue { background:#17130a; }
-        .deposit-box, .deposit-box.receipt { background:#0f0f0f; border:1px dashed #666; color:#eee; }
-        .deposit-box .dep-title, .deposit-box .dep-title b { color:#fff; } .deposit-box .dep-pay { background:#000; border-color:#666; color:#fff; }
-        .footer { color:#666; }
-        .visit-badge { background:linear-gradient(#0a0a0a,#0a0a0a) padding-box, linear-gradient(135deg,#333,#fff,#333) border-box; box-shadow:none; }
-        .visit-badge::after { background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%); }
-        .visit-badge-label { color:#888; } .visit-badge-num { color:#fff; text-shadow:none; font-weight:500; } .visit-badge-unit { color:#888; }
-        .big-btn:focus-visible, .btn:focus-visible, .back-btn:focus-visible, .filter-btn:focus-visible, .p-card:focus-visible { outline-color:#fff; }
+        .slot-grid .p-card .chip.price { display:none; }
+        .slot-grid .p-card .p-meta { gap:6px; }
 
-        /* การ์ดสินค้าแบบ xAI */
-        .slot-cat { font-size:1.1rem; font-family:'JetBrains Mono','IBM Plex Sans Thai',monospace; letter-spacing:2px; text-transform:uppercase; color:#999; }
-        .slot-cat .pill { font-family:'IBM Plex Sans Thai'; letter-spacing:0; font-size:.8rem; }
-        .p-card { background:#0a0a0a; border:1px solid #2a2a2a; border-radius:28px; }
-        .p-card.queue { border-color:#2a2a2a; } .p-card:not(.queue):not(.none-card) { border-color:#fff; }
-        .p-img { background:#000; border-bottom:1px solid #1f1f1f; }
-        .p-img img { height:170px; }
-        .p-card.queue .p-img img { filter:grayscale(1); opacity:.55; }
-        .p-badge { font-size:.8rem; background:#000c !important; border:1px solid #444; color:#fff !important; backdrop-filter:blur(6px); }
-        .p-body { padding:20px 22px 22px; gap:12px; }
-        .p-name { font-size:1.7rem; font-weight:500; letter-spacing:-1px; }
-        .chip { font-size:.85rem; padding:3px 12px; font-weight:600; }
-        .chip.price { display:none; }
-        .p-price small { color:#777; font-weight:500; }
-        .p-price b { font-size:3.2rem !important; font-weight:500; letter-spacing:-2px; color:#fff !important; }
-        .wait-label { color:#ccc; font-size:1rem; font-weight:600; font-family:'JetBrains Mono','IBM Plex Sans Thai',monospace; }
-        .wait-date { color:#888; font-size:.9rem; }
-        .cd-digits { gap:8px; } .cd-digits div { border-radius:16px; background:#000; }
-        .cd-digits b { font-size:1.9rem; }
-        .p-card .btn, .p-card.queue .btn, .p-card.queue .q-btn { border-radius:99px; min-height:60px; }
-        .p-card.queue .btn, .p-card.queue .q-btn { background:transparent; color:#fff; border:1px solid #555; }
-        .q-btn .q-big { font-size:1.3rem; }
-        .p-card:not(.queue) .btn { background:#fff; color:#000; }
+        /* แบบ 2: ไอคอน 3 ช่อง + ป้ายราคา */
+        .slot-grid .p-card { border-radius:22px; }
+        .slot-grid .p-card .p-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+        .slot-grid .p-card .p-meta .chip:first-child { grid-column:1/-1; justify-content:center; background:#eef2ff; border-color:#c7d2fe; color:var(--navy); font-size:1.15rem; }
+        .slot-grid .p-card .chip.feature { flex-direction:column; justify-content:flex-start; text-align:center; background:#fff; border:2px solid #e2e8f0; border-radius:14px; padding:8px 4px; font-size:.85rem; line-height:1.25; gap:2px; }
+        .slot-grid .p-card .chip.feature:nth-of-type(3)::before { content:'🛡️'; font-size:1.6rem; }
+        .slot-grid .p-card .chip.feature:nth-of-type(4)::before { content:'👤'; font-size:1.6rem; }
+        .slot-grid .p-card .chip.feature:nth-of-type(5)::before { content:'🔒'; font-size:1.6rem; }
+        .slot-grid .p-card .p-price { background:var(--navy); color:#fff; border-radius:16px; padding:10px 14px; justify-content:center; }
+        .slot-grid .p-card .p-price small { color:#cbd5e1; } .slot-grid .p-card .p-price b, .slot-grid .p-card.queue .p-price b, .slot-grid .p-card.sale .p-price b { color:#fff; font-size:2.6rem; }
+
+        /* ปุ่มนับถอยหลังในตัว */
+        .slot-grid .p-card .cd-btn { flex-direction:column; gap:2px; min-height:84px; line-height:1.25; padding:10px 12px; background:var(--amber); color:#fff; border:0; margin-top:auto; }
+        .cd-btn .cd-btn-t { display:flex; align-items:center; gap:8px; font-size:1.35rem; font-weight:800; }
+        .q-date { text-align:center; font-size:1.1rem; font-weight:700; color:#374151; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:6px 10px; }
+        .q-date b { color:var(--navy); font-size:1.2rem; }
+        .cd-btn .cd-btn-time { font-size:1.3rem; font-weight:800; background:rgba(0,0,0,.22); border-radius:99px; padding:2px 14px; font-variant-numeric:tabular-nums; }
+        .cd-btn .cd-btn-time b { color:#fde68a; font-size:1.25rem; }
+        .cd-btn .cd-btn-s { font-size:.9rem; font-weight:600; opacity:.9; }
+        .slot-grid .p-card .cd-btn.ready { background:var(--green); }
+        .cd-btn.ready .cd-btn-t { font-size:1.6rem; }
+
+        .q-head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+        .q-price { font-size:1.1rem; font-weight:700; color:#374151; white-space:nowrap; }
+        .q-price b { font-size:2.2rem; color:var(--navy); font-weight:800; }
+        .q-wait { background:var(--amber-bg); border:2px solid #f59e0b; border-radius:14px; padding:8px 12px; text-align:center; }
+        .q-wait-main { font-size:1.05rem; white-space:nowrap; font-weight:800; color:var(--amber); }
+        .q-wait-main b { font-size:1.3rem; color:#7c2d12; font-variant-numeric:tabular-nums; }
+        .q-wait-date { font-size:1rem; font-weight:700; color:#374151; }
+        .slot-grid .p-card .cd-btn { min-height:64px; font-size:1.35rem; }
     </style>
 </head>
 <body>
@@ -1158,30 +1121,28 @@
             const card = document.createElement('article');
             card.className = 'p-card queue';
             const t = calculateRemainingTime(item.queue, item.resetClock);
-            let timeHtml;
-            if (!t) {
-                timeHtml = `<div class="wait-note">คิวถัดไป: ${esc(item.queue)}</div>`;
-            } else if (t.isReady) {
-                timeHtml = `<div class="wait-note">ว่างวันนี้</div>`;
-            } else {
-                timeHtml = `
-                    <div class="wait-label"><svg class="ic"><use href="#i-clock"/></svg> ว่างในอีก</div>
-                    <div class="cd-digits" role="timer" aria-label="เวลาที่เหลือก่อนคิวว่าง">
-                        <div><b data-u="days"></b><small>วัน</small></div>
-                        <div><b data-u="hours"></b><small>ชม.</small></div>
-                        <div><b data-u="minutes"></b><small>นาที</small></div>
-                        <div><b data-u="seconds"></b><small>วินาที</small></div>
-                    </div>`;
+            const ready = t && t.isReady;
+            const qd = parseDateString(item.queue);
+            const p2 = n => String(n).padStart(2, '0');
+            const qDateTxt = qd ? `${p2(qd.getDate())}/${p2(qd.getMonth() + 1)}/${p2((qd.getFullYear() + 543) % 100)}` : esc(item.queue);
+            const qClock = clockLabel(item.resetClock) ? ` เวลา ${esc(clockLabel(item.resetClock))} น.` : '';
+            let waitHtml = '';
+            if (!ready) {
+                waitHtml = t
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main">⏱ ว่างในอีก <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> นาที</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
             }
+            const btnHtml = ready
+                ? `<button type="button" class="btn rent cd-btn ready">เช่าเลย</button>`
+                : `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจองล่วงหน้า</button>`;
             card.innerHTML = `
-                <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">ต้องรอคิว</span></div>
+                <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">${ready ? 'พร้อมเช่า' : 'ต้องรอคิว'}</span></div>
                 <div class="p-body">
-                    <h4 class="p-name">${esc(item.product)}</h4>
+                    <div class="q-head"><h4 class="p-name">${esc(item.product)}</h4><div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div></div>
                     ${noteHtml(item)}
                     <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${esc(fmtPrice(item.price))} บาท</span>${benefitChipsHtml()}</div>
-                    ${timeHtml}
-                    <div class="wait-date">คิวว่าง: ${esc(item.queue)}${clockLabel(item.resetClock) ? " เวลา " + esc(clockLabel(item.resetClock)) : ""}</div>
-                    <button type="button" class="btn book"><svg class="ic"><use href="#i-clock"/></svg> จองคิวล่วงหน้า</button>
+                    ${waitHtml}
+                    ${btnHtml}
                 </div>`;
             card.querySelector('.btn').onclick = () => openDetail(item, 'queue');
             card.querySelector('.p-img').onclick = () => openDetail(item, 'queue');
@@ -1200,9 +1161,13 @@
             let needRebuild = false;
             countdownTargets.forEach(t => {
                 const d = calculateRemainingTime(t.item.queue, t.item.resetClock);
-                if (!d || d.isReady) { needRebuild = true; return; }
+                if (!d || d.isReady) {
+                    const btn = t.el.querySelector('.cd-btn');
+                    if (btn) { btn.className = 'btn rent cd-btn ready'; btn.textContent = 'เช่าเลย'; } const w = t.el.querySelector('.q-wait'); if (w) w.remove();
+                    needRebuild = true; return;
+                }
                 ['days', 'hours', 'minutes', 'seconds'].forEach(u => {
-                    t.el.querySelector(`[data-u="${u}"]`).textContent = String(d[u]).padStart(2, '0');
+                    const el = t.el.querySelector(`[data-u="${u}"]`); if (el) el.textContent = String(d[u]).padStart(2, '0');
                 });
             });
             if (needRebuild) renderHomeReady();
