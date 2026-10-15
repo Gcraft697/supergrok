@@ -316,11 +316,7 @@
         /* แบบ 2: ไอคอน 3 ช่อง + ป้ายราคา */
         .slot-grid .p-card { border-radius:22px; }
         .slot-grid .p-card .p-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
-        .slot-grid .p-card .p-meta .chip:first-child { grid-column:1/-1; justify-content:center; background:#eef2ff; border-color:#c7d2fe; color:var(--navy); font-size:1.15rem; }
         .slot-grid .p-card .chip.feature { flex-direction:column; justify-content:flex-start; text-align:center; background:#fff; border:2px solid #e2e8f0; border-radius:14px; padding:8px 4px; font-size:.85rem; line-height:1.25; gap:2px; }
-        .slot-grid .p-card .chip.feature:nth-of-type(3)::before { content:'🛡️'; font-size:1.6rem; }
-        .slot-grid .p-card .chip.feature:nth-of-type(4)::before { content:'👤'; font-size:1.6rem; }
-        .slot-grid .p-card .chip.feature:nth-of-type(5)::before { content:'🔒'; font-size:1.6rem; }
         .slot-grid .p-card .p-price { background:var(--navy); color:#fff; border-radius:16px; padding:10px 14px; justify-content:center; }
         .slot-grid .p-card .p-price small { color:#cbd5e1; } .slot-grid .p-card .p-price b, .slot-grid .p-card.queue .p-price b, .slot-grid .p-card.sale .p-price b { color:#fff; font-size:2.6rem; }
 
@@ -335,6 +331,7 @@
         .slot-grid .p-card .cd-btn.ready { background:var(--green); }
         .cd-btn.ready .cd-btn-t { font-size:1.6rem; }
 
+        .q-days { font-size:1.1rem; font-weight:800; color:#fff; background:var(--navy); border-radius:99px; padding:2px 10px; vertical-align:middle; white-space:nowrap; }
         .q-head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
         .q-price { font-size:1.1rem; font-weight:700; color:#374151; white-space:nowrap; }
         .q-price b { font-size:2.2rem; color:var(--navy); font-weight:800; }
@@ -343,6 +340,44 @@
         .q-wait-main b { font-size:1.3rem; color:#7c2d12; font-variant-numeric:tabular-nums; }
         .q-wait-date { font-size:1rem; font-weight:700; color:#374151; }
         .slot-grid .p-card .cd-btn { min-height:64px; font-size:1.35rem; }
+
+        /* ===== รอบปรับปรุง: ตัวหนังสือเล็กลง อ่านง่าย ไม่รก ===== */
+        .slot-grid .p-card .chip.feature.f-shield::before { content:'🛡️'; font-size:1.6rem; }
+        .slot-grid .p-card .chip.feature.f-user::before { content:'👤'; font-size:1.6rem; }
+        .slot-grid .p-card .chip.feature.f-lock::before { content:'🔒'; font-size:1.6rem; }
+        .p-note { font-size:.8rem; font-weight:600; padding:4px 10px; border-width:1px; border-radius:10px; line-height:1.35; }
+        .q-wait { padding:6px 10px; border-width:1px; border-radius:12px; }
+        .q-wait-main { font-size:.9rem; font-weight:700; }
+        .q-wait-main b { font-size:1.05rem; }
+        .q-wait-date { font-size:.75rem; font-weight:600; color:#6b7280; }
+        .slot-grid .p-card .cd-btn { min-height:60px; font-size:1.25rem; }
+        .slot-grid .p-card .btn.rent { min-height:60px; font-size:1.25rem; }
+
+        /* ===== การ์ดลดราคาพิเศษ (เด่น เต็มแถว) ===== */
+        .slot-grid .p-card.sale-hero { position:relative; border:0; border-radius:26px; color:#fff; overflow:hidden; display:flex; flex-direction:column;
+            background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 55%,#dc2626 100%); box-shadow:0 10px 30px rgba(185,28,28,.35), 0 0 0 3px #fde047; }
+        .sale-hero .sh-img { position:relative; background:#000; border-bottom:3px solid #fde047; }
+        .sale-hero .sh-img img { width:100%; height:150px; object-fit:contain; display:block; background:#000; }
+        .sale-hero .sh-ribbon { position:absolute; top:12px; left:12px; background:#fde047; color:#7f1d1d; font-weight:800; font-size:1rem; padding:4px 14px; border-radius:99px; box-shadow:0 3px 10px rgba(0,0,0,.35); }
+        .sale-hero .sh-body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px; flex:1; }
+        .sale-hero .sh-title { font-size:1.6rem; font-weight:800; line-height:1.2; display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0; }
+        .sale-hero .q-days { background:#fff; color:#b91c1c; }
+        .sale-hero .sh-price { display:flex; align-items:baseline; gap:8px; }
+        .sale-hero .sh-price small { font-size:1rem; font-weight:700; color:#fecaca; }
+        .sale-hero .sh-price b { font-size:3.6rem; line-height:1; font-weight:800; color:#fde047; text-shadow:0 3px 0 rgba(0,0,0,.25); }
+        .slot-grid .p-card.sale-hero .p-meta { margin:0; }
+        .slot-grid .p-card.sale-hero .chip.feature { border:0; color:#111827; }
+        .sale-hero .p-note { background:rgba(255,255,255,.15); color:#fff; border-color:rgba(255,255,255,.4); }
+        .slot-grid .p-card.sale-hero .sh-btn { background:#fde047; color:#7f1d1d; min-height:64px; font-size:1.4rem; margin-top:auto; box-shadow:0 4px 0 rgba(0,0,0,.25); }
+        .sale-hero .sh-img::after { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.18) 50%,transparent 60%); transform:translateX(-120%); animation:hero-shine 3.5s ease-in-out infinite; pointer-events:none; }
+        @keyframes hero-shine { 60%,100% { transform:translateX(120%); } }
+        @media (prefers-reduced-motion: reduce) { .sale-hero .sh-img::after { animation:none; } }
+        @media (min-width:760px) {
+            .slot-grid .p-card.sale-hero { flex-direction:row; align-items:stretch; }
+            .sale-hero .sh-img { flex:0 0 46%; border-bottom:0; border-right:3px solid #fde047; display:grid; align-items:center; }
+            .sale-hero .sh-img img { height:100%; min-height:260px; }
+            .sale-hero .sh-body { padding:20px 22px; justify-content:center; }
+        }
     </style>
 </head>
 <body>
@@ -573,9 +608,9 @@
             return n ? `<div class="p-note">${esc(n)}</div>` : '';
         }
         function benefitChipsHtml() {
-            return '<span class="chip feature">มีประกันตลอดการใช้งาน</span>' +
-                   '<span class="chip feature">ใช้ส่วนตัว</span>' +
-                   '<span class="chip feature">ไม่แชร์</span>';
+            return '<span class="chip feature f-shield">มีประกันตลอดการใช้งาน</span>' +
+                   '<span class="chip feature f-user">ใช้ส่วนตัว</span>' +
+                   '<span class="chip feature f-lock">ไม่แชร์</span>';
         }
         function contactActionsHtml(opts) {
             opts = opts || {};
@@ -850,7 +885,9 @@
                         parsedDate: parsedDate
                     };
 
-                    if (status && status !== 'ขายแล้ว') {
+                    const rawStatus = row.c[2] ? row.c[2].v : null;
+                    const soldOut = rawStatus === true || /หมด|ขายแล้ว|sold/i.test(status);
+                    if (status && !soldOut) {
                         allProducts.push(item);
                         if (parsedDate) {
                             const dateKey = `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}-${String(parsedDate.getDate()).padStart(2, '0')}`;
@@ -985,7 +1022,26 @@
             return `ว่างในอีก ${d} วัน`;
         }
 
-        function createProductCard(item, type) {
+        // การ์ดลดราคาพิเศษหน้าแรก: ป้ายเด่น รูปเต็มไม่โดนตัด ราคาใหญ่สีเหลือง
+        function createSaleHeroCard(item) {
+            const card = document.createElement('article');
+            card.className = 'p-card sale sale-hero';
+            const price = esc(fmtPrice(item.price));
+            card.innerHTML = `
+                <div class="sh-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="sh-ribbon">🔥 ลดราคาพิเศษ</span></div>
+                <div class="sh-body">
+                    <h4 class="sh-title">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4>
+                    <div class="sh-price"><small>เหลือเพียง</small><b>${price}</b><small>บาท</small></div>
+                    <div class="p-meta">${benefitChipsHtml()}</div>
+                    ${noteHtml(item)}
+                    <button type="button" class="btn sh-btn">เช่าทันที</button>
+                </div>`;
+            card.querySelector('.btn').onclick = () => openDetail(item, 'sale');
+            card.querySelector('.sh-img').onclick = () => openDetail(item, 'sale');
+            return card;
+        }
+
+        function createProductCard(item, type, home) {
             const card = document.createElement('article');
             card.className = 'p-card ' + (type === 'sale' ? 'sale' : type === 'queue' ? 'queue' : 'normal');
             const name = esc(item.product);
@@ -1015,6 +1071,15 @@
                             <span class="q-big"><svg class="ic"><use href="#i-clock"/></svg> ${esc(waitText || 'ดูรายละเอียด / จองคิว')}</span>
                             <span class="q-sub">แตะเพื่อดูรายละเอียด / จองคิว</span>
                         </button>
+                    </div>`;
+            } else if (home) {
+                card.innerHTML = `
+                    <div class="p-img">${img}<span class="p-badge ok">พร้อมขาย</span></div>
+                    <div class="p-body">
+                        <div class="q-head"><h4 class="p-name">${name} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price"><b>${price}</b> บาท</div></div>
+                        ${noteHtml(item)}
+                        <div class="p-meta">${benefitChipsHtml()}</div>
+                        <button type="button" class="btn rent">เช่าเลย</button>
                     </div>`;
             } else {
                 card.innerHTML = `
@@ -1063,8 +1128,8 @@
 
             // 1) ลดราคาพิเศษ: ทุกรายการ เต็มความกว้าง อยู่บนสุด
             saleItems.forEach(item => {
-                const card = createProductCard(item, 'sale');
-                card.classList.add('sale-top', 'span-all');
+                const card = createSaleHeroCard(item);
+                card.classList.add('span-all');
                 box.appendChild(card);
             });
 
@@ -1079,7 +1144,7 @@
                 let pill, card;
                 if (ready) {
                     pill = '<span class="pill">พร้อมขาย</span>';
-                    card = createProductCard(ready, 'normal');
+                    card = createProductCard(ready, 'normal', true);
                 } else if (saleReady) {
                     pill = '<span class="pill">พร้อมขาย</span>';
                     card = document.createElement('article');
@@ -1129,7 +1194,7 @@
             let waitHtml = '';
             if (!ready) {
                 waitHtml = t
-                    ? `<div class="q-wait" role="timer"><div class="q-wait-main">⏱ ว่างในอีก <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> นาที</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main">⏱ <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
                     : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
             }
             const btnHtml = ready
@@ -1138,9 +1203,9 @@
             card.innerHTML = `
                 <div class="p-img"><img src="${esc(item.image)}" alt="${esc(item.product)}" loading="lazy"><span class="p-badge queue">${ready ? 'พร้อมเช่า' : 'ต้องรอคิว'}</span></div>
                 <div class="p-body">
-                    <div class="q-head"><h4 class="p-name">${esc(item.product)}</h4><div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div></div>
+                    <div class="q-head"><h4 class="p-name">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div></div>
                     ${noteHtml(item)}
-                    <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${esc(fmtPrice(item.price))} บาท</span>${benefitChipsHtml()}</div>
+                    <div class="p-meta">${benefitChipsHtml()}</div>
                     ${waitHtml}
                     ${btnHtml}
                 </div>`;
