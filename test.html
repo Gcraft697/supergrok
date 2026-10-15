@@ -1124,7 +1124,12 @@
             const available = allProducts.filter(item => !item.status.includes('รอคิว'));
             const saleItems = available.filter(item => item.role.includes('ลดราคา'));
             const normalItems = available.filter(item => !item.role.includes('ลดราคา'));
-            const queueItems = allProducts.filter(item => item.status.includes('รอคิว'));
+            // คิวที่เลยเวลาแล้วแต่ชีตยังเขียนว่า "รอคิว" ให้ข้ามไป แล้วใช้คิวถัดไปที่ยังต้องนับเวลา
+            const queueItems = allProducts.filter(item => {
+                if (!item.status.includes('รอคิว')) return false;
+                const t = calculateRemainingTime(item.queue, item.resetClock);
+                return !(t && t.isReady);
+            });
 
             // 1) ลดราคาพิเศษ: ทุกรายการ เต็มความกว้าง อยู่บนสุด
             saleItems.forEach(item => {
