@@ -84,7 +84,7 @@ button{font:inherit;cursor:pointer}
 .brand{margin-top:6px;align-items:center;gap:8px}
 .brand h1{font-size:19px;line-height:1.2;white-space:nowrap}
 .brand small{font-size:14px;color:#111;font-weight:600}
-.paid{font-size:14px;padding:4px 12px;white-space:nowrap}
+.paid.dep{background:#d97706}.paid{font-size:14px;padding:4px 12px;white-space:nowrap}
 .meta{font-size:12px;margin:8px 0 4px;padding-bottom:8px}
 .item{padding:6px 0}.item .k{font-size:14px}.item .v{font-size:17px}
 #rWho{font-size:16px!important}
@@ -111,7 +111,7 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
  else{document.getElementById('pinErr').textContent='รหัสไม่ถูกต้อง';document.getElementById('pin').value=''}}
 (function(){const t=+localStorage.getItem('sg_ok')||0;if(Date.now()-t<864e5)openApp();else setTimeout(()=>document.getElementById('pin').focus(),100)})();
 </script>
-<div class="hd"><div class="in"><b>SuperGolf<span> · ออกใบเสร็จ</span></b><p>เลือกรายการจากชีต แล้วระบบกรอกให้อัตโนมัติ</p></div></div>
+<div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a><br><b>SuperGolf<span> · ออกใบเสร็จ</span></b><p>เลือกรายการจากชีต แล้วระบบกรอกให้อัตโนมัติ</p></div></div>
 <div class="wrap">
 
 <div class="panel">
@@ -143,6 +143,13 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
     <button type="button" class="chip" data-v="14">14 วัน</button>
     <button type="button" class="chip" data-v="30">30 วัน</button>
   </div>
+  <label>สถานะ</label>
+  <div class="chips" id="stChips">
+    <button type="button" class="chip on" data-v="ชำระแล้ว">ชำระแล้ว</button>
+    <button type="button" class="chip" data-v="มัดจำ">มัดจำ</button>
+  </div>
+  <label>เวลาหมดอายุ (นาฬิกา)</label>
+  <input id="endTime" type="time" value="00:00">
   <div class="row">
     <div><label>เริ่มเช่า</label><input id="start" type="date"></div>
     <div><label>ราคา (บาท)</label><input id="price" type="number"></div>
@@ -157,7 +164,7 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
 <div id="receipt">
   <div class="brand">
     <div><h1>ใบเสร็จการเช่า</h1><small>ร้าน SuperGolf (Treethep)</small></div>
-    <div class="paid">ชำระแล้ว</div>
+    <div class="paid" id="rPaid">ชำระแล้ว</div>
   </div>
   <div class="meta"><span id="rNo"></span><span id="rIssue"></span></div>
   <div class="item"><span class="k" id="rWhoK">Gmail</span><span class="v" id="rWho" style="font-size:18px"></span></div>
@@ -187,15 +194,16 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
 const $=id=>document.getElementById(id);
 const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const PRICES={'SuperGrok':{1:59,3:99,7:179,14:329,30:599},'SuperGrok Lite':{1:35,3:59,7:99,14:179,30:329}};
-let pkg='SuperGrok',days=7,touched=false,curNo='';
+let st='ชำระแล้ว',pkg='SuperGrok',days=7,touched=false,curNo='';
 const pad=n=>String(n).padStart(2,'0');
 const fmt=d=>d.getDate()+' '+M[d.getMonth()]+' '+(d.getFullYear()+543);
 function autoPrice(){if(!touched){$('price').value=PRICES[pkg][days]||''}}
 function chips(box,cb){document.querySelectorAll('#'+box+' .chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+box+' .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');cb(b.dataset.v)})}
 chips('pkgChips',v=>{pkg=v;autoPrice();render()});
+chips('stChips',v=>{st=v;render()});
 chips('dayChips',v=>{days=parseInt(v);autoPrice();render()});
 $('price').oninput=()=>{touched=true;render()};
-['who','start'].forEach(i=>$(i).oninput=render);
+['who','start','endTime'].forEach(i=>$(i).oninput=render);
 
 function render(){
   const s=$('start').value?new Date($('start').value+'T00:00:00'):new Date();
@@ -205,10 +213,10 @@ function render(){
   $('rIssue').textContent='ออก '+fmt(now)+' '+pad(now.getHours())+':'+pad(now.getMinutes())+' น.';
   $('rWhoK').textContent=/@/.test(w)?'Gmail':'รหัสสินค้า';
   $('rWho').textContent=w||'-';$('rWho').parentNode.style.display=w?'':'none';
-  $('rPkg').textContent=pkg;
+  $('rPkg').textContent=pkg;$('rPaid').textContent=st;$('rPaid').classList.toggle('dep',st==='มัดจำ');
   $('rStart').textContent=fmt(s);
   $('rDays').textContent=days+' วัน';
-  $('rEnd').innerHTML=fmt(e)+' <small>00.00 น.</small>';
+  $('rEnd').innerHTML=fmt(e)+' <small>'+($('endTime').value||'00:00').replace(':','.')+' น.</small>';
   $('rPrice').textContent=(parseInt($('price').value)||0)+' บาท';
   drawCal(s,e);
 }
@@ -254,7 +262,7 @@ async function saveImg(){render();const c=await html2canvas($('receipt'),{scale:
   o.innerHTML='<div style="color:#fff;font-weight:700;margin-bottom:10px">กดค้างที่รูป แล้วเลือก "เพิ่มลงในรูปภาพ"</div><img src="'+u+'" style="width:100%;max-width:520px;border-radius:12px"><br><button class="big" style="margin-top:14px;max-width:300px" onclick="this.parentNode.remove()">ปิด</button>';
   document.body.appendChild(o);
 }
-function copyText(){render();const t='ใบเสร็จ ร้าน SuperGolf (Treethep)\nเลขที่: '+(curNo||'-')+'\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent;navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
+function copyText(){render();const t='ใบเสร็จ ร้าน SuperGolf (Treethep)\nเลขที่: '+(curNo||'-')+'\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nสถานะ: '+st+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent;navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
 
 /* ประวัติประกัน (เก็บในเครื่องนี้) */
 const KEY='sg_warranty';
@@ -345,7 +353,10 @@ function fillFrom(r){
   document.querySelectorAll('#pkgChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.v===pkg));
   document.querySelectorAll('#dayChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.v===days));
   $('start').value=r.start.getFullYear()+'-'+pad(r.start.getMonth()+1)+'-'+pad(r.start.getDate());
-  $('price').value=r.price;touched=true;render();
+  $('price').value=r.price;touched=true;
+  st=/มัด/.test(r.k)?'มัดจำ':'ชำระแล้ว';
+  document.querySelectorAll('#stChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.v===st));
+  render();
   $('receipt').scrollIntoView({behavior:'smooth',block:'start'});
 }
 loadSheet();setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k)goToday();window._k=k},60000);
