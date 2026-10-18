@@ -78,6 +78,24 @@ button{font:inherit;cursor:pointer}
 #lock h2{margin:0 0 6px;color:#0b2a5b;font-size:1.4rem}#lock p{margin:0 0 14px;color:#4b5563;font-size:.95rem}
 #lock input{text-align:center;font-size:1.8rem;letter-spacing:.4em}#lock button{width:100%;margin-top:12px}
 #lock .e{color:#b3261e;font-weight:700;min-height:1.4em;margin-top:8px}
+
+/* กระชับสำหรับแคปจอ */
+#receipt{padding:16px 16px 14px;border-radius:18px}
+.brand{margin-top:6px;align-items:center;gap:8px}
+.brand h1{font-size:19px;line-height:1.2;white-space:nowrap}
+.brand small{font-size:13px}
+.paid{font-size:14px;padding:4px 12px;white-space:nowrap}
+.meta{font-size:12px;margin:8px 0 4px;padding-bottom:8px}
+.item{padding:6px 0}.item .k{font-size:14px}.item .v{font-size:17px}
+#rWho{font-size:16px!important}
+.cal{padding:8px 10px;margin:6px 0}.cal h3{font-size:14px;margin:0 0 4px}
+.sum{gap:6px;margin-bottom:6px}.sum div{padding:4px 8px;font-size:12px}.sum b{font-size:14px;white-space:nowrap}
+.sum b small{font-size:11px;font-weight:600}
+.mon .t{font-size:13px}.g7 .h{font-size:10px}.g7 .c{height:26px;font-size:14px}
+.leg{font-size:11px}
+.total{padding:10px 16px;margin-top:4px}.total .k{font-size:16px}.total .v{font-size:28px}
+.note{font-size:12.5px;margin-top:8px;line-height:1.4}
+.thanks{font-size:14px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -183,14 +201,14 @@ function render(){
   const s=$('start').value?new Date($('start').value+'T00:00:00'):new Date();
   const e=new Date(s);e.setDate(e.getDate()+days);
   const now=new Date(),w=$('who').value.trim();
-  $('rNo').textContent='เลขที่ '+(curNo||'-');
+  $('rNo').textContent=curNo?('เลขที่ '+curNo):'';
   $('rIssue').textContent='ออก '+fmt(now)+' '+pad(now.getHours())+':'+pad(now.getMinutes())+' น.';
   $('rWhoK').textContent=/@/.test(w)?'Gmail':'รหัสสินค้า';
-  $('rWho').textContent=w||'-';
+  $('rWho').textContent=w||'-';$('rWho').parentNode.style.display=w?'':'none';
   $('rPkg').textContent=pkg;
   $('rStart').textContent=fmt(s);
   $('rDays').textContent=days+' วัน';
-  $('rEnd').textContent=fmt(e)+' 00.00 น.';
+  $('rEnd').innerHTML=fmt(e)+' <small>00.00 น.</small>';
   $('rPrice').textContent=(parseInt($('price').value)||0)+' บาท';
   drawCal(s,e);
 }
@@ -223,7 +241,19 @@ function drawCal(s,e){
     m++;if(m>11){m=0;y++}
   }
 }
-async function saveImg(){render();const c=await html2canvas($('receipt'),{scale:2,backgroundColor:'#fff'});const a=document.createElement('a');a.download='receipt.png';a.href=c.toDataURL('image/png');a.click()}
+async function saveImg(){render();const c=await html2canvas($('receipt'),{scale:2,backgroundColor:'#fff'});
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  const file=new File([blob],'receipt.png',{type:'image/png'});
+  /* มือถือ/iOS: เปิดหน้าแชร์ แล้วเลือก "บันทึกรูปภาพ" จะเข้าคลังภาพ */
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}
+  }
+  /* สำรอง: แสดงรูปให้กดค้างแล้วเลือก "เพิ่มลงในรูปภาพ" */
+  const u=URL.createObjectURL(blob);
+  const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);overflow:auto;padding:16px;text-align:center';
+  o.innerHTML='<div style="color:#fff;font-weight:700;margin-bottom:10px">กดค้างที่รูป แล้วเลือก "เพิ่มลงในรูปภาพ"</div><img src="'+u+'" style="width:100%;max-width:520px;border-radius:12px"><br><button class="big" style="margin-top:14px;max-width:300px" onclick="this.parentNode.remove()">ปิด</button>';
+  document.body.appendChild(o);
+}
 function copyText(){render();const t='ใบเสร็จ ร้าน SuperGolf (Treethep)\nเลขที่: '+(curNo||'-')+'\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent;navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
 
 /* ประวัติประกัน (เก็บในเครื่องนี้) */
