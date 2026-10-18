@@ -397,6 +397,31 @@
 .header .hd-sub span{color:#7dd3fc}
 .header .hd-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
 .header .hd-tags span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 12px;font-size:.85rem;font-weight:600;color:#fff}
+
+/* ===== บล็อกบทความ ===== */
+.blog-h{font-size:1.35rem;margin:6px 0 12px}
+.blog-grid{display:grid;grid-template-columns:1fr;gap:14px;margin:0 0 22px}
+.art-card{border:3px solid #cbd5e1;background:#fff;border-radius:20px;overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column;font:inherit;color:inherit}
+.art-card:active{transform:translateY(2px)}
+.art-card .art-img{height:130px;display:block;width:100%}
+.art-card .art-body{padding:12px 14px 14px}
+.art-card .art-tag{display:inline-block;font-size:.75rem;font-weight:800;background:var(--navy);color:#fff;border-radius:99px;padding:2px 10px}
+.art-card h4{margin:6px 0 4px;font-size:1.15rem;line-height:1.3;color:var(--navy)}
+.art-card p{margin:0;font-size:.9rem;color:#374151;line-height:1.45}
+.art-card .art-more{display:block;margin-top:8px;font-weight:800;color:var(--fb);font-size:.95rem}
+@media(min-width:760px){.blog-grid{grid-template-columns:1fr 1fr 1fr}}
+#art-body img,#art-body svg.art-fig{width:100%;height:auto;border-radius:14px;display:block;margin:0 0 12px}
+#art-title{font-size:1.5rem;font-weight:800;margin:2px 50px 8px 0;line-height:1.3;color:var(--navy)}
+#art-body{font-size:1.02rem;line-height:1.65}
+#art-body h5{font-size:1.15rem;margin:14px 0 6px;color:var(--navy)}
+#art-body p{margin:0 0 10px}
+#art-body ul{margin:0 0 10px;padding-left:1.2em}
+.art-table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:.92rem}
+.art-table th,.art-table td{border:2px solid #e5e7eb;padding:6px 8px;text-align:center}
+.art-table th{background:var(--navy);color:#fff}
+.art-table td:first-child{text-align:left;font-weight:700}
+.art-note{font-size:.85rem;color:#4b5563}
+.art-box{background:#eff6ff;border:2px solid #93c5fd;border-radius:14px;padding:10px 14px;margin:0 0 12px}
     </style>
 </head>
 <body>
@@ -462,6 +487,13 @@
                     <a class="btn call" href="tel:0973151708"><svg class="ic"><use href="#i-phone"/></svg> โทรด่วน · 097-315-1708</a>
                 </div>
             </details>
+
+            <h3 class="blog-h"><svg class="ic"><use href="#i-star"/></svg> บทความน่ารู้</h3>
+            <div class="blog-grid" id="blog-grid">
+<button type="button" class="art-card" onclick="openArticle('a1')"><svg class="art-img" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g0b2a5b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b2a5b"/><stop offset="1" stop-color="#1464d8"/></linearGradient></defs><rect width="400" height="130" fill="url(#g0b2a5b)"/><circle cx="110" cy="65" r="38" fill="rgba(255,255,255,.18)"/><rect x="80" y="40" width="60" height="50" rx="10" fill="#fff"/><text x="110" y="74" text-anchor="middle" font-size="22" font-weight="800" fill="#0b2a5b">Lite</text><circle cx="290" cy="65" r="46" fill="rgba(255,255,255,.18)"/><rect x="245" y="35" width="90" height="60" rx="12" fill="#fde047"/><text x="290" y="72" text-anchor="middle" font-size="20" font-weight="800" fill="#7f1d1d">SuperGrok</text><text x="200" y="72" text-anchor="middle" font-size="30" font-weight="800" fill="#fff">VS</text><text x="200" y="118" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">1 เท่า  ·  4 เท่า</text></svg><span class="art-body"><span class="art-tag">เปรียบเทียบ</span><h4>Lite กับ SuperGrok ต่างกันอย่างไร</h4><p>ดูง่ายๆ ว่าแต่ละแพ็กเกจทำคลิปและภาพได้มากน้อยแค่ไหนต่อ 1 รหัส</p><span class="art-more">อ่านต่อ ›</span></span></button>
+<button type="button" class="art-card" onclick="openArticle('a2')"><svg class="art-img" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g7c2d12" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c2d12"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs><rect width="400" height="130" fill="url(#g7c2d12)"/><rect x="40" y="30" width="110" height="70" rx="10" fill="#fff"/><polygon points="85,50 85,82 112,66" fill="#0b2a5b"/><rect x="170" y="45" width="80" height="55" rx="10" fill="#fff"/><circle cx="195" cy="62" r="7" fill="#f59e0b"/><polygon points="178,92 200,70 215,84 230,72 243,92" fill="#16a34a"/><text x="330" y="78" text-anchor="middle" font-size="46" font-weight="800" fill="#fff">%</text><text x="330" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">พลังงาน</text></svg><span class="art-body"><span class="art-tag">ความรู้</span><h4>พลังงาน 100% ใช้ทำอะไรได้บ้าง</h4><p>เข้าใจเรื่องเปอร์เซ็นต์พลังงานใน 1 รหัส แบบไม่ต้องเก่งเทคนิค</p><span class="art-more">อ่านต่อ ›</span></span></button>
+<button type="button" class="art-card" onclick="openArticle('a3')"><svg class="art-img" viewBox="0 0 400 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g0f5f6e" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f5f6e"/><stop offset="1" stop-color="#146c2e"/></linearGradient></defs><rect width="400" height="130" fill="url(#g0f5f6e)"/><path d="M200 18 L270 42 V70 C270 100 238 114 200 122 C162 114 130 100 130 70 V42 Z" fill="#fff"/><path d="M172 70 l20 20 l38 -42" fill="none" stroke="#146c2e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="art-body"><span class="art-tag">ประกัน</span><h4>เช่ารายวัน ปลอดภัยไหม ประกันคืออะไร</h4><p>อธิบายเงื่อนไขการเช่าและการรับประกันของร้าน SuperGolf</p><span class="art-more">อ่านต่อ ›</span></span></button>
+            </div>
 
             <a class="big-btn outline" id="go-check" href="/check.html">
                 <span class="ic-wrap"><svg class="ic"><use href="#i-shield"/></svg></span>
@@ -557,6 +589,17 @@
             <h3 id="cal-modal-date"></h3>
             <div id="cal-modal-content"></div>
             <button type="button" class="btn gray modal-close-btn" onclick="closeCalendarModal()">ปิดหน้าต่างนี้</button>
+        </div>
+    </div>
+
+    <!-- หน้าต่างบทความ -->
+    <div id="art-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="art-title">
+        <div class="modal-bg" onclick="closeArticle()"></div>
+        <div class="modal-box">
+            <button type="button" class="modal-x" onclick="closeArticle()" aria-label="ปิด">✕</button>
+            <h3 id="art-title"></h3>
+            <div id="art-body"></div>
+            <button type="button" class="btn gray modal-close-btn" onclick="closeArticle()">ปิดบทความ</button>
         </div>
     </div>
 
@@ -1469,8 +1512,20 @@
 
         function closeCalendarModal() { closeModal('calendar-day-modal'); }
 
+        // ===== บล็อกบทความ =====
+        const ARTICLES = {"a1": {"t": "Lite กับ SuperGrok ต่างกันอย่างไร", "h": "<svg class=\"art-fig\" viewBox=\"0 0 400 130\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"g0b2a5b\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0b2a5b\"/><stop offset=\"1\" stop-color=\"#1464d8\"/></linearGradient></defs><rect width=\"400\" height=\"130\" fill=\"url(#g0b2a5b)\"/><circle cx=\"110\" cy=\"65\" r=\"38\" fill=\"rgba(255,255,255,.18)\"/><rect x=\"80\" y=\"40\" width=\"60\" height=\"50\" rx=\"10\" fill=\"#fff\"/><text x=\"110\" y=\"74\" text-anchor=\"middle\" font-size=\"22\" font-weight=\"800\" fill=\"#0b2a5b\">Lite</text><circle cx=\"290\" cy=\"65\" r=\"46\" fill=\"rgba(255,255,255,.18)\"/><rect x=\"245\" y=\"35\" width=\"90\" height=\"60\" rx=\"12\" fill=\"#fde047\"/><text x=\"290\" y=\"72\" text-anchor=\"middle\" font-size=\"20\" font-weight=\"800\" fill=\"#7f1d1d\">SuperGrok</text><text x=\"200\" y=\"72\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"800\" fill=\"#fff\">VS</text><text x=\"200\" y=\"118\" text-anchor=\"middle\" font-size=\"14\" font-weight=\"700\" fill=\"#fff\">1 เท่า  ·  4 เท่า</text></svg><p>บริการของเรามี 2 แพ็กเกจหลัก คือ <b>Lite</b> และ <b>SuperGrok</b> ความต่างที่เห็นชัดที่สุดคือ <b>ปริมาณพลังงาน</b> ที่ใช้สร้างคลิปและภาพได้ในหนึ่งรหัส</p>\n<div class=\"art-box\"><b>ภาพรวมแบบเข้าใจง่าย</b><br>ถ้า Lite มีพลังงาน 100% แล้ว SuperGrok จะทำได้มากกว่า <b>4 เท่า</b> (เทียบเป็น 400%)</div>\n<h5>ทำได้กี่ชิ้นต่อ 1 รหัส</h5>\n<table class=\"art-table\"><tr><th>งานที่สร้าง</th><th>ใช้พลังงาน</th><th>Lite</th><th>SuperGrok</th></tr>\n<tr><td>คลิป 720p ยาว 6 วิ</td><td>8%</td><td>12 คลิป</td><td>50 คลิป</td></tr>\n<tr><td>คลิป 480p ยาว 15 วิ</td><td>8%</td><td>12 คลิป</td><td>50 คลิป</td></tr>\n<tr><td>คลิป 480p ยาว 6 วิ</td><td>4%</td><td>25 คลิป</td><td>100 คลิป</td></tr>\n<tr><td>ภาพ 1 ภาพ</td><td>2 ถึง 4%</td><td>25 ถึง 50 ภาพ</td><td>100 ถึง 200 ภาพ</td></tr></table>\n<p class=\"art-note\">ตัวเลขเป็นค่าประมาณจากการใช้งานจริงของร้าน (ปัดเศษลง) อาจเปลี่ยนได้ตามการปรับของผู้ให้บริการ</p>\n<h5>เลือกอันไหนดี</h5>\n<ul><li><b>Lite</b> เหมาะกับคนที่อยากลองเล่น ทำภาพหรือคลิปสั้นเป็นบางครั้ง ราคาเบากว่า</li><li><b>SuperGrok</b> เหมาะกับคนที่ทำคลิปบ่อย ทำคลิปยาวหรือคมชัดสูง และไม่อยากให้พลังงานหมดไว</li></ul>"}, "a2": {"t": "พลังงาน 100% ใช้ทำอะไรได้บ้าง", "h": "<svg class=\"art-fig\" viewBox=\"0 0 400 130\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"g7c2d12\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#7c2d12\"/><stop offset=\"1\" stop-color=\"#d97706\"/></linearGradient></defs><rect width=\"400\" height=\"130\" fill=\"url(#g7c2d12)\"/><rect x=\"40\" y=\"30\" width=\"110\" height=\"70\" rx=\"10\" fill=\"#fff\"/><polygon points=\"85,50 85,82 112,66\" fill=\"#0b2a5b\"/><rect x=\"170\" y=\"45\" width=\"80\" height=\"55\" rx=\"10\" fill=\"#fff\"/><circle cx=\"195\" cy=\"62\" r=\"7\" fill=\"#f59e0b\"/><polygon points=\"178,92 200,70 215,84 230,72 243,92\" fill=\"#16a34a\"/><text x=\"330\" y=\"78\" text-anchor=\"middle\" font-size=\"46\" font-weight=\"800\" fill=\"#fff\">%</text><text x=\"330\" y=\"100\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"700\" fill=\"#fff\">พลังงาน</text></svg><p>ทุกรหัสเริ่มต้นที่ <b>พลังงาน 100%</b> เหมือนแบตเตอรี่ ทุกครั้งที่สร้างคลิปหรือภาพ พลังงานจะลดลงตามขนาดและความยาวของงาน</p>\n<h5>ตัวอย่างเข้าใจง่าย</h5>\n<ul><li>คลิป 720p ยาว 6 วิ กินประมาณ <b>8%</b></li><li>คลิป 480p ยาว 15 วิ กินประมาณ <b>8%</b></li><li>คลิป 480p ยาว 6 วิ กินประมาณ <b>4%</b></li><li>ภาพ 1 ภาพ กินประมาณ <b>2 ถึง 4%</b></li></ul>\n<h5>เคล็ดลับประหยัดพลังงาน</h5>\n<ul><li>ถ้าแค่อยากลองไอเดีย ให้ทำ 480p ก่อน แล้วค่อยทำ 720p เฉพาะชิ้นที่ชอบ</li><li>คลิปสั้น 6 วินาทีกินน้อยกว่า ทำหลายเวอร์ชันได้</li><li>ภาพกินน้อยที่สุด เหมาะกับการลองคำสั่ง (prompt) ก่อนทำคลิป</li></ul>\n<p class=\"art-note\">ตัวเลขเป็นค่าประมาณจากการใช้งานจริง ไม่ใช่ค่าที่ประกาศอย่างเป็นทางการ</p>"}, "a3": {"t": "เช่ารายวัน ปลอดภัยไหม ประกันคืออะไร", "h": "<svg class=\"art-fig\" viewBox=\"0 0 400 130\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><defs><linearGradient id=\"g0f5f6e\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#0f5f6e\"/><stop offset=\"1\" stop-color=\"#146c2e\"/></linearGradient></defs><rect width=\"400\" height=\"130\" fill=\"url(#g0f5f6e)\"/><path d=\"M200 18 L270 42 V70 C270 100 238 114 200 122 C162 114 130 100 130 70 V42 Z\" fill=\"#fff\"/><path d=\"M172 70 l20 20 l38 -42\" fill=\"none\" stroke=\"#146c2e\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><p>ร้าน SuperGolf ให้เช่า SuperGrok รายวัน/รายชั่วโมง โดยเน้น <b>ใช้คนเดียว ไม่แชร์</b> และมีการรับประกันตลอดอายุการใช้งาน</p>\n<h5>ประกันคืออะไร</h5>\n<p>ถ้ารหัสมีปัญหาในช่วงที่เช่า เราจะ <b>เคลมเรียกรหัสเดิมกลับมา</b> ให้ใช้ต่อจนครบระยะเวลาที่เช่า</p>\n<h5>ข้อควรรู้</h5>\n<ul><li>เมื่อสิ้นสุดการเช่า ทางร้านสงวนสิทธิ์ขอเรียกคืนการครอบครองรหัส</li><li>ถ้าต้องการต่ออายุ กรุณาแจ้งล่วงหน้า</li><li>ตรวจสอบประกันได้ที่ปุ่ม \"ตรวจสอบประกัน\" ในหน้าแรก</li></ul>\n<h5>จองคิวล่วงหน้า</h5>\n<p>ถ้ารหัสที่ต้องการยังไม่ว่าง สามารถวางมัดจำจองคิวเพื่อล็อกสิทธิ์ได้ เงินมัดจำจะนำไปลดราคาในวันรับรหัส ดูรายละเอียดตอนกดจองในหน้าสินค้า</p>"}};
+        function openArticle(k) {
+            const a = ARTICLES[k]; if (!a) return;
+            document.getElementById('art-title').textContent = a.t;
+            document.getElementById('art-body').innerHTML = a.h;
+            openModal('art-modal');
+            document.querySelector('#art-modal .modal-box').scrollTop = 0;
+        }
+        function closeArticle() { closeModal('art-modal'); }
+
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
+            if (!document.getElementById('art-modal').classList.contains('hidden')) { closeArticle(); return; }
             if (!document.getElementById('detail-modal').classList.contains('hidden')) closeDetail();
             else if (!document.getElementById('calendar-day-modal').classList.contains('hidden')) closeCalendarModal();
         });
