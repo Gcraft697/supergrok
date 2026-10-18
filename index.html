@@ -378,6 +378,25 @@
             .sale-hero .sh-img img { height:100%; min-height:260px; }
             .sale-hero .sh-body { padding:20px 22px; justify-content:center; }
         }
+    /* เมนูวงกลม 4 ปุ่ม */
+.orbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
+.orb{border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:.85rem;color:var(--navy);line-height:1.2;text-align:center}
+.orb .c{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:32px;box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .08s,box-shadow .08s}
+.orb:active .c{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.orb.amber .c{background:#9a3412}.orb.navy .c{background:var(--navy)}.orb.teal .c{background:var(--teal)}.orb.fb .c{background:var(--fb)}
+.all-bar{width:100%;min-height:56px;border:3px solid var(--navy);background:#fff;color:var(--navy);border-radius:16px;font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;cursor:pointer;margin:0 0 14px}
+.all-bar .arr{transition:transform .2s}
+.all-bar[aria-expanded="true"] .arr{transform:rotate(180deg)}
+#all-list{margin:0 0 4px}
+.back-office{display:inline-block;margin-top:10px;font-size:.7rem;color:#9ca3af;text-decoration:none}
+    /* หัวเว็บใหม่ */
+.header{background:linear-gradient(160deg,#0b2a5b 0%,#123f86 100%);padding:18px 16px 18px;text-align:center;border-bottom:5px solid #38bdf8}
+.header .hd-logo{width:56px;height:56px;border-radius:50%;background:#38bdf8;display:grid;place-items:center;font-size:30px;margin:0 auto 8px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.header .brand{font-size:2.1rem;font-weight:800;margin:0;line-height:1.15;letter-spacing:.01em}
+.header .hd-sub{margin:6px 0 12px;font-size:1.15rem;font-weight:700;color:#e6efff}
+.header .hd-sub span{color:#7dd3fc}
+.header .hd-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.header .hd-tags span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 12px;font-size:.85rem;font-weight:600;color:#fff}
     </style>
 </head>
 <body>
@@ -401,8 +420,11 @@
 
     <header class="header">
         <div class="header-inner">
-            <p class="brand">SuperGolf<span> · เช่า SuperGrok</span></p>
-            <p class="tagline">ข้อมูลอัปเดตแบบเรียลไทม์ รับประกันตลอดอายุใช้งาน ไม่หลุด ไม่เด้ง ไม่แชร์ ใช้คนเดียว</p>
+            <h1 class="brand">SuperGolf</h1>
+            <p class="hd-sub">บริการเช่า <span>SuperGrok</span> รายวัน / รายชั่วโมง</p>
+            <div class="hd-tags">
+                <span>✅ รับประกันตลอดอายุใช้งาน</span><span>🔒 ไม่แชร์ ใช้คนเดียว</span><span>⚡ ไม่หลุด ไม่เด้ง</span><span>🔄 อัปเดตเรียลไทม์</span>
+            </div>
         </div>
     </header>
 
@@ -426,23 +448,14 @@
             </div>
 
             <div class="home-title">ท่านต้องการทำอะไร?</div>
-            <button type="button" class="big-btn amber" id="go-queue" onclick="goTo('products', 'queue-section')">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-clock"/></svg></span>
-                <span><span class="t">จองคิวล่วงหน้า</span><span class="d">รายการสินค้าที่ต้องรอคิว</span></span>
-            </button>
-            <button type="button" class="big-btn navy" id="go-products" onclick="goTo('products')">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-box"/></svg></span>
-                <span><span class="t">ดูสินค้า และราคา</span><span class="d">สินค้าพร้อมเช่าทันที และสินค้าลดราคา</span></span>
-            </button>
-            <button type="button" class="big-btn teal" id="go-calendar" onclick="goTo('calendar')">
-                <span class="ic-wrap"><svg class="ic"><use href="#i-cal"/></svg></span>
-                <span><span class="t">ปฏิทินคิวว่าง</span><span class="d">ดูว่าวันไหนมีคิว และจองล่วงหน้า</span></span>
-            </button>
-            <details class="contact-panel">
-                <summary class="big-btn fb" id="go-contact">
-                    <span class="ic-wrap"><svg class="ic"><use href="#i-msg"/></svg></span>
-                    <span><span class="t">ติดต่อสอบถาม</span><span class="d">Messenger · Facebook · โทร</span></span>
-                </summary>
+<div class="orbs">
+  <button type="button" class="orb amber" onclick="goTo('products','queue-section')"><span class="c"><svg class="ic"><use href="#i-clock"/></svg></span>จองคิว</button>
+  <button type="button" class="orb navy" onclick="goTo('products')"><span class="c"><svg class="ic"><use href="#i-box"/></svg></span>สินค้า/ราคา</button>
+  <button type="button" class="orb teal" onclick="goTo('calendar')"><span class="c"><svg class="ic"><use href="#i-cal"/></svg></span>ปฏิทินคิว</button>
+  <button type="button" class="orb fb" onclick="openContactFromOrb()"><span class="c"><svg class="ic"><use href="#i-msg"/></svg></span>ติดต่อ</button>
+</div>
+<details class="contact-panel" id="contact-panel" style="margin:0 0 16px">
+                <summary style="list-style:none;height:0;overflow:hidden;margin:0;padding:0"></summary>
                 <div class="contact-actions">
                     <a class="btn msg" href="https://m.me/100012830647735" data-ext="https://m.me/100012830647735"><svg class="ic"><use href="#i-msg"/></svg> Messenger</a>
                     <a class="btn fb" href="https://www.facebook.com/messages/t/100012830647735" data-ext="https://www.facebook.com/messages/t/100012830647735"><svg class="ic"><use href="#i-fb"/></svg> Facebook</a>
@@ -554,6 +567,7 @@
             <span class="visit-badge-num" id="visit-count-num">—</span>
             <span class="visit-badge-unit">คน</span>
         </div>
+        <a class="back-office" href="DAW21W.html">ระบบหลังร้าน</a>
     </footer>
 
     <!-- SCRIPT -->
@@ -1487,6 +1501,12 @@
         }
         window.addEventListener('popstate', () => showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null));
         window.addEventListener('hashchange', () => showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null));
+
+        function openContactFromOrb(){
+            const d=document.getElementById('contact-panel');
+            d.open=!d.open;
+            if(d.open) d.scrollIntoView({behavior:'smooth',block:'center'});
+        }
 
         showPanel(panelFromHash(), location.hash === '#queue' ? 'queue-section' : null);
         bindExternalLinks(document);
