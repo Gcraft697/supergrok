@@ -83,7 +83,7 @@ button{font:inherit;cursor:pointer}
 #receipt{padding:16px 16px 14px;border-radius:18px}
 .brand{margin-top:6px;align-items:center;gap:8px}
 .brand h1{font-size:19px;line-height:1.2;white-space:nowrap}
-.brand small{font-size:13px}
+.brand small{font-size:14px;color:#111;font-weight:600}
 .paid{font-size:14px;padding:4px 12px;white-space:nowrap}
 .meta{font-size:12px;margin:8px 0 4px;padding-bottom:8px}
 .item{padding:6px 0}.item .k{font-size:14px}.item .v{font-size:17px}
@@ -156,7 +156,7 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
 
 <div id="receipt">
   <div class="brand">
-    <div><h1>ร้าน SuperGolf (Treethep)</h1><small>ใบเสร็จการเช่า</small></div>
+    <div><h1>ใบเสร็จการเช่า</h1><small>ร้าน SuperGolf (Treethep)</small></div>
     <div class="paid">ชำระแล้ว</div>
   </div>
   <div class="meta"><span id="rNo"></span><span id="rIssue"></span></div>
@@ -172,7 +172,7 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
   </div>
 
   <div class="total"><span class="k">ราคา</span><span class="v" id="rPrice"></span></div>
-  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า</div>
+  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
 
