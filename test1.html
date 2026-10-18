@@ -73,7 +73,7 @@ button{font:inherit;cursor:pointer}
 <div class="wrap">
 
 <div class="panel">
-  <h2>📋 รายการจากชีต (กดเพื่อกรอกอัตโนมัติ)</h2>
+  <h2>📋 เริ่มเช่าวันนี้ (กดเพื่อกรอกอัตโนมัติ)</h2>
   <input id="q" placeholder="ค้นหา Gmail / แพ็กเกจ" autocomplete="off" oninput="renderSheet()">
   <div id="sheetStat" class="empty">กำลังโหลดรายการ...</div>
   <div id="sheetList" style="max-height:420px;overflow:auto;margin-top:6px"></div>
@@ -232,6 +232,8 @@ const SHEET_URL='https://docs.google.com/spreadsheets/d/1FZDa93Qn_N44biC3gugdPf2
 const TM={'ม.ค.':0,'ก.พ.':1,'มี.ค.':2,'เม.ย.':3,'พ.ค.':4,'มิ.ย.':5,'ก.ค.':6,'ส.ค.':7,'ก.ย.':8,'ต.ค.':9,'พ.ย.':10,'ธ.ค.':11};
 function parseD(str){
   str=String(str||'').trim();let d,m,y,r;
+  if(r=str.match(/^Date\((\d+),(\d+),(\d+)/))return new Date(+r[1],+r[2],+r[3]);
+  str=str.replace(/\./g,'.');
   if(r=str.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/)){d=+r[1];m=+r[2]-1;y=+r[3]}
   else if(r=str.match(/(\d{1,2})\s*(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s*(\d{2,4})?/)){d=+r[1];m=TM[r[2]];y=r[3]?+r[3]:new Date().getFullYear()}
   else return null;
@@ -251,8 +253,9 @@ async function loadSheet(){
       if(!(d>0)||!h||!who||who==='-')return;
       sheetRows.push({pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:isNaN(price)?0:price,who});
     });
-    sheetRows.sort((a,b)=>b.start-a.start);
-    $('sheetStat').textContent='พบ '+sheetRows.length+' รายการ (ใหม่สุดอยู่บน)';
+    const td=new Date();td.setHours(0,0,0,0);
+    sheetRows=sheetRows.filter(r=>{const x=new Date(r.start);x.setHours(0,0,0,0);return x.getTime()===td.getTime()});
+    $('sheetStat').textContent='เริ่มเช่าวันนี้ ('+fmt(td)+') พบ '+sheetRows.length+' รายการ'+(sheetRows.length?'':' · ยังไม่มีบัญชีเริ่มวันนี้');
     renderSheet();
   }catch(e){$('sheetStat').textContent='โหลดชีตไม่สำเร็จ (ตรวจสอบว่าชีตแชร์แบบดูได้ แล้วกดโหลดใหม่)'}
 }
@@ -277,7 +280,7 @@ function fillFrom(r){
   $('price').value=r.price;touched=true;render();
   $('receipt').scrollIntoView({behavior:'smooth',block:'start'});
 }
-loadSheet();
+loadSheet();setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k)loadSheet();window._k=k},60000);
 </script>
 </body>
 </html>
