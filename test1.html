@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ใบเสร็จ SuperGolf</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -27,7 +28,7 @@ button{font:inherit;cursor:pointer}
 #receipt{background:#fff;border-radius:22px;padding:26px 22px;border:3px solid #0b2a5b;position:relative;overflow:hidden;margin-bottom:18px}
 #receipt:before{content:"";position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#0b2a5b,#38bdf8)}
 .brand{display:flex;justify-content:space-between;align-items:flex-start;margin-top:8px}
-.brand h1{margin:0;font-size:32px}
+.brand h1{margin:0;font-size:24px;line-height:1.25}
 .brand small{display:block;font-size:15px;color:#555}
 .paid{background:#16a34a;color:#fff;font-weight:700;font-size:18px;padding:6px 16px;border-radius:999px}
 .meta{display:flex;justify-content:space-between;font-size:14px;color:#555;margin:14px 0;padding-bottom:14px;border-bottom:2px dashed #cfd6e0;gap:8px}
@@ -56,7 +57,7 @@ button{font:inherit;cursor:pointer}
 .total .k{font-size:18px}.total .v{font-size:34px;font-weight:700}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 .badges span{background:#f1f5f9;border-radius:999px;padding:8px 14px;font-size:16px;font-weight:600}
-.thanks{text-align:center;margin-top:16px;font-size:17px;color:#555}
+.note{margin-top:14px;font-size:15px;color:#111;line-height:1.5}.thanks{text-align:center;margin-top:16px;font-size:17px;color:#555}
 /* ประวัติประกัน */
 .hist-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #e5e9ef}
 .hist-item .info{flex:1;min-width:0}
@@ -65,23 +66,50 @@ button{font:inherit;cursor:pointer}
 .cp{padding:10px 14px;border:0;border-radius:12px;background:#1a73e8;color:#fff;font-size:16px;font-weight:700}
 .cp.ok{background:#16a34a}
 .mini{padding:10px 12px;border:2px solid #cfd6e0;border-radius:12px;background:#fff;font-size:15px;font-weight:600}
-.sl{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:2px solid #cbd5e1;border-radius:14px;padding:10px 12px;margin-top:8px}.sl:active,.sl.sel{background:#eff6ff;border-color:#1464d8}.sl .i{flex:1;min-width:0}.sl .g{font-size:1.05rem;font-weight:800;word-break:break-all;color:#0b2a5b}.sl .s{font-size:.85rem;color:#4b5563}.sl .p{font-weight:800;color:#0b2a5b;white-space:nowrap}.empty{color:#777;font-size:16px;padding:10px 0}
+.sl{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:2px solid #cbd5e1;border-radius:14px;padding:10px 12px;margin-top:8px}.sl:active,.sl.sel{background:#eff6ff;border-color:#1464d8}.sl .i{flex:1;min-width:0}.sl .g{font-size:1.05rem;font-weight:800;word-break:break-all;color:#0b2a5b}.sl .s{font-size:.85rem;color:#4b5563}.sl .p{font-weight:800;color:#0b2a5b;white-space:nowrap}.nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.nav button{min-height:56px;border:3px solid #0b2a5b;background:#fff;color:#0b2a5b;border-radius:14px;font-size:1.05rem;font-weight:800}.nav .today{background:#0b2a5b;color:#fff}
+.dayT{font-size:1.3rem;font-weight:800;color:#0b2a5b;text-align:center;margin:10px 0 4px}
+.lg{display:flex;gap:8px;justify-content:center;margin-bottom:4px}.lg span,.tag{font-size:.8rem;font-weight:800;border-radius:99px;padding:2px 10px;color:#fff}
+.k-clear{background:#16a34a}.k-dep{background:#d97706}.k-free{background:#64748b}.k-other{background:#7c3aed}
+.sl.c-clear{border-left:10px solid #16a34a;background:#f0fdf4}.sl.c-dep{border-left:10px solid #d97706;background:#fffbeb}.sl.c-free{border-left:10px solid #64748b;background:#f8fafc}.sl.c-other{border-left:10px solid #7c3aed;background:#f5f3ff}
+.sl{min-height:64px}.sl.sel{outline:3px solid #1464d8}
+.empty{color:#777;font-size:16px;padding:10px 0}
+#lock{position:fixed;inset:0;z-index:999;background:#0b2a5b;display:flex;align-items:center;justify-content:center;padding:20px}
+#lock .b{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;text-align:center}
+#lock h2{margin:0 0 6px;color:#0b2a5b;font-size:1.4rem}#lock p{margin:0 0 14px;color:#4b5563;font-size:.95rem}
+#lock input{text-align:center;font-size:1.8rem;letter-spacing:.4em}#lock button{width:100%;margin-top:12px}
+#lock .e{color:#b3261e;font-weight:700;min-height:1.4em;margin-top:8px}
 </style>
 </head>
 <body>
+<div id="lock"><div class="b"><h2>🔒 หลังร้าน SuperGolf</h2><p>กรอกรหัสเพื่อเข้าใช้งาน</p>
+<input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" onkeydown="if(event.key==='Enter')unlock()">
+<button class="big" onclick="unlock()">เข้าสู่ระบบ</button><div class="e" id="pinErr"></div></div></div>
+<script>
+const PIN_HASH="8a74871ef2feda5ae297ffef09da8b68b516dc78a0d7cdce2d38c9c61625cb08";
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function openApp(){document.getElementById('lock').style.display='none'}
+async function unlock(){const v=document.getElementById('pin').value.trim();
+ if(await sha('sg|'+v)===PIN_HASH){localStorage.setItem('sg_ok',String(Date.now()));openApp()}
+ else{document.getElementById('pinErr').textContent='รหัสไม่ถูกต้อง';document.getElementById('pin').value=''}}
+(function(){const t=+localStorage.getItem('sg_ok')||0;if(Date.now()-t<864e5)openApp();else setTimeout(()=>document.getElementById('pin').focus(),100)})();
+</script>
 <div class="hd"><div class="in"><b>SuperGolf<span> · ออกใบเสร็จ</span></b><p>เลือกรายการจากชีต แล้วระบบกรอกให้อัตโนมัติ</p></div></div>
 <div class="wrap">
 
 <div class="panel">
-  <h2>📋 เริ่มเช่าวันนี้ (กดเพื่อกรอกอัตโนมัติ)</h2>
-  <input id="q" placeholder="ค้นหา Gmail / แพ็กเกจ" autocomplete="off" oninput="renderSheet()">
-  <div id="sheetStat" class="empty">กำลังโหลดรายการ...</div>
-  <div id="sheetList" style="max-height:420px;overflow:auto;margin-top:6px"></div>
+  <h2>📋 คิวเริ่มเช่า</h2>
+  <div class="nav"><button type="button" onclick="shiftDay(-1)">◀ เมื่อวาน</button><button type="button" class="today" onclick="goToday()">วันนี้</button><button type="button" onclick="shiftDay(1)">พรุ่งนี้ ▶</button></div>
+  <input type="date" id="selDate" onchange="pickDate()" style="margin-top:8px">
+  <div id="dayTitle" class="dayT"></div>
+  <div class="lg"><span class="k-clear">clear</span><span class="k-dep">มัดจำ</span><span class="k-free">ว่าง</span></div>
+  <div id="sheetStat" class="empty">กำลังโหลด...</div>
+  <div id="sheetList"></div>
   <button class="big" style="width:100%;margin-top:10px" onclick="loadSheet()">🔄 โหลดรายการใหม่</button>
 </div>
 
 <div class="panel">
   <h2>ออกใบเสร็จ</h2>
+  <label>เลขที่ใบเสร็จ (คอลัมน์ F)</label><input id="no" placeholder="ใส่เลขเอง หรือกดเลือกจากรายการ" oninput="curNo=this.value.trim();render()" autocomplete="off">
   <label>1) Gmail หรือ รหัสสินค้า</label>
   <input id="who" placeholder="พิมพ์ Gmail หรือรหัสสินค้า เช่น #12" autocomplete="off">
   <label>2) แพ็กเกจ</label>
@@ -110,7 +138,7 @@ button{font:inherit;cursor:pointer}
 
 <div id="receipt">
   <div class="brand">
-    <div><h1>SuperGolf</h1><small>ใบเสร็จการเช่า SuperGrok</small></div>
+    <div><h1>ร้าน SuperGolf (Treethep)</h1><small>ใบเสร็จการเช่า</small></div>
     <div class="paid">ชำระแล้ว</div>
   </div>
   <div class="meta"><span id="rNo"></span><span id="rIssue"></span></div>
@@ -126,7 +154,7 @@ button{font:inherit;cursor:pointer}
   </div>
 
   <div class="total"><span class="k">ราคา</span><span class="v" id="rPrice"></span></div>
-  <div class="badges"><span>🔒 บัญชีส่วนตัว</span><span>✅ รับประกัน</span><span>💸 คืนเงินได้</span></div>
+  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
 
@@ -141,7 +169,7 @@ button{font:inherit;cursor:pointer}
 const $=id=>document.getElementById(id);
 const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const PRICES={'SuperGrok':{1:59,3:99,7:179,14:329,30:599},'SuperGrok Lite':{1:35,3:59,7:99,14:179,30:329}};
-let pkg='SuperGrok',days=7,touched=false;
+let pkg='SuperGrok',days=7,touched=false,curNo='';
 const pad=n=>String(n).padStart(2,'0');
 const fmt=d=>d.getDate()+' '+M[d.getMonth()]+' '+(d.getFullYear()+543);
 function autoPrice(){if(!touched){$('price').value=PRICES[pkg][days]||''}}
@@ -155,7 +183,7 @@ function render(){
   const s=$('start').value?new Date($('start').value+'T00:00:00'):new Date();
   const e=new Date(s);e.setDate(e.getDate()+days);
   const now=new Date(),w=$('who').value.trim();
-  $('rNo').textContent='เลขที่ SG'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+pad(now.getHours())+pad(now.getMinutes());
+  $('rNo').textContent='เลขที่ '+(curNo||'-');
   $('rIssue').textContent='ออก '+fmt(now)+' '+pad(now.getHours())+':'+pad(now.getMinutes())+' น.';
   $('rWhoK').textContent=/@/.test(w)?'Gmail':'รหัสสินค้า';
   $('rWho').textContent=w||'-';
@@ -196,7 +224,7 @@ function drawCal(s,e){
   }
 }
 async function saveImg(){render();const c=await html2canvas($('receipt'),{scale:2,backgroundColor:'#fff'});const a=document.createElement('a');a.download='receipt.png';a.href=c.toDataURL('image/png');a.click()}
-function copyText(){render();const t='ใบเสร็จ SuperGolf\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent;navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
+function copyText(){render();const t='ใบเสร็จ ร้าน SuperGolf (Treethep)\nเลขที่: '+(curNo||'-')+'\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent;navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
 
 /* ประวัติประกัน (เก็บในเครื่องนี้) */
 const KEY='sg_warranty';
@@ -240,9 +268,14 @@ function parseD(str){
   if(y>2400)y-=543;if(y<100)y+=2000;
   const dt=new Date(y,m,d);return isNaN(dt)?null:dt;
 }
-let sheetRows=[];
+let sheetRows=[],selDay=new Date();selDay.setHours(0,0,0,0);
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+function shiftDay(n){selDay.setDate(selDay.getDate()+n);renderSheet()}
+function goToday(){selDay=new Date();selDay.setHours(0,0,0,0);renderSheet()}
+function pickDate(){const v=$('selDate').value;if(v){selDay=new Date(v+'T00:00:00');renderSheet()}}
+function kClass(k){k=String(k||'').toLowerCase();if(k.includes('clear'))return['c-clear','k-clear','clear'];if(k.includes('มัด'))return['c-dep','k-dep','มัดจำ'];if(k.includes('ว่าง'))return['c-free','k-free','ว่าง'];return['c-other','k-other',k||'-']}
 async function loadSheet(){
-  $('sheetStat').textContent='กำลังโหลดรายการ...';
+  $('sheetStat').textContent='กำลังโหลด...';
   try{
     const t=await (await fetch(SHEET_URL)).text();
     const j=JSON.parse(t.substring(t.indexOf('{'),t.lastIndexOf('}')+1));
@@ -250,37 +283,42 @@ async function loadSheet(){
     j.table.rows.forEach(r=>{const c=r.c;if(!c)return;
       const g=i=>c[i]?(c[i].f!=null&&String(c[i].f).trim()!==''?c[i].f:c[i].v):'';
       const d=parseInt(g(3)),h=parseD(g(7)),who=String(g(16)||'').trim(),price=parseInt(g(4));
-      if(!(d>0)||!h||!who||who==='-')return;
-      sheetRows.push({pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:isNaN(price)?0:price,who});
+      if(!(d>0)||!h)return;
+      const no=String(g(5)||'').trim()||String(g(15)||'').trim();
+      sheetRows.push({pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:isNaN(price)?0:price,who:(who&&who!=='-')?who:'',no,k:String(g(10)||'').trim()});
     });
-    const td=new Date();td.setHours(0,0,0,0);
-    sheetRows=sheetRows.filter(r=>{const x=new Date(r.start);x.setHours(0,0,0,0);return x.getTime()===td.getTime()});
-    $('sheetStat').textContent='เริ่มเช่าวันนี้ ('+fmt(td)+') พบ '+sheetRows.length+' รายการ'+(sheetRows.length?'':' · ยังไม่มีบัญชีเริ่มวันนี้');
     renderSheet();
-  }catch(e){$('sheetStat').textContent='โหลดชีตไม่สำเร็จ (ตรวจสอบว่าชีตแชร์แบบดูได้ แล้วกดโหลดใหม่)'}
+  }catch(e){$('sheetStat').textContent='โหลดชีตไม่สำเร็จ (ต้องเปิดผ่านเว็บ golfcraft.shop และชีตแชร์แบบดูได้)'}
 }
 function renderSheet(){
-  const q=($('q').value||'').toLowerCase(),L=$('sheetList');L.innerHTML='';
-  sheetRows.filter(r=>!q||(r.who+' '+r.pkg).toLowerCase().includes(q)).forEach(r=>{
+  const L=$('sheetList');L.innerHTML='';
+  const td=new Date();td.setHours(0,0,0,0);const diff=Math.round((selDay-td)/864e5);
+  $('dayTitle').textContent=(diff===0?'วันนี้ · ':diff===1?'พรุ่งนี้ · ':diff===-1?'เมื่อวาน · ':'')+fmt(selDay);
+  $('selDate').value=ymd(selDay);
+  const rows=sheetRows.filter(r=>ymd(r.start)===ymd(selDay));
+  $('sheetStat').textContent=rows.length?'เริ่มเช่าวันนี้ '+rows.length+' รายการ':'ไม่มีคิวเริ่มเช่าในวันนี้';
+  if(diff!==0)$('sheetStat').textContent=rows.length?'เริ่มเช่า '+rows.length+' รายการ':'ไม่มีคิวเริ่มเช่าวันนี้';
+  rows.forEach(r=>{
     const e=new Date(r.start);e.setDate(e.getDate()+r.days);
-    const b=document.createElement('button');b.type='button';b.className='sl';
+    const [cc,kc,kt]=kClass(r.k);
+    const b=document.createElement('button');b.type='button';b.className='sl '+cc;
     b.innerHTML='<div class="i"><div class="g"></div><div class="s"></div></div><div class="p"></div>';
-    b.querySelector('.g').textContent=r.who;
-    b.querySelector('.s').textContent=(r.pkg==='SuperGrok'?'SuperGrok':'Lite')+' · '+r.days+' วัน · '+fmt(r.start)+' ถึง '+fmt(e);
-    b.querySelector('.p').textContent=r.price+' ฿';
+    b.querySelector('.g').textContent=r.who||'(ยังไม่มีเมล)';
+    b.querySelector('.s').textContent=(r.no?'#'+r.no+' · ':'')+(r.pkg==='SuperGrok'?'SuperGrok':'Lite')+' · '+r.days+' วัน · ถึง '+fmt(e);
+    const p=b.querySelector('.p');p.innerHTML='<span class="tag '+kc+'"></span><br>';p.firstChild.textContent=kt;p.appendChild(document.createTextNode(r.price+' ฿'));
     b.onclick=()=>{fillFrom(r);document.querySelectorAll('.sl.sel').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')};
     L.appendChild(b);
   });
 }
 function fillFrom(r){
-  $('who').value=r.who;pkg=r.pkg;days=r.days;
+  $('who').value=r.who;curNo=r.no;$('no').value=r.no;pkg=r.pkg;days=r.days;
   document.querySelectorAll('#pkgChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.v===pkg));
   document.querySelectorAll('#dayChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.v===days));
   $('start').value=r.start.getFullYear()+'-'+pad(r.start.getMonth()+1)+'-'+pad(r.start.getDate());
   $('price').value=r.price;touched=true;render();
   $('receipt').scrollIntoView({behavior:'smooth',block:'start'});
 }
-loadSheet();setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k)loadSheet();window._k=k},60000);
+loadSheet();setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k)goToday();window._k=k},60000);
 </script>
 </body>
 </html>
