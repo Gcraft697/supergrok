@@ -1,0 +1,8 @@
+# robots.txt สำหรับ https://www.golfcraft.shop
+# อนุญาตให้ทุก bot เก็บข้อมูลได้ทั้งเว็บ
+# (หน้า check.html และ DAW21W.html มี <meta name="robots" content="noindex"> อยู่แล้ว
+#  จึงไม่ Disallow ไว้ที่นี่ เพราะถ้า Disallow Google จะมองไม่เห็นคำสั่ง noindex)
+User-agent: *
+Allow: /
+
+Sitemap: https://www.golfcraft.shop/sitemap.xml

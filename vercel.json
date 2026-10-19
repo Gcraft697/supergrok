@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "supergrok.vercel.app" }],
+      "destination": "https://www.golfcraft.shop/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(check|DAW21W).html",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ]
+}
