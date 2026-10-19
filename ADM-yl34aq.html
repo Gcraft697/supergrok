@@ -10,7 +10,565 @@
 <style>
 *{box-sizing:border-box}
 html{font-size:19px}body{margin:0;font-family:'Sarabun','Noto Sans Thai',Tahoma,sans-serif;background:#f2f4f8;color:#111827;padding:0 0 30px}
+.hd{background:#0b2a5b;col<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ต่ออายุ · SuperGolf</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box}
+html{font-size:19px}body{margin:0;font-family:'Sarabun','Noto Sans Thai',Tahoma,sans-serif;background:#f2f4f8;color:#111827;padding:0 0 30px}
 .hd{background:#0b2a5b;color:#fff;padding:14px 16px 16px;border-bottom:5px solid #38bdf8;margin-bottom:14px}.hd .in{max-width:760px;margin:0 auto}.hd b{font-size:1.5rem;font-weight:800}.hd b span{color:#7dd3fc}.hd p{margin:4px 0 0;font-size:.95rem;color:#dbe6ff}
+.pill{display:inline-block;margin:0 6px 8px 0;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px}
+.panel{background:#fff;border:2px solid #e5e7eb;border-radius:18px;padding:18px;margin-bottom:16px}
+.panel h2{margin:0 0 12px;font-size:1.4rem;color:#0b2a5b}
+label{display:block;font-size:16px;font-weight:600;margin:10px 0 5px}
+input,textarea{width:100%;font:inherit;font-size:18px;padding:10px 12px;border:2px solid #cfd6e0;border-radius:12px;background:#fff}
+textarea{font-size:16px;line-height:1.5;min-height:230px;resize:vertical}
+button{font:inherit;cursor:pointer}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.big{flex:1;min-width:150px;min-height:56px;font-size:1.05rem;font-weight:800;padding:12px;border:0;border-radius:16px;color:#fff;background:#0b2a5b;box-shadow:0 5px 0 rgba(0,0,0,.22)}.big:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.big.blue{background:#1464d8}.big.green{background:#146c2e}.big.ok{background:#16a34a}
+.empty{color:#777;font-size:16px;padding:10px 0}
+/* หน้าล็อก */
+#lock{position:fixed;inset:0;z-index:999;background:#0b2a5b;display:flex;align-items:center;justify-content:center;padding:20px}
+#lock .b{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;text-align:center}
+#lock h2{margin:0 0 6px;color:#0b2a5b;font-size:1.4rem}#lock p{margin:0 0 14px;color:#4b5563;font-size:.95rem}
+#lock input{text-align:center;font-size:1.8rem;letter-spacing:.4em}#lock button{width:100%;margin-top:12px}
+#lock .e{color:#b3261e;font-weight:700;min-height:1.4em;margin-top:8px}
+/* ปฏิทินคิว */
+.nav{display:flex;gap:8px;align-items:center}.nav button{padding:8px 14px;border:2px solid #cfd6e0;border-radius:12px;background:#fff;font-weight:700}
+.nav .t{flex:1;text-align:center;font-size:1.25rem;font-weight:800;color:#0b2a5b}
+.qcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.qcal .h{font-size:12px;font-weight:800;color:#64748b;text-align:center;padding:2px 0}
+.qcal .d{min-height:86px;border:2px solid #e5e9ef;border-radius:10px;padding:3px;background:#fff;text-align:left;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.qcal .d.x{background:#f8fafc;border-color:#f1f5f9}
+.qcal .d.today{border-color:#0b2a5b}.qcal .d.sel{outline:3px solid #38bdf8}
+.qcal .n{font-size:13px;font-weight:800;color:#0b2a5b;display:flex;justify-content:space-between}
+.qcal .n i{font-style:normal;background:#d92d20;color:#fff;border-radius:99px;padding:0 6px;font-size:11px}
+.bar{height:9px;border-radius:4px}
+.cts{display:flex;flex-wrap:wrap;gap:2px}
+.ct{min-width:20px;padding:0 4px;border-radius:6px;font-size:11px;font-weight:800;line-height:15px;text-align:center;color:var(--c)}
+.ct.s-paid{color:#fff}
+.ct.s-dep{background:repeating-linear-gradient(45deg,#fff 0 3px,var(--t) 3px 6px);border:2px solid var(--c);color:var(--c)}
+.cts.p-lite{margin-top:1px}
+.more{font-size:10px;color:#475569;font-weight:700}
+/* สีตามสินค้า + สถานะ */
+.p-sg{--c:#1464d8;--t:#bfdbfe}.p-lite{--c:#c2410c;--t:#fed7aa}
+.s-paid{background:var(--c)}
+.s-dep{background:repeating-linear-gradient(45deg,var(--c) 0 4px,#fff 4px 7px);border:1px solid var(--c)}
+.s-free{background:#fff;border:2px solid var(--c)}
+.s-unk{background:#fff;border:2px dashed var(--c)}
+.leg{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;font-weight:700;margin-top:10px;color:#334155}
+.leg span{display:flex;align-items:center;gap:4px}.leg .ct{font-style:normal;display:inline-block}
+/* รายการลูกค้า */
+.sl{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:#fff;border:2px solid #cbd5e1;border-left:10px solid var(--c);border-radius:14px;padding:10px 12px;margin-top:8px}
+.sl .i{flex:1;min-width:0}.sl .g{font-size:1.05rem;font-weight:800;color:#0b2a5b;word-break:break-all}
+.sl .s{font-size:.85rem;color:#4b5563;word-break:break-all}.sl .s a{color:#1464d8}
+.sl .r{text-align:right;white-space:nowrap}
+.dl{display:inline-block;font-size:.8rem;font-weight:800;border-radius:99px;padding:2px 10px;color:#fff;background:#64748b}
+.dl.hot{background:#d92d20}.dl.warm{background:#d97706}.dl.done{background:#16a34a}
+.tag{font-size:.75rem;font-weight:800;border-radius:99px;padding:1px 8px;color:#fff;margin-left:4px}
+.k-paid{background:#16a34a}.k-dep{background:#d97706}.k-free{background:#64748b}.k-unk{background:#94a3b8}
+.sl .act{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.sl .act button{padding:6px 10px;border:0;border-radius:10px;background:#1464d8;color:#fff;font-weight:700;font-size:.85rem}
+.sl .act button.o{background:#146c2e}
+.nd{display:flex;gap:6px;flex-wrap:wrap}.nd button{min-width:44px;padding:6px 10px;border:2px solid #cfd6e0;border-radius:999px;background:#fff;font-weight:800;color:#0b2a5b}.nd button.on{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.old{margin-top:8px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:6px 10px;font-size:.88rem;color:#334155;word-break:break-all}
+.old b{color:#0b2a5b}.old .h{font-size:.78rem;font-weight:800;color:#64748b;margin-bottom:2px}.old a{color:#1464d8;font-weight:700}
+.old.none{color:#9a3412;background:#fff7ed;border-color:#fdba74}
+.sl .top{font-size:1.05rem;font-weight:800;color:#0b2a5b}.sl .top .dl{margin-left:6px;vertical-align:2px}
+.sec{font-size:1rem;font-weight:800;color:#0b2a5b;margin:14px 0 2px}
+/* ใบเสนอเช่าต่อ (สไตล์เดียวกับใบเสร็จใน DAW21W) */
+#slip{background:#fff;border-radius:18px;padding:16px 16px 14px;border:3px solid #0b2a5b;position:relative;overflow:hidden;margin:0 auto 18px;max-width:520px}
+#slip:before{content:"";position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#0b2a5b,#38bdf8)}
+.brand{display:flex;justify-content:space-between;align-items:center;margin-top:6px;gap:8px}
+.brand h1{margin:0;font-size:19px;line-height:1.2;white-space:nowrap}
+.brand small{display:block;font-size:14px;color:#111;font-weight:600}
+.badge{color:#fff;font-weight:700;font-size:14px;padding:4px 12px;border-radius:999px;white-space:nowrap;background:#1464d8}
+.badge.hot{background:#d92d20}.badge.warm{background:#d97706}
+.meta{display:flex;justify-content:space-between;font-size:12px;color:#555;margin:8px 0 4px;padding-bottom:8px;border-bottom:2px dashed #cfd6e0;gap:8px}
+.item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e5e9ef;gap:10px}
+.item .k{font-size:14px;color:#555}.item .v{font-size:17px;font-weight:700;text-align:right;word-break:break-all}
+.item .v small{display:inline-block;margin-left:6px;font-size:12px;color:#fff;background:#d92d20;border-radius:99px;padding:1px 8px;vertical-align:2px}
+.cal{background:#fafafa;border:2px solid #e5e9ef;border-radius:16px;padding:8px 10px;margin:6px 0}
+.cal h3{margin:0 0 4px;font-size:14px}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.sum div{border-radius:12px;padding:4px 8px;font-size:12px;color:#555}.sum b{display:block;font-size:14px;color:#111;white-space:nowrap}
+.sum .a{background:#e8f5e9}.sum .b{background:#e0ecff}
+.mon{margin-bottom:6px}.mon .t{font-weight:700;font-size:13px;text-align:center;margin-bottom:3px}
+.g7{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.g7 .h{font-size:10px;font-weight:700;color:#999;padding:2px 0}
+.g7 .c{height:26px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:14px;font-weight:600;color:#222}
+.g7 .c.in{background:#16a34a;color:#fff}.g7 .c.st{background:#1a73e8;color:#fff}.g7 .c.en{background:#d92d20;color:#fff}
+.lg2{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;font-weight:600;margin-top:4px}
+.lg2 i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}
+.total{display:flex;justify-content:space-between;align-items:center;background:#0b2a5b;color:#fff;border-radius:16px;padding:10px 16px;margin-top:4px}
+.total .k{font-size:16px}.total .v{font-size:28px;font-weight:700}
+.reply{margin-top:8px;background:#fff7ed;border:2px solid #fdba74;border-radius:12px;padding:8px 10px;font-size:15px;font-weight:700;color:#9a3412;text-align:center}
+.perks{font-size:13.5px;margin-top:8px;line-height:1.6}
+.note{font-size:12.5px;margin-top:8px;line-height:1.4}
+.thanks{text-align:center;font-size:14px;margin-top:8px;color:#555}
+@media(max-width:520px){.qcal .d{min-height:64px}.qcal .n{font-size:12px}.ct{min-width:16px;font-size:10px;padding:0 2px}}
+</style>
+</head>
+<body>
+<div id="lock"><div class="b"><h2>🔒 หลังร้าน SuperGolf</h2><p>กรอกรหัสเพื่อเข้าใช้งาน</p>
+<input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" onkeydown="if(event.key==='Enter')unlock()">
+<button class="big" onclick="unlock()">เข้าสู่ระบบ</button><div class="e" id="pinErr"></div></div></div>
+
+<div class="hd"><div class="in"><a class="pill" href="/">← หน้าแรก</a><a class="pill" href="DAW21W.html">🧾 ออกใบเสร็จ</a><br><b>SuperGolf<span> · ต่ออายุลูกค้า</span></b><p>ปฏิทินคิวทั้งหมด · ลูกค้าใกล้หมดอายุ · ข้อความชวนต่อ + ใบเสนอเช่าต่อ</p></div></div>
+<div class="wrap" id="app" style="display:none">
+
+<div class="panel">
+  <h2>⏰ คิวว่างใกล้ถึง (<span id="soonN">3</span> วันข้างหน้า)</h2>
+  <div class="nd" id="ndays"></div>
+  <div style="font-size:13px;color:#555;margin-top:6px">คิวที่ยังไม่ขาย (สถานะว่าง/ไม่ระบุ) เริ่มในช่วงนี้ + ลูกค้าเก่าของรหัสเดียวกัน (จับคู่จากแพ็กเกจ + เวลารีเซ็ตคอลัมน์ L)</div>
+  <div id="soonStat" class="empty">กำลังโหลด...</div>
+  <div id="soon"></div>
+</div>
+
+<div class="panel">
+  <h2>📅 ปฏิทินคิวทั้งหมด</h2>
+  <div class="nav"><button type="button" onclick="shiftMonth(-1)">◀</button><div class="t" id="calTitle"></div><button type="button" onclick="shiftMonth(1)">▶</button></div>
+  <div style="text-align:center;margin-top:6px"><button type="button" onclick="goThisMonth()" style="padding:6px 14px;border:2px solid #cfd6e0;border-radius:12px;background:#fff;font-weight:700">เดือนนี้</button></div>
+  <div class="qcal" id="qcal"></div>
+  <div class="leg">
+    <span><i class="ct s-paid p-sg">3</i>SuperGrok</span><span><i class="ct s-paid p-lite">3</i>Lite</span>
+    <span><i class="ct s-paid p-sg">n</i>ชำระแล้ว (clear)</span><span><i class="ct s-dep p-sg">n</i>มัดจำ/จอง</span><span><i class="ct s-free p-sg">n</i>ว่าง</span><span><i class="ct s-unk p-sg">n</i>ไม่ระบุ</span>
+    <span><i style="font-style:normal;background:#d92d20;color:#fff;border-radius:99px;padding:0 6px;font-size:11px">2</i>คิวว่างเริ่มวันนั้น</span>
+  </div>
+  <button class="big" style="width:100%;margin-top:12px" onclick="loadData()">🔄 โหลดข้อมูลใหม่</button>
+</div>
+
+<div class="panel" id="dayPanel" style="display:none">
+  <h2 id="dayTitle"></h2>
+  <div id="dayList"></div>
+</div>
+
+<div class="panel" id="offerPanel" style="display:none">
+  <h2>💬 ชวนต่ออายุ</h2>
+  <div class="row">
+    <div><label>ชื่อลูกค้า</label><input id="oName" autocomplete="off"></div>
+    <div><label>ราคา (บาท)</label><input id="oPrice" type="number" inputmode="numeric"></div>
+  </div>
+  <div class="row">
+    <div><label>ต่อกี่วัน</label><input id="oDays" type="number" min="1" inputmode="numeric"></div>
+    <div><label>ตอบกลับภายในวันที่</label><input id="oDeadline" type="date"></div>
+  </div>
+  <label>ข้อความ (แก้ได้ก่อนคัดลอก)</label>
+  <textarea id="oMsg"></textarea>
+  <div class="btns">
+    <button class="big blue" id="copyBtn" onclick="copyMsg()">📋 คัดลอกข้อความ</button>
+    <button class="big green" onclick="saveSlip()">📷 บันทึกใบเสนอเป็นรูป</button>
+  </div>
+</div>
+
+<div id="slipWrap" style="display:none">
+<div id="slip">
+  <div class="brand">
+    <div><h1>ใบเสนอเช่าต่อ</h1><small>ร้าน SuperGolf · www.golfcraft.shop</small></div>
+    <div class="badge" id="sBadge"></div>
+  </div>
+  <div class="meta"><span id="sNo"></span><span id="sIssue"></span></div>
+  <div class="item"><span class="k">ลูกค้า</span><span class="v" id="sWho"></span></div>
+  <div class="item"><span class="k">แพ็กเกจ</span><span class="v" id="sPkg"></span></div>
+  <div class="item"><span class="k">หมดอายุปัจจุบัน</span><span class="v" id="sEnd"></span></div>
+  <div class="cal">
+    <h3>📅 รอบเช่าต่อที่เสนอ</h3>
+    <div class="sum"><div class="a">เริ่ม<b id="sNewStart"></b></div><div class="b">ใช้ได้ถึง<b id="sNewEnd"></b></div></div>
+    <div id="sMonths"></div>
+    <div class="lg2"><span><i style="background:#1a73e8"></i>วันเริ่ม</span><span><i style="background:#16a34a"></i>วันที่ใช้ได้</span><span><i style="background:#d92d20"></i>วันหมดอายุ</span></div>
+    <div style="margin-top:6px;font-size:15px;font-weight:700">รวม <span id="sDays"></span></div>
+  </div>
+  <div class="total"><span class="k">ราคาต่ออายุ</span><span class="v" id="sPrice"></span></div>
+  <div class="reply" id="sReply"></div>
+  <div class="perks">✅ ใช้รหัสเดิมต่อได้เลย ไม่ต้องย้ายแชท<br>✅ ประวัติแชทยังอยู่ครบ<br>✅ มีประกันตลอดการเช่า</div>
+  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
+  <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
+</div>
+</div>
+
+<div style="text-align:center"><button type="button" style="margin-top:8px;padding:8px 16px;border:2px dashed #cbd5e1;border-radius:12px;background:#fff;color:#475569;font-size:.85rem" onclick="logout()">🔒 ออกจากระบบ (ลืมรหัสในเครื่องนี้)</button></div>
+</div>
+
+<script>
+/* ===== ตั้งค่า ===== */
+/* ลิงก์ Web App ของ Google Apps Script (ลงท้าย /exec) — ใช้ตัวเดียวกับ index / check / DAW21W */
+const API_URL='https://script.google.com/macros/s/AKfycbwDYGFa8912A6rqhyNoFt6xpxzAPF1n-GVvuBS6ukPhFRsy9eHySHKZKZwml6dXmh8Y/exec';
+/* ราคาปกติ (เหมือน DAW21W) — ใช้เป็นราคาเริ่มต้นตอนเสนอต่ออายุ */
+const PRICES={'SuperGrok':{1:59,3:99,7:179,14:329,30:599},'SuperGrok Lite':{1:35,3:59,7:99,14:179,30:329}};
+const REMEMBER_MS=864e5;
+/* จำนวนวันข้างหน้าที่ดูคิวว่าง (ปรับได้ 1–7, จำไว้ในเครื่อง) */
+let SOON_DAYS=Math.min(7,Math.max(1,parseInt(localStorage.getItem('gcSoonDays'))||3));
+
+const $=id=>document.getElementById(id);
+const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const MF=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
+const pad=n=>String(n).padStart(2,'0');
+const fmt=d=>d.getDate()+' '+M[d.getMonth()]+' '+(d.getFullYear()+543);
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const day0=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const diffDays=(a,b)=>Math.round((day0(a)-day0(b))/864e5);
+const TM={'ม.ค.':0,'ก.พ.':1,'มี.ค.':2,'เม.ย.':3,'พ.ค.':4,'มิ.ย.':5,'ก.ค.':6,'ส.ค.':7,'ก.ย.':8,'ต.ค.':9,'พ.ย.':10,'ธ.ค.':11};
+function parseD(str){
+  str=String(str||'').trim();let d,m,y,r;
+  if(r=str.match(/^Date\((\d+),(\d+),(\d+)/))return new Date(+r[1],+r[2],+r[3]);
+  if(r=str.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/)){d=+r[1];m=+r[2]-1;y=+r[3]}
+  else if(r=str.match(/(\d{1,2})\s*(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s*(\d{2,4})?/)){d=+r[1];m=TM[r[2]];y=r[3]?+r[3]:new Date().getFullYear()}
+  else return null;
+  if(y>2400)y-=543;if(y<100)y+=2000;
+  const dt=new Date(y,m,d);return isNaN(dt)?null:dt;
+}
+
+/* ===== ล็อกหน้าจอ: PIN ตรวจที่ API (ADMIN_KEY ใน Script Properties) — หน้านี้ไม่มีรหัส/แฮชของรหัส ===== */
+function openApp(){$('lock').style.display='none';$('app').style.display=''}
+function showLock(msg){
+  $('lock').style.display='flex';$('app').style.display='none';$('pinErr').textContent=msg||'';
+  /* ล้างข้อมูลลูกค้าออกจากหน้าทั้งหมด */
+  rows=[];cur=null;['soon','qcal','dayList'].forEach(id=>$(id).innerHTML='');
+  ['oName','oMsg','oPrice'].forEach(id=>$(id).value='');
+  $('dayPanel').style.display='none';$('offerPanel').style.display='none';$('slipWrap').style.display='none';
+  setTimeout(()=>$('pin').focus(),100);
+}
+function forgetKey(){localStorage.removeItem('gcAdminKey');localStorage.removeItem('sg_ok')}
+function lockMsg(j){return j&&j.adminLocked?'ใส่รหัสผิดหลายครั้ง ระบบล็อก '+(+j.lockMinutes||0)+' นาที':''}
+let unlocking=false;
+async function unlock(){
+  if(unlocking)return;
+  const v=$('pin').value.trim();
+  if(!v){$('pinErr').textContent='กรุณากรอกรหัส';return}
+  unlocking=true;$('pinErr').textContent='กำลังตรวจสอบ...';
+  try{
+    const j=await loadData(v);
+    if(j&&j.auth===true){localStorage.setItem('gcAdminKey',v);localStorage.setItem('sg_ok',String(Date.now()));$('pin').value='';$('pinErr').textContent='';openApp()}
+    else{$('pin').value='';$('pinErr').textContent=j?(lockMsg(j)||'รหัสไม่ถูกต้อง'):'เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้ง'}
+  }finally{unlocking=false}
+}
+function logout(){forgetKey();showLock('')}
+
+/* ===== โหลดข้อมูล (ต้องมี PIN ถูกต้องเท่านั้น) ===== */
+let rows=[],cur=null,busy=false,viewY,viewM,selDay=null;
+async function loadData(tryKey){
+  const key=tryKey||localStorage.getItem('gcAdminKey')||'';
+  if(!key){showLock('');return null}
+  if(busy&&!tryKey)return null;
+  busy=true;
+  try{
+    /* GET ธรรมดา ไม่ใส่ header (กัน CORS preflight) + ตามการ redirect + หมดเวลา 30 วิ */
+    const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),30000);
+    let t;try{const res=await fetch(API_URL+'?key='+encodeURIComponent(key),{signal:ac.signal,redirect:'follow'});if(!res.ok)throw new Error('HTTP '+res.status);t=await res.text()}finally{clearTimeout(tm)}
+    const j=JSON.parse(t.substring(t.indexOf('{'),t.lastIndexOf('}')+1));
+    if(!j.table)throw new Error('bad data');
+    if(j.auth!==true){
+      rows=[];
+      if(!tryKey){if(!j.adminLocked)forgetKey();showLock(lockMsg(j)||(j.adminLocked?'':'รหัสถูกเปลี่ยน กรุณาเข้าสู่ระบบใหม่'))}
+      return j;
+    }
+    parseRows(j);renderAll();
+    return j;
+  }catch(e){$('soonStat').textContent='โหลดข้อมูลไม่สำเร็จ (ตรวจสอบ API_URL แล้วกดโหลดใหม่)';return null}
+  finally{busy=false}
+}
+/* คอลัมน์: B แพ็กเกจ, D วัน, E ราคา, F/P เลขที่, H วันเริ่ม, K สถานะ, M ชื่อ, N Facebook, Q Gmail */
+function parseRows(j){
+  rows=[];
+  j.table.rows.forEach((r,idx)=>{const c=r.c;if(!c)return;
+    const g=i=>c[i]?(c[i].f!=null&&String(c[i].f).trim()!==''?c[i].f:c[i].v):'';
+    const dRaw=parseInt(g(3)),days=dRaw>0?dRaw:0,start=parseD(g(7));
+    if(!start||!String(g(1)||'').trim())return; /* ต้องมีแพ็กเกจ + วันเริ่ม (ข้ามแถวคั่นวันที่) */
+    const k=String(g(10)||'').toLowerCase();
+    const st=k.includes('clear')?'paid':k.includes('มัด')?'dep':k.includes('ว่าง')?'free':'unk';
+    const clean=v=>{v=String(v||'').trim();return v==='-'?'':v};
+    const pkg=/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok';
+    const price=parseInt(g(4));
+    const clock=clockKey(g(11));
+    rows.push({idx,pkg,lite:pkg!=='SuperGrok',days,start:day0(start),end:addDays(day0(start),days),price:isNaN(price)?0:price,st,
+      queue:/รอคิว/.test(String(g(2)||'')),clock,acct:clock?pkg+'|'+clock:'',
+      no:clean(g(5))||clean(g(15)),name:clean(g(12)),fb:clean(g(13)),mail:clean(g(16))});
+  });
+}
+/* ===== จับคู่ "รหัสเดียวกัน" =====
+   ชีตไม่มีคอลัมน์ชื่อบัญชีให้หน้าเว็บ (A/I ไม่ถูกส่งมา) จึงใช้ แพ็กเกจ + เวลารีเซ็ต (คอลัมน์ L) เป็นตัวแทนบัญชี
+   L เขียนได้หลายแบบ (20:54 / 8.54 pm / 2ทุ่ม) → แปลงเป็น HH:MM ก่อนเทียบ */
+function clockKey(raw){
+  let s=String(raw==null?'':raw).trim();if(!s||/^[-–—]+$/.test(s))return '';
+  let m;
+  if(m=s.match(/(\d+)\s*ทุ่ม/)){const n=+m[1];if(n>=1&&n<=5)return pad(18+n)+':00'}
+  if(m=s.match(/ตี\s*(\d{1,2})/)){const n=+m[1];if(n>=0&&n<=5)return pad(n)+':00'}
+  if(m=s.match(/(\d{1,2})[:.](\d{2})(?::\d{2})?\s*(am|pm|a\.m\.|p\.m\.)?/i)){let h=+m[1];const mi=+m[2];const ap=(m[3]||'').toLowerCase();
+    if(ap.startsWith('p')&&h<12)h+=12;if(ap.startsWith('a')&&h===12)h=0;if(h<=23&&mi<=59)return pad(h)+':'+pad(mi)}
+  if(m=s.match(/^(\d{3,4})$/)){const n=m[1].padStart(4,'0');const h=+n.slice(0,2),mi=+n.slice(2);if(h<=23&&mi<=59)return pad(h)+':'+pad(mi)}
+  return s.replace(/\s+/g,'').toLowerCase();
+}
+/* คิวที่ยังขายไม่ได้ = ไม่ใช่ clear และไม่ใช่มัดจำ (ว่าง / ไม่ระบุ / รอคิว) */
+const isUnsold=r=>r.st!=='paid'&&r.st!=='dep';
+/* แถว clear ล่าสุดของรหัสเดียวกันที่เริ่มก่อนคิวว่างนี้ */
+function prevClear(slot){
+  if(!slot.acct)return null;
+  let best=null;
+  /* ต้องเป็นรอบที่ "จบก่อน" คิวนี้ (หมดไม่เกินวันเริ่ม +1 วัน) — ถ้ายังเช่าทับช่วงกันอยู่ แปลว่าเป็นคนละรหัสที่บังเอิญเวลารีเซ็ตตรงกัน */
+  for(const o of rows){if(o===slot||o.st!=='paid'||o.acct!==slot.acct||!(o.start<slot.start)||diffDays(o.end,slot.start)>1)continue;
+    if(!best||o.start>best.start||(+o.start===+best.start&&o.idx>best.idx))best=o}
+  return best;
+}
+function slotsBetween(from,to){ /* from..to รวมปลาย (วัน) */
+  return rows.filter(r=>isUnsold(r)&&diffDays(r.start,from)>=0&&diffDays(to,r.start)>=0)
+    .sort((a,b)=>(a.start-b.start)||(a.lite-b.lite)||(a.idx-b.idx))
+    .map(r=>({slot:r,old:prevClear(r)}));
+}
+const slotPrice=r=>r.price>0?r.price:((PRICES[r.pkg]||{})[r.days]||0);
+const who=r=>r.name||r.mail||(r.no?'#'+r.no:'ลูกค้า');
+const left=r=>diffDays(r.end,new Date());
+
+/* ===== แสดงผล ===== */
+function renderAll(){
+  if(viewY==null){const t=new Date();viewY=t.getFullYear();viewM=t.getMonth()}
+  renderNd();renderSoon();renderCal();if(selDay)renderDay(selDay);
+}
+function renderNd(){
+  const B=$('ndays');B.innerHTML='';$('soonN').textContent=SOON_DAYS;
+  for(let n=1;n<=7;n++){const b=document.createElement('button');b.type='button';b.textContent=n+' วัน';b.className=n===SOON_DAYS?'on':'';
+    b.onclick=()=>{SOON_DAYS=n;localStorage.setItem('gcSoonDays',String(n));renderNd();renderSoon()};B.appendChild(b)}
+}
+function startBadge(dt){
+  const d=diffDays(dt,new Date());const s=document.createElement('span');
+  s.className='dl '+(d<=0?'hot':d===1?'hot':d<=3?'warm':'');
+  s.textContent=d<0?'เลยมา '+(-d)+' วัน':d===0?'วันนี้':d===1?'พรุ่งนี้':'อีก '+d+' วัน';return s;
+}
+function fbLink(parent,fb){
+  if(/^https?:\/\/([a-z0-9-]+\.)?(facebook\.com|fb\.com|fb\.me|m\.me)\//i.test(fb)){const a=document.createElement('a');a.href=fb;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Facebook';parent.appendChild(document.createTextNode('👤 '));parent.appendChild(a)}
+  else parent.appendChild(document.createTextNode('👤 '+fb));
+}
+/* การ์ดคิวว่าง: บรรทัดบน = คิวใหม่ / กล่องล่าง = รายละเอียดลูกค้าเก่า */
+function slotCard(x){
+  const r=x.slot,o=x.old;
+  const b=document.createElement('div');b.className='sl slot '+(r.lite?'p-lite':'p-sg');
+  b.innerHTML='<div class="i"><div class="top"></div><div class="s s1"></div><div class="old"></div><div class="act"></div></div>';
+  const top=b.querySelector('.top');top.textContent='🗓 '+fmt(r.start);top.appendChild(startBadge(r.start));
+  const pr=slotPrice(r);
+  b.querySelector('.s1').textContent=r.pkg+' · '+(r.days?r.days+' วัน':'ไม่ระบุวัน')+' · '+(pr?pr+' ฿':'-')+(r.queue?' · รอคิว':'')+(r.clock?' · รีเซ็ต '+r.clock:'')+(r.no?' · #'+r.no:'');
+  const od=b.querySelector('.old');
+  if(!o){od.classList.add('none');od.textContent=r.acct?'ไม่พบลูกค้าเก่า':'ไม่พบลูกค้าเก่า (แถวนี้ไม่มีเวลารีเซ็ต L ใช้จับคู่รหัสไม่ได้)'}
+  else{
+    od.innerHTML='<div class="h">รายละเอียดเก่า</div><div class="nm"></div><div class="pd"></div><div class="ct2"></div>';
+    const nm=od.querySelector('.nm');nm.appendChild(document.createElement('b')).textContent=o.name||o.mail||'(ไม่มีชื่อ)';
+    od.querySelector('.pd').textContent=fmt(o.start)+' ถึง '+fmt(o.end)+' · '+o.days+' วัน · '+o.price+' ฿'+(o.no?' · #'+o.no:'');
+    const ct=od.querySelector('.ct2');
+    if(o.fb)fbLink(ct,o.fb);
+    if(o.mail){if(o.fb)ct.appendChild(document.createTextNode('  '));ct.appendChild(document.createTextNode('✉️ '+o.mail))}
+    if(!o.fb&&!o.mail)ct.textContent='ไม่มีลิงก์ติดต่อ / Gmail';
+    if(diffDays(r.start,o.end)!==0){const w=document.createElement('div');w.style.cssText='color:#9a3412;font-size:.8rem';w.textContent='* รอบเก่าหมด '+fmt(o.end)+' (ไม่ตรงวันเริ่มคิวนี้ ตรวจสอบรหัสอีกครั้ง)';od.appendChild(w)}
+  }
+  const m=document.createElement('button');m.type='button';m.textContent='💬 ข้อความ + ใบเสนอ';m.onclick=()=>pickSlot(x);b.querySelector('.act').appendChild(m);
+  return b;
+}
+function leftBadge(r){
+  const d=left(r);const s=document.createElement('span');s.className='dl';
+  if(d<0){s.textContent='หมดแล้ว '+(-d)+' วัน'}
+  else if(d===0){s.className='dl hot';s.textContent='หมดวันนี้'}
+  else{s.className='dl '+(d<=1?'hot':d<=SOON_DAYS?'warm':'');s.textContent='เหลือ '+d+' วัน'}
+  return s;
+}
+function card(r){
+  const b=document.createElement('div');b.className='sl '+(r.lite?'p-lite':'p-sg');
+  b.innerHTML='<div class="i"><div class="g"></div><div class="s s1"></div><div class="s s2"></div><div class="act"></div></div><div class="r"></div>';
+  b.querySelector('.g').textContent=who(r);
+  const tg=document.createElement('span');tg.className='tag k-'+r.st;tg.textContent={paid:'clear',dep:'มัดจำ',free:'ว่าง',unk:'-'}[r.st];
+  b.querySelector('.g').appendChild(tg);
+  b.querySelector('.s1').textContent=(r.no?'#'+r.no+' · ':'')+(r.lite?'Lite':'SuperGrok')+' · '+(r.days||'-')+' วัน · '+fmt(r.start)+' ถึง '+fmt(r.end)+' · '+r.price+' ฿';
+  const s2=b.querySelector('.s2');
+  if(r.mail)s2.appendChild(document.createTextNode('✉️ '+r.mail+'  '));
+  if(r.fb)fbLink(s2,r.fb);
+  b.querySelector('.r').appendChild(leftBadge(r));
+  return b;
+}
+function renderSoon(){
+  const L=$('soon');L.innerHTML='';
+  const t=day0(new Date()),list=slotsBetween(t,addDays(t,SOON_DAYS));
+  const found=list.filter(x=>x.old).length;
+  $('soonStat').textContent=list.length?('คิวว่าง '+list.length+' คิว · พบลูกค้าเก่า '+found+' · ไม่พบ '+(list.length-found)):'ไม่มีคิวว่างใน '+SOON_DAYS+' วันข้างหน้า';
+  list.forEach(x=>L.appendChild(slotCard(x)));
+}
+function shiftMonth(n){viewM+=n;if(viewM<0){viewM=11;viewY--}if(viewM>11){viewM=0;viewY++}renderCal()}
+function goThisMonth(){const t=new Date();viewY=t.getFullYear();viewM=t.getMonth();renderCal()}
+function renderCal(){
+  $('calTitle').textContent=MF[viewM]+' '+(viewY+543);
+  const G=$('qcal');G.innerHTML='';
+  DOW.forEach(x=>{const h=document.createElement('div');h.className='h';h.textContent=x;G.appendChild(h)});
+  const first=new Date(viewY,viewM,1),dim=new Date(viewY,viewM+1,0).getDate(),tdy=ymd(new Date());
+  for(let i=0;i<first.getDay();i++){const e=document.createElement('div');e.className='d x';G.appendChild(e)}
+  for(let d=1;d<=dim;d++){
+    const dt=new Date(viewY,viewM,d);
+    const on=rows.filter(r=>r.start<=dt&&dt<r.end).sort((a,b)=>(a.lite-b.lite)||(a.start-b.start));
+    const ends=rows.filter(r=>isUnsold(r)&&ymd(r.start)===ymd(dt)).length; /* คิวว่างที่เริ่มวันนั้น */
+    const c=document.createElement('button');c.type='button';c.className='d'+(ymd(dt)===tdy?' today':'')+(selDay&&ymd(selDay)===ymd(dt)?' sel':'');
+    c.dataset.date=ymd(dt);
+    const n=document.createElement('div');n.className='n';n.textContent=d;
+    if(ends){const i=document.createElement('i');i.textContent=ends;i.title='คิวว่างเริ่มวันนี้ '+ends+' คิว';n.appendChild(i)}
+    c.appendChild(n);
+    /* นับคิวต่อสินค้า × สถานะ → ป้ายตัวเลข (SuperGrok บรรทัดบน, Lite บรรทัดล่าง) */
+    [['p-sg',false,'SuperGrok'],['p-lite',true,'Lite']].forEach(([pc,lite,label])=>{
+      const mine=on.filter(r=>r.lite===lite);if(!mine.length)return;
+      const line=document.createElement('div');line.className='cts '+pc;
+      ['paid','dep','free','unk'].forEach(stt=>{const n=mine.filter(r=>r.st===stt).length;if(!n)return;
+        const t=document.createElement('span');t.className='ct s-'+stt;t.textContent=n;
+        t.title=label+' '+{paid:'ชำระแล้ว',dep:'มัดจำ',free:'ว่าง',unk:'ไม่ระบุ'}[stt]+' '+n+' คิว';line.appendChild(t)});
+      c.appendChild(line);
+    });
+    c.onclick=()=>{selDay=dt;renderCal();renderDay(dt);$('dayPanel').scrollIntoView({behavior:'smooth',block:'start'})};
+    G.appendChild(c);
+  }
+}
+function renderDay(dt){
+  $('dayPanel').style.display='';
+  $('dayTitle').textContent='📌 '+fmt(dt);
+  const L=$('dayList');L.innerHTML='';
+  const sec=(t,list,empty,mk)=>{const h=document.createElement('div');h.className='sec';h.textContent=t+' ('+list.length+')';L.appendChild(h);
+    if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent=empty;L.appendChild(e)}
+    list.forEach(r=>L.appendChild(mk(r)))};
+  /* ใช้หลักเดียวกับรายการด้านบน: คิวว่างที่เริ่มวันนั้น + ลูกค้าเก่าของรหัสเดียวกัน */
+  sec(diffDays(dt,new Date())===0?'คิวว่างเริ่มวันนี้':'คิวว่างเริ่มวันนั้น',slotsBetween(day0(dt),day0(dt)),'ไม่มีคิวว่างเริ่มวันนั้น',slotCard);
+  const active=rows.filter(r=>r.start<=dt&&dt<r.end).sort((a,b)=>(a.lite-b.lite)||(a.end-b.end));
+  sec('คิวที่ใช้งานอยู่วันนั้น (เริ่ม–หมด)',active,'ไม่มีคิว',card);
+}
+
+/* ===== ข้อความชวนต่อ + ใบเสนอ ===== */
+function normalPrice(r){
+  const p=PRICES[r.pkg]&&PRICES[r.pkg][r.days];if(p)return p;
+  /* ไม่มีในตาราง: ใช้ราคาที่พบบ่อยที่สุดของแพ็กเกจ+จำนวนวันเดียวกันในชีต */
+  const cnt={};rows.filter(o=>o.pkg===r.pkg&&o.days===r.days&&o.price>0).forEach(o=>cnt[o.price]=(cnt[o.price]||0)+1);
+  const best=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];return best?+best:r.price;
+}
+function pick(r){
+  cur=r;
+  $('oName').value=r.name||(r.mail?r.mail.split('@')[0]:'');
+  $('oPrice').value=r.offerPrice!=null?r.offerPrice:normalPrice(r);
+  $('oDays').value=r.days;
+  const dl=addDays(r.end,-1);$('oDeadline').value=ymd(day0(dl)<day0(new Date())?r.end:dl);
+  msgEdited=false;update();
+  $('offerPanel').style.display='';$('slipWrap').style.display='';
+  $('offerPanel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+/* เปิดข้อความ/ใบเสนอจากคิวว่าง: ชื่อ = ลูกค้าเก่า, หมดอายุเดิม = วันเริ่มคิวใหม่, ราคา/วัน = ของคิวใหม่ */
+function pickSlot(x){
+  const r=x.slot,o=x.old||{};
+  const days=r.days||o.days||7;
+  pick({pkg:r.pkg,lite:r.lite,end:r.start,days,price:slotPrice({pkg:r.pkg,days,price:r.price}),offerPrice:slotPrice({pkg:r.pkg,days,price:r.price})||undefined,
+    name:o.name||'',mail:o.mail||'',fb:o.fb||'',no:o.no||'',st:'paid',start:o.start||r.start});
+}
+let msgEdited=false;
+function offer(){
+  const r=cur,days=Math.max(1,parseInt($('oDays').value)||r.days),newStart=r.end,newEnd=addDays(newStart,days);
+  const dl=$('oDeadline').value?new Date($('oDeadline').value+'T00:00:00'):addDays(r.end,-1);
+  return {r,name:$('oName').value.trim().replace(/^คุณ\s*/,''),price:parseInt($('oPrice').value)||0,days,newStart,newEnd,deadline:dl,product:r.lite?'SuperGrok Lite':'SuperGrok'};
+}
+function buildMsg(o){
+  return 'สวัสดีครับคุณ '+(o.name||'ลูกค้า')+' 😊\n'+
+    'รหัส '+o.product+' ของคุณจะหมดวันที่ '+fmt(o.r.end)+' นะครับ\n'+
+    'คิวรอบถัดไปเริ่มเต็มแล้ว ร้านเก็บสิทธิ์ให้ลูกค้าเดิมก่อน\n'+
+    '✅ ใช้รหัสเดิมต่อได้เลย ไม่ต้องย้ายแชท\n'+
+    '✅ ประวัติแชทยังอยู่ครบ\n'+
+    '✅ มีประกันตลอดการเช่า\n'+
+    '\n'+
+    '📦 ต่ออายุ '+o.days+' วัน ราคา '+o.price+' บาท\n'+
+    '📅 '+fmt(o.newStart)+' ถึง '+fmt(o.newEnd)+'\n'+
+    '\n'+
+    'ถ้าสนใจต่ออายุ ตอบกลับภายในวันที่ '+fmt(o.deadline)+' ได้เลยครับ 🙏';
+}
+function update(){
+  if(!cur)return;const o=offer();
+  if(!msgEdited)$('oMsg').value=buildMsg(o);
+  const d=left(o.r),bd=$('sBadge');
+  bd.className='badge'+(d<=1?' hot':d<=SOON_DAYS?' warm':'');
+  bd.textContent=d<0?'หมดอายุแล้ว':d===0?'หมดวันนี้':d<=SOON_DAYS?'ใกล้หมดอายุ':'เสนอต่ออายุ';
+  const now=new Date();
+  $('sNo').textContent=o.r.no?'อ้างอิง #'+o.r.no:'';
+  $('sIssue').textContent='ออก '+fmt(now)+' '+pad(now.getHours())+':'+pad(now.getMinutes())+' น.';
+  $('sWho').textContent=o.name?'คุณ '+o.name:who(o.r);
+  $('sPkg').textContent=o.product;
+  $('sEnd').textContent=fmt(o.r.end);
+  if(d<=SOON_DAYS){const s=document.createElement('small');s.textContent=d<0?'หมดแล้ว':d===0?'วันนี้':'อีก '+d+' วัน';$('sEnd').appendChild(s)}
+  $('sNewStart').textContent=fmt(o.newStart);$('sNewEnd').textContent=fmt(o.newEnd);$('sDays').textContent=o.days+' วัน';
+  $('sPrice').textContent=o.price+' บาท';
+  $('sReply').textContent='⏳ ยืนยันต่ออายุภายในวันที่ '+fmt(o.deadline);
+  drawCal(o.newStart,o.newEnd);
+}
+['oName','oPrice','oDays','oDeadline'].forEach(id=>$(id).addEventListener('input',()=>{msgEdited=false;update()}));
+$('oMsg').addEventListener('input',()=>{msgEdited=true});
+async function copyMsg(){
+  const t=$('oMsg').value;let ok=false;
+  try{await navigator.clipboard.writeText(t);ok=true}catch(e){
+    const a=$('oMsg');a.focus();a.select();try{ok=document.execCommand('copy')}catch(_){}}
+  const b=$('copyBtn');b.textContent=ok?'✅ คัดลอกแล้ว':'กดค้างที่ข้อความแล้วคัดลอกเอง';b.classList.toggle('ok',ok);
+  setTimeout(()=>{b.textContent='📋 คัดลอกข้อความ';b.classList.remove('ok')},1800);
+}
+/* ปฏิทินในใบเสนอ (แบบเดียวกับใบเสร็จ DAW21W) */
+function drawCal(s,e){
+  const box=$('sMonths');box.innerHTML='';
+  const same=(a,b)=>ymd(a)===ymd(b);
+  let y=s.getFullYear(),m=s.getMonth();
+  while(y<e.getFullYear()||(y==e.getFullYear()&&m<=e.getMonth())){
+    const wrap=document.createElement('div');wrap.className='mon';
+    wrap.innerHTML='<div class="t">'+MF[m]+' '+(y+543)+'</div>';
+    const g=document.createElement('div');g.className='g7';
+    DOW.forEach(x=>{const h=document.createElement('div');h.className='h';h.textContent=x;g.appendChild(h)});
+    const first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
+    const inRange=d=>{const dt=new Date(y,m,d);return dt>=s&&dt<=e};
+    const wk=d=>Math.floor((first+d-1)/7);
+    const weeks=new Set();for(let d=1;d<=dim;d++)if(inRange(d))weeks.add(wk(d));
+    const wStart=Math.min(...weeks);
+    if(isFinite(wStart)){let dF=1;while(wk(dF)!==wStart)dF++;for(let i=0;i<(first+dF-1)%7;i++)g.appendChild(document.createElement('div'));}
+    for(let d=1;d<=dim;d++){
+      if(!weeks.has(wk(d)))continue;
+      const dt=new Date(y,m,d),c=document.createElement('div');c.className='c';c.textContent=d;
+      if(same(dt,e))c.className='c en';else if(same(dt,s))c.className='c st';else if(dt>s&&dt<e)c.className='c in';
+      g.appendChild(c);
+    }
+    wrap.appendChild(g);box.appendChild(wrap);
+    m++;if(m>11){m=0;y++}
+  }
+}
+/* บันทึก/แชร์เป็นรูป (วิธีเดียวกับใบเสร็จใน DAW21W) */
+async function saveSlip(){
+  if(!cur)return;update();
+  const c=await html2canvas($('slip'),{scale:2,backgroundColor:'#fff'});
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  const file=new File([blob],'renewal-offer.png',{type:'image/png'});
+  /* มือถือ/iOS: เปิดหน้าแชร์ แล้วเลือก "บันทึกรูปภาพ" */
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}
+  }
+  /* สำรอง: แสดงรูปให้กดค้าง + ปุ่มดาวน์โหลด */
+  const u=URL.createObjectURL(blob);
+  const o=document.createElement('div');o.id='slipImg';o.style.cssText='position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);overflow:auto;padding:16px;text-align:center';
+  o.innerHTML='<div style="color:#fff;font-weight:700;margin-bottom:10px">กดค้างที่รูป แล้วเลือก "เพิ่มลงในรูปภาพ"</div><img style="width:100%;max-width:520px;border-radius:12px"><br><a class="big blue" style="display:inline-block;margin-top:14px;max-width:300px;text-decoration:none;line-height:32px" download="renewal-offer.png">⬇️ ดาวน์โหลดรูป</a><br><button class="big" style="margin-top:10px;max-width:300px" onclick="this.parentNode.remove()">ปิด</button>';
+  o.querySelector('img').src=u;o.querySelector('a').href=u;
+  document.body.appendChild(o);
+}
+
+/* เปิดหน้า: PIN ที่จำไว้ (ไม่เกิน 24 ชม.) → ตรวจกับ API ก่อน หน้าจอยังล็อกอยู่ */
+(async function(){
+  const t=+localStorage.getItem('sg_ok')||0;
+  if(!localStorage.getItem('gcAdminKey')||Date.now()-t>=REMEMBER_MS){forgetKey();showLock('');return}
+  const j=await loadData();
+  if(j&&j.auth===true)openApp();
+  else if(!j&&localStorage.getItem('gcAdminKey'))showLock('เชื่อมต่อไม่สำเร็จ กรอกรหัสเพื่อลองใหม่');
+})();
+/* อัปเดตป้าย "เหลือกี่วัน" เมื่อข้ามวัน (ไม่ยิง API ซ้ำ) */
+setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k&&rows.length)renderAll();window._k=k},60000);
+</script>
+</body>
+</html>
+or:#fff;padding:14px 16px 16px;border-bottom:5px solid #38bdf8;margin-bottom:14px}.hd .in{max-width:760px;margin:0 auto}.hd b{font-size:1.5rem;font-weight:800}.hd b span{color:#7dd3fc}.hd p{margin:4px 0 0;font-size:.95rem;color:#dbe6ff}
 .pill{display:inline-block;margin:0 6px 8px 0;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none}
 .wrap{max-width:760px;margin:0 auto;padding:0 14px}
 .panel{background:#fff;border:2px solid #e5e7eb;border-radius:18px;padding:18px;margin-bottom:16px}
