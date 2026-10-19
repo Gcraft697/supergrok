@@ -154,7 +154,7 @@ let found=null,findQ='',findTimer=0;
 async function lookup(q){
   try{const j=await getJSON(API_URL+'?find='+encodeURIComponent(q));if(findQ!==q)return;
     found={};(j.match||[]).forEach(m=>{found[m.row]=m.who});
-    rows.forEach(r=>{if(found[r.idx]!=null)r.who=found[r.idx]});
+    rows.forEach(r=>{if(found[r.idx]!=null&&found[r.idx]!=='-')r.who=found[r.idx]});
   }catch(e){if(findQ===q)found={}}
   if(findQ===q)renderList();
 }
@@ -222,7 +222,7 @@ async function load(){
     j.table.rows.forEach((r,idx)=>{const c=r.c;if(!c)return;
       const g=i=>c[i]?(c[i].f!=null&&String(c[i].f).trim()!==''?c[i].f:c[i].v):'';
       if(!String(g(10)).toLowerCase().includes('clear'))return;
-      const d=parseInt(g(3)),h=parseD(g(7)),who='';/* อีเมล (Q) ไม่ถูกส่งมาแล้ว — ได้จากการค้นด้วยอีเมลเต็มเท่านั้น */
+      const d=parseInt(g(3)),h=parseD(g(7)),who=String(g(17)||'').trim();/* อีเมลแบบปิดบัง (API สร้างจาก Q เช่น sup****you@gmail.com) — อีเมลจริงไม่ถูกส่งมา */
       if(!(d>0)||!h)return;
       const p=parseInt(g(15));
       rows.push({idx,pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:parseInt(g(4))||0,who:(who&&who!=='-')?who:'',no:isNaN(p)?'':String(p)});
@@ -238,7 +238,8 @@ function renderList(){
   else if(q!==findQ){findQ=q;found=null;clearTimeout(findTimer);
     if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q))findTimer=setTimeout(()=>lookup(q),500);else found={}}
   if(isMail&&!found){$('stat').textContent='กำลังค้นหา...';$('more').style.display='none';return}
-  const f=rows.filter(r=>!q||(isMail?found[r.idx]!=null:r.no===q.replace('#','')));
+  /* ค้นหา: อีเมลเต็ม → ถาม API / เลขที่ → ตรงเลข / ข้อความอื่น → ค้นในอีเมลที่ปิดบังแล้ว */
+  const f=rows.filter(r=>!q||(isMail?found[r.idx]!=null:(r.no===q.replace('#','')||(!/^#?\d+$/.test(q)&&r.who.toLowerCase().includes(q)))));
   $('stat').textContent=f.length?('พบ '+f.length+' รายการ'):(isMail?'ไม่พบรายการ (พิมพ์อีเมลให้ครบทั้งหมด)':'ไม่พบรายการ');
   f.slice(0,PAGE).forEach(r=>{
     const e=new Date(r.start);e.setDate(e.getDate()+r.days);
