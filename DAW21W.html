@@ -103,15 +103,37 @@ button{font:inherit;cursor:pointer}
 <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" onkeydown="if(event.key==='Enter')unlock()">
 <button class="big" onclick="unlock()">เข้าสู่ระบบ</button><div class="e" id="pinErr"></div></div></div>
 <script>
-const PIN_HASH="8a74871ef2feda5ae297ffef09da8b68b516dc78a0d7cdce2d38c9c61625cb08";
-async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function openApp(){document.getElementById('lock').style.display='none'}
-async function unlock(){const v=document.getElementById('pin').value.trim();
- if(await sha('sg|'+v)===PIN_HASH){localStorage.setItem('sg_ok',String(Date.now()));openApp()}
- else{document.getElementById('pinErr').textContent='รหัสไม่ถูกต้อง';document.getElementById('pin').value=''}}
-(function(){const t=+localStorage.getItem('sg_ok')||0;if(Date.now()-t<864e5)openApp();else setTimeout(()=>document.getElementById('pin').focus(),100)})();
+/* ล็อกหน้าจอ: ไม่มีรหัสหรือค่าแฮชของรหัสอยู่ในหน้าเว็บนี้เลย
+   PIN จริงอยู่ที่ Script Properties → ADMIN_KEY ของ Apps Script เท่านั้น
+   ส่ง PIN ไปถาม API (?key=) → ปลดล็อกเมื่อได้ auth:true เท่านั้น */
+const REMEMBER_MS=864e5; /* จำเครื่องนี้ไว้ 24 ชม. */
+function openApp(){document.getElementById('lock').style.display='none';if(typeof renderHist==='function')renderHist()}
+function showLock(msg){
+  document.getElementById('lock').style.display='flex';
+  document.getElementById('pinErr').textContent=msg||'';
+  /* ซ่อนข้อมูลผู้ซื้อทั้งหมดเมื่อกลับมาล็อก */
+  if(typeof sheetRows!=='undefined')sheetRows=[];
+  ['sheetList','hist'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=''});
+  const w=document.getElementById('who');if(w)w.value='';
+  setTimeout(()=>document.getElementById('pin').focus(),100);
+}
+function forgetKey(){localStorage.removeItem('gcAdminKey');localStorage.removeItem('sg_ok')}
+function lockMsg(j){return j&&j.adminLocked?'ใส่รหัสผิดหลายครั้ง ระบบล็อก '+(+j.lockMinutes||0)+' นาที':''}
+let unlocking=false;
+async function unlock(){
+  if(unlocking)return;
+  const v=document.getElementById('pin').value.trim();
+  if(!v){document.getElementById('pinErr').textContent='กรุณากรอกรหัส';return}
+  unlocking=true;document.getElementById('pinErr').textContent='กำลังตรวจสอบ...';
+  try{
+    const j=await loadSheet(v);
+    if(j&&j.auth===true){localStorage.setItem('gcAdminKey',v);localStorage.setItem('sg_ok',String(Date.now()));document.getElementById('pin').value='';document.getElementById('pinErr').textContent='';openApp()}
+    else{document.getElementById('pin').value='';document.getElementById('pinErr').textContent=j?(lockMsg(j)||'รหัสไม่ถูกต้อง'):'เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้ง'}
+  }finally{unlocking=false}
+}
+function logout(){forgetKey();showLock('')}
 </script>
-<div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a><br><b>SuperGolf<span> · ออกใบเสร็จ</span></b><p>เลือกรายการจากชีต แล้วระบบกรอกให้อัตโนมัติ</p></div></div>
+<div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a> <a href="ADM-yl34aq.html" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">📅 ต่ออายุลูกค้า</a><br><b>SuperGolf<span> · ออกใบเสร็จ</span></b><p>เลือกรายการจากชีต แล้วระบบกรอกให้อัตโนมัติ</p></div></div>
 <div class="wrap">
 
 <div class="panel">
@@ -123,6 +145,8 @@ async function unlock(){const v=document.getElementById('pin').value.trim();
   <div id="sheetStat" class="empty">กำลังโหลด...</div>
   <div id="sheetList"></div>
   <button class="big" style="width:100%;margin-top:10px" onclick="loadSheet()">🔄 โหลดรายการใหม่</button>
+  <button type="button" style="width:100%;margin-top:8px;padding:8px;border:2px dashed #cbd5e1;border-radius:12px;background:#fff;color:#475569;font:inherit;font-size:.85rem" onclick="logout()">🔒 ออกจากระบบ (ลืมรหัสในเครื่องนี้)</button>
+  <div id="keyStat" class="empty" style="display:none"></div>
 </div>
 
 <div class="panel">
@@ -291,10 +315,10 @@ function renderHist(){
   });
 }
 const t=new Date();$('start').value=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());
-autoPrice();render();renderHist();
+autoPrice();render();/* ประวัติประกันแสดงหลังปลดล็อกเท่านั้น (ดู openApp) */
 
-/* ===== ดึงรายการจากชีตเดียวกับเว็บ (คอลัมน์ B แพ็กเกจ, D วัน, E ราคา, H วันเริ่ม, Q Gmail) ===== */
-const SHEET_URL='https://docs.google.com/spreadsheets/d/1FZDa93Qn_N44biC3gugdPf2uaXh2-BeI/gviz/tq?tqx=out:json&sheet='+encodeURIComponent('ตารางคิวว่างเช่า AI');
+/* ===== ดึงรายการผ่าน Apps Script (คอลัมน์ B แพ็กเกจ, D วัน, E ราคา, F/P เลขที่, H วันเริ่ม, K สถานะ, Q Gmail เฉพาะเมื่อมีรหัสแอดมิน) ===== */
+const API_URL='https://script.google.com/macros/s/AKfycbwDYGFa8912A6rqhyNoFt6xpxzAPF1n-GVvuBS6ukPhFRsy9eHySHKZKZwml6dXmh8Y/exec';
 const TM={'ม.ค.':0,'ก.พ.':1,'มี.ค.':2,'เม.ย.':3,'พ.ค.':4,'มิ.ย.':5,'ก.ค.':6,'ส.ค.':7,'ก.ย.':8,'ต.ค.':9,'พ.ย.':10,'ธ.ค.':11};
 function parseD(str){
   str=String(str||'').trim();let d,m,y,r;
@@ -312,11 +336,28 @@ function shiftDay(n){selDay.setDate(selDay.getDate()+n);renderSheet()}
 function goToday(){selDay=new Date();selDay.setHours(0,0,0,0);renderSheet()}
 function pickDate(){const v=$('selDate').value;if(v){selDay=new Date(v+'T00:00:00');renderSheet()}}
 function kClass(k){k=String(k||'').toLowerCase();if(k.includes('clear'))return['c-clear','k-clear','clear'];if(k.includes('มัด'))return['c-dep','k-dep','มัดจำ'];if(k.includes('ว่าง'))return['c-free','k-free','ว่าง'];return['c-other','k-other',k||'-']}
-async function loadSheet(){
+let sheetBusy=false;
+/* โหลดรายการ: ใช้ PIN ที่ส่งมา (ตอนปลดล็อก) หรือ PIN ที่จำไว้ในเครื่อง — ไม่มี PIN = ไม่โหลดเลย */
+async function loadSheet(tryKey){
+  const key=tryKey||localStorage.getItem('gcAdminKey')||'';
+  if(!key){showLock('');return null}
+  if(sheetBusy&&!tryKey)return null; /* กันกดรัว ๆ ยิงซ้ำ */
+  sheetBusy=true;
   $('sheetStat').textContent='กำลังโหลด...';
   try{
-    const t=await (await fetch(SHEET_URL)).text();
+    /* GET ธรรมดา ไม่ใส่ header (กัน CORS preflight) + ตามการ redirect + หมดเวลา 30 วิ */
+    const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),30000);
+    let t;try{const res=await fetch(API_URL+(key?'?key='+encodeURIComponent(key):''),{signal:ac.signal,redirect:'follow'});if(!res.ok)throw new Error('HTTP '+res.status);t=await res.text()}finally{clearTimeout(tm)}
     const j=JSON.parse(t.substring(t.indexOf('{'),t.lastIndexOf('}')+1));
+    if(!j.table)throw new Error('bad data');
+    if(j.auth!==true){
+      /* รหัสใช้ไม่ได้: ไม่แสดงข้อมูลใด ๆ */
+      sheetRows=[];$('sheetList').innerHTML='';$('sheetStat').textContent='';
+      if(!tryKey){ if(!j.adminLocked)forgetKey(); showLock(lockMsg(j)||(j.adminLocked?'':'รหัสถูกเปลี่ยน กรุณาเข้าสู่ระบบใหม่')); }
+      return j;
+    }
+    const ks=$('keyStat');ks.style.display='';
+    ks.textContent='🔓 เข้าสู่ระบบแล้ว: แสดงอีเมลผู้ซื้อ';
     sheetRows=[];
     j.table.rows.forEach(r=>{const c=r.c;if(!c)return;
       const g=i=>c[i]?(c[i].f!=null&&String(c[i].f).trim()!==''?c[i].f:c[i].v):'';
@@ -326,7 +367,9 @@ async function loadSheet(){
       sheetRows.push({pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:isNaN(price)?0:price,who:(who&&who!=='-')?who:'',no,k:String(g(10)||'').trim()});
     });
     renderSheet();
-  }catch(e){$('sheetStat').textContent='โหลดชีตไม่สำเร็จ (ต้องเปิดผ่านเว็บ golfcraft.shop และชีตแชร์แบบดูได้)'}
+    return j;
+  }catch(e){$('sheetStat').textContent='โหลดชีตไม่สำเร็จ (ตรวจสอบ API_URL ของ Apps Script แล้วกดโหลดใหม่)';return null}
+  finally{sheetBusy=false}
 }
 function renderSheet(){
   const L=$('sheetList');L.innerHTML='';
@@ -359,7 +402,15 @@ function fillFrom(r){
   render();
   $('receipt').scrollIntoView({behavior:'smooth',block:'start'});
 }
-loadSheet();setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k)goToday();window._k=k},60000);
+/* เปิดหน้า: จำไว้ไม่เกิน 24 ชม. → ตรวจ PIN ที่จำไว้กับ API ก่อน (หน้าจอยังล็อกอยู่) / ไม่งั้นแสดงหน้าล็อก */
+(async function(){
+  const t=+localStorage.getItem('sg_ok')||0;
+  if(!localStorage.getItem('gcAdminKey')||Date.now()-t>=REMEMBER_MS){forgetKey();showLock('');return}
+  const j=await loadSheet();
+  if(j&&j.auth===true)openApp();
+  else if(!j&&localStorage.getItem('gcAdminKey'))showLock('เชื่อมต่อไม่สำเร็จ กรอกรหัสเพื่อลองใหม่');
+})();
+setInterval(()=>{const k=new Date().toDateString();if(window._k&&window._k!==k)goToday();window._k=k},60000);
 </script>
 </body>
 </html>

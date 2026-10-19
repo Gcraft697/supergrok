@@ -10,7 +10,7 @@
   ],
   "headers": [
     {
-      "source": "/(check|DAW21W).html",
+      "source": "/(check|DAW21W|ADM-yl34aq).html",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]
