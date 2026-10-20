@@ -696,6 +696,37 @@ h2.home-h { margin:0 0 12px; }
     #home-slots .month .btn { width:150px; }
     #home-slots .month .p-meta { gap:6px 12px; }
 }
+
+/* ===== ปริมาณการใช้งาน (บรรทัดย่อบนการ์ด + หน้าต่างคุณสมบัติ) + ปุ่มคู่ ===== */
+#home-slots .p-usage { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:-6px 0 14px; font-size:13.5px; color:#5a4a3a; }
+#home-slots .p-usage b { font-weight:600; color:var(--navy); }
+#home-slots .p-usage .sep { color:#c9b79f; }
+.u-ico { font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif; font-size:1.05em; line-height:1; }
+#home-slots .month .p-usage { margin:10px 0 0; }
+#home-slots .btn-row { display:grid; grid-template-columns:1.2fr 1fr; gap:8px; margin-top:auto; }
+#home-slots .btn-row .btn { width:100%; margin:0; min-width:0; white-space:nowrap; }
+#home-slots .btn-sec { min-height:52px; min-width:0; border:1.5px solid var(--c-brown); background:transparent; color:var(--c-brown); border-radius:99px; font-family:inherit; font-size:15px; font-weight:500; cursor:pointer; padding:8px 10px; white-space:nowrap; }
+#home-slots .btn-sec:hover { background:#f3e7d4; }
+#home-slots .month .btn-row { margin:0 8px; }
+#features-modal .feat-box { max-width:460px; font-family:'Kanit','Sarabun',sans-serif; }
+#feat-title { font-size:20px; font-weight:500; color:var(--navy); margin:4px 0 12px; padding-right:56px; }
+#modal-usage { background:#fffdf9; border:1px solid #ebdfcc; border-radius:18px; padding:14px 14px 12px; margin:0 0 14px; color:#2b2118; }
+#modal-usage .u-h { font-size:16px; font-weight:500; color:var(--navy); margin:0 0 8px; display:flex; justify-content:space-between; align-items:baseline; gap:6px 8px; flex-wrap:wrap; }
+#modal-usage .u-h small { font-size:12.5px; font-weight:400; color:#8a4b16; background:#f3e7d4; border-radius:99px; padding:1px 10px; }
+#modal-usage .u-row { display:grid; grid-template-columns:1fr auto 84px; gap:4px 12px; align-items:baseline; padding:8px 0; border-top:1px solid #f0e6d6; font-size:15px; }
+#modal-usage .u-row.u-head { border-top:0; padding-top:0; font-size:12px; color:#8a7a68; }
+#modal-usage .u-en { font-size:12.5px; color:#8a7a68; text-align:right; white-space:nowrap; }
+#modal-usage .u-n { font-weight:600; color:var(--navy); text-align:right; white-space:nowrap; }
+#modal-usage .u-head .u-n { font-weight:400; color:#8a7a68; }
+#modal-usage .u-fit { margin:10px 0 0; background:#f3e7d4; color:#6e3a10; border-radius:12px; padding:8px 12px; font-size:14px; line-height:1.5; }
+#modal-usage .u-foot { margin:8px 0 0; font-size:11.5px; color:#8a7a68; line-height:1.5; }
+#feat-go { border-radius:99px; background:#8a4b16; min-height:54px; font-family:inherit; font-size:17px; font-weight:500; }
+@media (min-width:760px) {
+    #home-slots .p-card.month { grid-template-rows:auto auto; row-gap:12px; }
+    #home-slots .month .p-img { grid-row:1 / span 2; }
+    #home-slots .month .btn-row { grid-column:2 / 4; justify-self:end; width:340px; margin:0; }
+    #home-slots .month .btn-row .btn { width:100%; }
+}
 </style>
 </head>
 <body>
@@ -914,6 +945,16 @@ h2.home-h { margin:0 0 12px; }
     </div>
 
     <!-- หน้าต่างคิวรายวัน -->
+    <div id="features-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="feat-title">
+        <div class="modal-bg" onclick="closeFeatures()"></div>
+        <div class="modal-box feat-box">
+            <button type="button" class="modal-x" onclick="closeFeatures()" aria-label="ปิด">✕</button>
+            <h3 id="feat-title"></h3>
+            <div id="modal-usage"></div>
+            <button type="button" class="btn" id="feat-go"></button>
+        </div>
+    </div>
+
     <div id="calendar-day-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cal-modal-date">
         <div class="modal-bg" onclick="closeCalendarModal()"></div>
         <div class="modal-box">
@@ -1551,6 +1592,7 @@ h2.home-h { margin:0 0 12px; }
                 if (ready) {
                     pill = '<span class="pill">พร้อมขาย</span>';
                     card = createProductCard(ready, 'normal', true);
+                    addUsageLine(card, ready);
                 } else if (saleReady) {
                     pill = '<span class="pill">พร้อมขาย</span>';
                     card = document.createElement('article');
@@ -1567,6 +1609,7 @@ h2.home-h { margin:0 0 12px; }
                 } else if (nextQueue) {
                     pill = '<span class="pill wait">รอคิว</span>';
                     card = createWaitingCard(nextQueue);
+                    addUsageLine(card, nextQueue);
                 } else {
                     pill = '<span class="pill none">ยังไม่มีคิว</span>';
                     card = document.createElement('article');
@@ -1607,7 +1650,7 @@ h2.home-h { margin:0 0 12px; }
             }
             const btnHtml = ready
                 ? `<button type="button" class="btn rent cd-btn ready">เช่าเลย</button>`
-                : `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจองล่วงหน้า</button>`;
+                : `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจอง</button>`;
             card.innerHTML = `
                 <div class="p-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} ${esc(item.day)} วัน (จองคิว)" loading="lazy"><span class="p-badge queue">${ready ? 'พร้อมเช่า' : 'ต้องรอคิว'}</span></div>
                 <div class="p-body">
@@ -1622,6 +1665,84 @@ h2.home-h { margin:0 0 12px; }
             if (t && !t.isReady) countdownTargets.push({ el: card, item });
             return card;
         }
+
+        // ===== ปริมาณที่ทำได้ต่อ 1 รหัส (ค่าประมาณจากร้าน) — Lite / SuperGrok ต่อ 7 วัน; 30 วัน = x4 =====
+        const USAGE_ROWS = [
+            { key: 'image', ico: 'img', label: 'ต่อภาพ', aria: 'ภาพ 1 ภาพ', energy: '2–4%', lite: [25, 50], grok: [100, 200] },
+            { key: 'clip480s6', ico: 'clip', label: '480p 6วิ', aria: 'คลิป 480p ยาว 6 วินาที', energy: '4%', lite: [25], grok: [100] },
+            { ico: 'clip', label: '720p 6วิ', aria: 'คลิป 720p ยาว 6 วินาที', energy: '8%', lite: [12], grok: [50] },
+            { ico: 'clip', label: '480p 15วิ', aria: 'คลิป 480p ยาว 15 วินาที', energy: '8%', lite: [12], grok: [50] },
+            { ico: 'clip', label: '720p 15วิ', aria: 'คลิป 720p ยาว 15 วินาที', energy: '16%', lite: [6], grok: [25] }
+        ];
+        const USAGE_ICO = {
+            clip: '<span class="u-ico" role="img" aria-label="คลิป">🎬</span>',
+            img: '<span class="u-ico" role="img" aria-label="ภาพ">🖼️</span>'
+        };
+        const USAGE_UNIT = { clip: 'คลิป', img: 'ภาพ' };
+        const USAGE_FIT = {
+            lite: 'Lite เหมาะกับคนที่อยากลองเล่น ทำภาพหรือคลิปสั้นเป็นบางครั้ง ราคาเบากว่า',
+            grok: 'SuperGrok เหมาะกับคนที่ทำคลิปบ่อย ทำคลิปยาวหรือคมชัดสูง และไม่อยากให้พลังงานหมดไว'
+        };
+        const USAGE_FOOT = 'ตัวเลขเป็นค่าประมาณจากการใช้งานจริงของร้าน (ปัดเศษลง) อาจเปลี่ยนได้ตามการปรับของผู้ให้บริการ';
+        // เฉพาะ Lite/SuperGrok 7 หรือ 30 วัน; ตัวเลขเป็นต่อ 7 วันเสมอ (รายเดือนรีเซ็ตทุกสัปดาห์)
+        function usagePlan(item) {
+            if (!item) return null;
+            const plan = isLiteItem(item) ? 'lite' : (isGrokItem(item) ? 'grok' : null);
+            const d = parseFloat(String(item.day).trim());
+            if (!plan || (d !== 7 && d !== 30)) return null;
+            return { plan, monthly: d === 30, period: d === 30 ? 'ต่อ 7 วัน (รีเซ็ตทุกสัปดาห์ ใช้ได้ 4 สัปดาห์)' : 'ต่อ 7 วัน' };
+        }
+        const usageNum = arr => arr.map(n => n.toLocaleString()).join('–');
+        function usageLineHtml(item) {
+            const u = usagePlan(item);
+            if (!u) return '';
+            const clip = usageNum(USAGE_ROWS.find(r => r.key === 'clip480s6')[u.plan]);
+            const img = usageNum(USAGE_ROWS.find(r => r.key === 'image')[u.plan]);
+            return `<div class="p-usage" title="ภาพ ${img} ภาพ · คลิป 480p 6 วินาที ~${clip} คลิป / 7 วัน"><span>${USAGE_ICO.img} <b aria-label="${img} ภาพ">${img}</b></span><span class="sep">·</span><span>${USAGE_ICO.clip} 480p 6วิ <b aria-label="ประมาณ ${clip} คลิป">~${clip}</b> / 7 วัน</span></div>`;
+        }
+        // บรรทัดย่อ + ปุ่มคู่ (ปุ่มหลักเดิม + ดูคุณสมบัติ)
+        function addUsageLine(card, item) {
+            if (!card || !item) return;
+            const html = usageLineHtml(item);
+            const meta = card.querySelector('.p-meta');
+            if (html && meta) meta.insertAdjacentHTML('afterend', html);
+            const primary = card.querySelector('.btn');
+            if (!primary || !usagePlan(item)) return;
+            const row = document.createElement('div');
+            row.className = 'btn-row';
+            if (card.classList.contains('month')) card.appendChild(row);
+            else primary.parentNode.insertBefore(row, primary);
+            row.appendChild(primary);
+            const sec = document.createElement('button');
+            sec.type = 'button';
+            sec.className = 'btn-sec';
+            sec.textContent = 'ดูคุณสมบัติ';
+            sec.onclick = () => openFeatures(item, primary);
+            row.appendChild(sec);
+        }
+        function renderUsage(item) {
+            const box = document.getElementById('modal-usage');
+            const u = usagePlan(item);
+            if (!box || !u) { if (box) box.innerHTML = ''; return; }
+            const rows = USAGE_ROWS.map(r => {
+                const n = usageNum(r[u.plan]);
+                return `<div class="u-row"><span title="${r.aria}">${USAGE_ICO[r.ico]} ${r.label}</span><span class="u-en" aria-label="ใช้พลังงาน ${r.energy}">${r.energy}</span><span class="u-n" aria-label="${n} ${USAGE_UNIT[r.ico]}">${n}</span></div>`;
+            }).join('');
+            box.innerHTML = `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div>
+                <div class="u-row u-head"><span>งาน</span><span class="u-en">พลังงาน</span><span class="u-n">ทำได้</span></div>${rows}
+                <div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>
+                <div class="u-foot">${esc(USAGE_FOOT)}</div>`;
+        }
+        // หน้าต่างคุณสมบัติ (แยกจากหน้าต่างจอง/มัดจำเดิม) — ปุ่มด้านล่างเรียกปุ่มหลักเดิมของการ์ด
+        function openFeatures(item, primary) {
+            document.getElementById('feat-title').textContent = `${item.product} ${item.day} วัน`;
+            renderUsage(item);
+            const go = document.getElementById('feat-go');
+            go.textContent = (primary.textContent || '').trim() || 'ดูรายละเอียด';
+            go.onclick = () => { closeFeatures(); primary.click(); };
+            openModal('features-modal');
+        }
+        function closeFeatures() { closeModal('features-modal'); }
 
         // การ์ดรายเดือนแนวนอน: โลโก้ซ้าย / ข้อมูลกลาง / ราคา+ปุ่มขวา (มือถือเรียงลงล่าง)
         function createMonthlyCard(item) {
@@ -1645,7 +1766,7 @@ h2.home-h { margin:0 0 12px; }
             }
             const pill = isQueue ? '<span class="pill">รอคิว</span>' : '<span class="pill ok">พร้อมขาย</span>';
             const btnHtml = isQueue
-                ? `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจองล่วงหน้า</button>`
+                ? `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจอง</button>`
                 : `<button type="button" class="btn rent">เช่าเลย</button>`;
             card.innerHTML = `
                 <span class="m-best">คุ้มกว่ารายสัปดาห์</span>
@@ -1664,6 +1785,7 @@ h2.home-h { margin:0 0 12px; }
             const type = isQueue ? 'queue' : 'normal';
             card.querySelector('.btn').onclick = () => openDetail(item, type);
             card.querySelector('.p-img').onclick = () => openDetail(item, type);
+            addUsageLine(card, item);
             if (isQueue && t) countdownTargets.push({ el: card, item });
             return card;
         }
@@ -1917,6 +2039,7 @@ h2.home-h { margin:0 0 12px; }
         document.addEventListener('keydown', e => {
             if (e.key !== 'Escape') return;
             if (!document.getElementById('art-modal').classList.contains('hidden')) { closeArticle(); return; }
+            if (!document.getElementById('features-modal').classList.contains('hidden')) { closeFeatures(); return; }
             if (!document.getElementById('detail-modal').classList.contains('hidden')) closeDetail();
             else if (!document.getElementById('calendar-day-modal').classList.contains('hidden')) closeCalendarModal();
         });
