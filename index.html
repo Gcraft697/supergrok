@@ -203,6 +203,7 @@
 }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&amp;display=swap" rel="stylesheet">
     <style>
         :root {
             --navy: #0b2a5b; --navy-2: #123f86;
@@ -635,6 +636,66 @@ h2.home-h { margin:0 0 12px; }
 .faq details p{margin:8px 0 0}
 .footer-contact{margin:4px 0 8px;font-size:.9rem}
 .footer-contact a{color:inherit;font-weight:700}
+
+/* ===== Option C2: สินค้าหน้าแรก โทนครีม/น้ำตาล เรียบง่าย + การ์ดรายเดือนแนวนอน ===== */
+#panel-home { --c-card:#fffdf9; --c-line:#ebdfcc; --c-brown:#8a4b16; --c-brown-d:#6e3a10; --c-text:#2b2118; --c-mute:#8a7a68; --c-pill:#f3e7d4; }
+#panel-home .home-h { font-family:'Kanit','Sarabun',sans-serif; font-weight:500; }
+#panel-home .home-h .ic { color:var(--c-brown); }
+#home-slots { font-family:'Kanit','Sarabun','Noto Sans Thai',sans-serif; font-weight:400; color:var(--c-text); gap:18px; }
+#home-slots .slot-cat { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+#home-slots .slot .p-card, #home-slots .p-card.month { background:var(--c-card); border:1px solid var(--c-line); border-radius:24px; padding:14px 14px 20px; box-shadow:0 6px 24px -14px rgba(110,58,16,.35); overflow:visible; }
+#home-slots .slot .p-img, #home-slots .month .p-img { border-radius:16px; overflow:hidden; background:#000; cursor:pointer; }
+#home-slots .slot .p-img img, #home-slots .month .p-img img { height:96px; object-fit:cover; filter:none; opacity:1; transform:scale(.9); }
+#home-slots .p-img img[src*="tencentcs"] { transform:scale(1.2); }
+#home-slots .p-card.none-card .p-img img { filter:grayscale(1); opacity:.6; }
+#home-slots .slot .p-badge { display:none; }
+#home-slots .slot .p-body { padding:16px 8px 0; gap:0; }
+#home-slots .p-name { font-size:19px; font-weight:500; color:var(--navy); line-height:1.35; }
+#home-slots .q-head { align-items:baseline; }
+#home-slots .q-days { background:none; color:var(--c-mute); font-size:13px; font-weight:400; padding:0; margin-left:4px; vertical-align:baseline; }
+#home-slots .pill { display:inline-block; vertical-align:3px; margin-left:8px; background:#fbe9cf; color:var(--c-brown); font-size:11.5px; font-weight:500; padding:0 9px; border-radius:99px; line-height:20px; white-space:nowrap; }
+#home-slots .pill.ok { background:#e3f1e5; color:#1f6b33; } #home-slots .pill.none { background:#eee; color:#6b7280; }
+#home-slots .q-price { font-size:14px; font-weight:400; color:var(--c-mute); }
+#home-slots .q-price b { font-size:38px; font-weight:600; color:var(--navy); line-height:1; margin-right:3px; }
+#home-slots .p-note { background:none; border:0; padding:0; margin:6px 0 0; font-size:13px; font-weight:400; color:var(--c-brown); border-radius:0; }
+#home-slots .slot .p-meta, #home-slots .month .p-meta { display:flex; flex-wrap:wrap; gap:6px 14px; margin:14px 0 16px; }
+#home-slots .slot .chip.feature, #home-slots .month .chip.feature { flex-direction:row; background:none; border:0; padding:0; border-radius:0; font-size:13.5px; font-weight:400; color:#5a4a3a; gap:5px; line-height:1.4; }
+#home-slots .chip.feature::before { content:''; width:15px; height:15px; flex:none; background:var(--c-brown); -webkit-mask:var(--ico) no-repeat center/contain; mask:var(--ico) no-repeat center/contain; font-size:0; }
+#home-slots .chip.feature.f-shield { --ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E"); }
+#home-slots .chip.feature.f-user { --ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6'/%3E%3C/svg%3E"); }
+#home-slots .chip.feature.f-lock { --ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 018 0v4'/%3E%3C/svg%3E"); }
+#home-slots .q-wait { background:none; border:0; padding:0; margin:0 0 14px; display:flex; flex-direction:column; align-items:center; gap:4px; }
+#home-slots .q-wait-main { display:inline-flex; align-items:center; gap:6px; background:var(--c-pill); border-radius:99px; padding:6px 16px; font-size:13px; font-weight:400; color:var(--c-brown-d); white-space:nowrap; }
+#home-slots .q-wait-main .ic { width:15px; height:15px; }
+#home-slots .q-wait-main b { font-size:15px; font-weight:600; color:var(--c-brown-d); }
+#home-slots .q-wait-date { font-size:12px; font-weight:400; color:var(--c-mute); }
+#home-slots .slot .p-card .btn, #home-slots .month .btn { margin-top:auto; min-height:52px; border:0; border-radius:99px; background:var(--c-brown); color:#fff; font-size:17px; font-weight:500; flex-direction:row; padding:10px 16px; box-shadow:0 6px 16px -8px rgba(138,75,22,.7); }
+#home-slots .slot .p-card .btn:hover, #home-slots .month .btn:hover { background:var(--c-brown-d); }
+#home-slots .slot .p-card .btn .ic, #home-slots .month .btn .ic { width:18px; height:18px; }
+#home-slots .none-msg { background:var(--c-pill); font-size:15px; font-weight:500; color:var(--c-brown-d); margin:14px 0; }
+#home-slots .slot .contact-actions .btn { min-height:46px; font-size:14px; }
+#home-slots .slot .wait-note { font-size:14px; margin:12px 0; }
+/* การ์ดรายเดือนแนวนอน */
+#home-slots .p-card.month { position:relative; display:grid; grid-template-columns:1fr; gap:14px; border:1.5px solid #d9b98f; border-radius:26px; padding:14px 14px 18px; box-shadow:0 10px 30px -16px rgba(110,58,16,.45); }
+#home-slots .month .m-best { position:absolute; top:-11px; left:24px; z-index:1; background:var(--c-brown); color:#fff; font-size:12.5px; font-weight:500; padding:1px 12px; border-radius:99px; line-height:22px; box-shadow:0 4px 10px -4px rgba(138,75,22,.6); }
+#home-slots .month .m-info, #home-slots .month .m-buy { padding:0 8px; min-width:0; }
+#home-slots .month .p-name { font-size:21px; margin:0; }
+#home-slots .month .p-meta { margin:10px 0 0; }
+#home-slots .month .q-wait { margin:12px 0 0; align-items:flex-start; }
+#home-slots .month .m-buy { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:8px; }
+#home-slots .month .q-price b { font-size:46px; }
+#home-slots .month .m-per { font-size:12px; color:var(--c-brown); }
+#home-slots .month .btn { width:100%; margin:0; }
+@media (min-width:760px) {
+    #home-slots .p-card.month { grid-template-columns:170px 1fr auto; gap:18px; align-items:center; padding:14px 22px 14px 14px; }
+    #home-slots .month .p-img img { height:104px; transform:scale(1.25); }
+    #home-slots .month .m-info { padding:0; }
+    #home-slots .month .p-meta { flex-wrap:nowrap; } #home-slots .month .chip.feature { white-space:nowrap; }
+    #home-slots .month .m-buy { flex-direction:column; flex-wrap:nowrap; align-items:flex-end; justify-content:center; min-width:150px; padding:0; }
+    #home-slots .month .m-per { margin-top:-6px; }
+    #home-slots .month .btn { width:150px; }
+    #home-slots .month .p-meta { gap:6px 12px; }
+}
 </style>
 </head>
 <body>
@@ -1436,8 +1497,10 @@ h2.home-h { margin:0 0 12px; }
             const n = item.product.toLowerCase();
             return (n.includes('supergrok') || n.includes('grok')) && !n.includes('lite');
         };
+        // แพ็กเกจรายเดือน (SuperGrok 30 วัน) แสดงเป็นการ์ดแนวนอนบนสุด และไม่นับในช่อง SuperGrok 7 วัน
+        const isMonthly = item => isGrokItem(item) && parseFloat(String(item.day).trim()) === 30;
         const HOME_SLOTS = [
-            { key: 'supergrok', label: 'SuperGrok', match: isGrokItem, img: PRODUCT_IMAGES['supergrok'] },
+            { key: 'supergrok', label: 'SuperGrok', match: item => isGrokItem(item) && !isMonthly(item), img: PRODUCT_IMAGES['supergrok'] },
             { key: 'lite', label: 'Lite', match: isLiteItem, img: PRODUCT_IMAGES['lite'] }
         ];
         let countdownTargets = [];
@@ -1463,6 +1526,11 @@ h2.home-h { margin:0 0 12px; }
                 const t = calculateRemainingTime(item.queue, item.resetClock);
                 return !(t && t.isReady);
             });
+
+            // 0) รายเดือน: การ์ดแนวนอนเต็มแถว บนสุด (พร้อมขายก่อน ถ้าไม่มีใช้คิวที่ใกล้ที่สุด)
+            const monthlyReady = normalItems.find(isMonthly);
+            const monthlyItem = monthlyReady || getClosestQueueItem(queueItems.filter(isMonthly));
+            if (monthlyItem) box.appendChild(createMonthlyCard(monthlyItem));
 
             // 1) ลดราคาพิเศษ: ทุกรายการ เต็มความกว้าง อยู่บนสุด
             saleItems.forEach(item => {
@@ -1512,6 +1580,8 @@ h2.home-h { margin:0 0 12px; }
                         </div>`;
                 }
                 wrap.innerHTML = `<div class="slot-cat">${esc(slot.label)} ${pill}</div>`;
+                const nameEl = card.querySelector('.p-name');
+                if (nameEl) nameEl.insertAdjacentHTML('beforeend', ' ' + pill.replace('class="pill"', 'class="pill ok"').replace('<span ', '<span aria-hidden="true" '));
                 wrap.appendChild(card);
                 box.appendChild(wrap);
                 bindExternalLinks(wrap);
@@ -1532,7 +1602,7 @@ h2.home-h { margin:0 0 12px; }
             let waitHtml = '';
             if (!ready) {
                 waitHtml = t
-                    ? `<div class="q-wait" role="timer"><div class="q-wait-main">⏱ <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main"><svg class="ic"><use href="#i-clock"/></svg> <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
                     : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
             }
             const btnHtml = ready
@@ -1550,6 +1620,51 @@ h2.home-h { margin:0 0 12px; }
             card.querySelector('.btn').onclick = () => openDetail(item, 'queue');
             card.querySelector('.p-img').onclick = () => openDetail(item, 'queue');
             if (t && !t.isReady) countdownTargets.push({ el: card, item });
+            return card;
+        }
+
+        // การ์ดรายเดือนแนวนอน: โลโก้ซ้าย / ข้อมูลกลาง / ราคา+ปุ่มขวา (มือถือเรียงลงล่าง)
+        function createMonthlyCard(item) {
+            const card = document.createElement('article');
+            const t = item.status.includes('รอคิว') ? calculateRemainingTime(item.queue, item.resetClock) : null;
+            const isQueue = item.status.includes('รอคิว') && !(t && t.isReady);
+            card.className = 'p-card month span-all ' + (isQueue ? 'queue' : 'normal');
+            card.id = 'slot-monthly';
+            const p2 = n => String(n).padStart(2, '0');
+            const days = parseFloat(item.day) || 30;
+            const priceNum = Number(item.price);
+            const perDay = !isNaN(priceNum) && priceNum > 0 ? `<div class="m-per">เฉลี่ยวันละ ~${Math.round(priceNum / days).toLocaleString()} บาท</div>` : '';
+            let waitHtml = '';
+            if (isQueue) {
+                const qd = parseDateString(item.queue);
+                const qDateTxt = qd ? `${p2(qd.getDate())}/${p2(qd.getMonth() + 1)}/${p2((qd.getFullYear() + 543) % 100)}` : esc(item.queue);
+                const qClock = clockLabel(item.resetClock) ? ` เวลา ${esc(clockLabel(item.resetClock))} น.` : '';
+                waitHtml = t
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main"><svg class="ic"><use href="#i-clock"/></svg> <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
+            }
+            const pill = isQueue ? '<span class="pill">รอคิว</span>' : '<span class="pill ok">พร้อมขาย</span>';
+            const btnHtml = isQueue
+                ? `<button type="button" class="btn book cd-btn"><svg class="ic"><use href="#i-clock"/></svg> กดจองล่วงหน้า</button>`
+                : `<button type="button" class="btn rent">เช่าเลย</button>`;
+            card.innerHTML = `
+                <span class="m-best">คุ้มกว่ารายสัปดาห์</span>
+                <div class="p-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} รายเดือน ${esc(item.day)} วัน" loading="lazy"></div>
+                <div class="m-info">
+                    <h4 class="p-name">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span> ${pill}</h4>
+                    ${noteHtml(item)}
+                    <div class="p-meta">${benefitChipsHtml()}</div>
+                    ${waitHtml}
+                </div>
+                <div class="m-buy">
+                    <div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div>
+                    ${perDay}
+                    ${btnHtml}
+                </div>`;
+            const type = isQueue ? 'queue' : 'normal';
+            card.querySelector('.btn').onclick = () => openDetail(item, type);
+            card.querySelector('.p-img').onclick = () => openDetail(item, type);
+            if (isQueue && t) countdownTargets.push({ el: card, item });
             return card;
         }
 
