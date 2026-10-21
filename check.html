@@ -27,6 +27,9 @@ button{font:inherit;cursor:pointer}
 .brand{display:flex;justify-content:space-between;align-items:flex-start;margin-top:8px}
 .brand h1{margin:0;font-size:24px;line-height:1.25}
 .brand small{display:block;font-size:15px;color:#555}
+.paid.dep{background:#d97706}
+.dep-box{background:#fffbeb;border:2px solid #f59e0b;border-radius:14px;padding:8px 12px;margin-top:6px}.dep-box .item{border-bottom:1px solid #fde68a}.dep-box .item:last-child{border-bottom:0}.dep-box .due .v{color:#b42318;font-size:22px}
+.ci.dep{border-left-color:#d97706;background:#fffbeb}.ci .tag{display:inline-block;background:#d97706;color:#fff;border-radius:99px;padding:1px 8px;font-size:.75rem;margin-left:6px}
 .paid{background:#16a34a;color:#fff;font-weight:700;font-size:18px;padding:6px 16px;border-radius:999px}
 .meta{display:flex;justify-content:space-between;font-size:14px;color:#555;margin:14px 0;padding-bottom:14px;border-bottom:2px dashed #cfd6e0;gap:8px}
 .item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e5e9ef;gap:10px}
@@ -99,7 +102,7 @@ button{font:inherit;cursor:pointer}
 .ci .i{flex:1;min-width:0}.ci .g{font-size:1rem;font-weight:800;color:#0b2a5b;word-break:break-word}.ci .s{font-size:.85rem;color:#4b5563}
 .ci .p{font-weight:800;color:#0b2a5b;white-space:nowrap;text-align:right}
 </style></head><body>
-<div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a><br><b>SuperGolf<span> · ใบเสร็จ</span></b><p>เลือกรหัสของท่านเพื่อดูใบเสร็จ (เฉพาะรายการที่เคลียร์แล้ว)</p></div></div>
+<div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a><br><b>SuperGolf<span> · ใบเสร็จ</span></b><p>เลือกรหัสของท่านเพื่อดูใบเสร็จ (รายการที่เคลียร์แล้ว และที่มัดจำไว้)</p></div></div>
 <div class="wrap">
 <div class="panel" id="listPanel">
   <h2>📋 รายการรหัส (ใหม่สุดอยู่บน)</h2>
@@ -112,14 +115,14 @@ button{font:inherit;cursor:pointer}
   <button class="big" style="width:100%;margin-bottom:12px" onclick="back()">◀ กลับไปรายการ</button>
 <div id="receipt">
   <div class="brand">
-    <div><h1>ใบเสร็จการเช่า</h1><small>ร้าน SuperGolf (Treethep)</small></div>
-    <div class="paid">ชำระแล้ว</div>
+    <div><h1 id="rTitle">ใบเสร็จการเช่า</h1><small>ร้าน SuperGolf (Treethep)</small></div>
+    <div class="paid" id="rPaid">ชำระแล้ว</div>
   </div>
   <div class="meta"><span id="rNo"></span><span id="rIssue"></span></div>
   <div class="item"><span class="k" id="rWhoK">Gmail</span><span class="v" id="rWho" style="font-size:18px"></span></div>
   <div class="item"><span class="k">แพ็กเกจ</span><span class="v" id="rPkg"></span></div>
 
-  <div class="cal">
+  <div class="cal" id="rCal">
     <h3>📅 ใช้ได้ถึงวันไหน</h3>
     <div class="sum"><div class="a">เริ่มเช่า<b id="rStart"></b></div><div class="b">ใช้ได้ถึง (สิ้นสุด)<b id="rEnd"></b></div></div>
     <div id="months"></div>
@@ -128,6 +131,11 @@ button{font:inherit;cursor:pointer}
   </div>
 
   <div class="total"><span class="k">ราคา</span><span class="v" id="rPrice"></span></div>
+  <div class="dep-box" id="rDep" style="display:none">
+    <div class="item"><span class="k">ราคา</span><span class="v" id="dFull"></span></div>
+    <div class="item"><span class="k">มัดจำแล้ว</span><span class="v" id="dPaid"></span></div>
+    <div class="item due"><span class="k">ต้องจ่ายอีก</span><span class="v" id="dDue"></span></div>
+  </div>
   <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
@@ -142,6 +150,8 @@ const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.�
 const pad=n=>String(n).padStart(2,'0');
 const fmt=d=>d.getDate()+' '+M[d.getMonth()]+' '+(d.getFullYear()+543);
 let rows=[],PAGE=30;
+/* ยอดมัดจำตามแพ็กเกจ */
+const DEPOSIT={'SuperGrok':40,'SuperGrok Lite':20};
 function mask(e){if(!e)return'-';const [u,d]=e.split('@');const k=u.length<=3?u.slice(0,1):u.slice(0,3);return k+'****'+(d?'@'+d:'')}
 /* ลิงก์ Web App ของ Google Apps Script (ลงท้าย /exec) — ไม่ส่งอีเมลลูกค้ามาทั้งชุดแล้ว */
 const API_URL='https://script.google.com/macros/s/AKfycbwDYGFa8912A6rqhyNoFt6xpxzAPF1n-GVvuBS6ukPhFRsy9eHySHKZKZwml6dXmh8Y/exec';
@@ -221,13 +231,14 @@ async function load(){
     rows=[];
     j.table.rows.forEach((r,idx)=>{const c=r.c;if(!c)return;
       const g=i=>c[i]?(c[i].f!=null&&String(c[i].f).trim()!==''?c[i].f:c[i].v):'';
-      if(!String(g(10)).toLowerCase().includes('clear'))return;
+      const st=String(g(10)).toLowerCase(),isDep=st.includes('มัดจำ');
+      if(!st.includes('clear')&&!isDep)return;
       const d=parseInt(g(3)),h=parseD(g(7)),who=String(g(17)||'').trim();/* อีเมลแบบปิดบัง (API สร้างจาก Q เช่น sup****you@gmail.com) — อีเมลจริงไม่ถูกส่งมา */
-      if(!(d>0)||!h)return;
+      if(!(d>0)||(!h&&!isDep))return;
       const p=parseInt(g(15));
-      rows.push({idx,pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:parseInt(g(4))||0,who:(who&&who!=='-')?who:'',no:isNaN(p)?'':String(p)});
+      rows.push({idx,pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:parseInt(g(4))||0,dep:isDep,who:(who&&who!=='-')?who:'',no:isNaN(p)?'':String(p)});
     });
-    rows.sort((a,b)=>(b.start-a.start)||(b.idx-a.idx));
+    rows.sort((a,b)=>((b.start||0)-(a.start||0))||(b.idx-a.idx));
     renderList();
   }catch(e){$('stat').textContent='โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'}
 }
@@ -242,24 +253,31 @@ function renderList(){
   const f=rows.filter(r=>!q||(isMail?found[r.idx]!=null:(r.no===q.replace('#','')||(!/^#?\d+$/.test(q)&&r.who.toLowerCase().includes(q)))));
   $('stat').textContent=f.length?('พบ '+f.length+' รายการ'):(isMail?'ไม่พบรายการ (พิมพ์อีเมลให้ครบทั้งหมด)':'ไม่พบรายการ');
   f.slice(0,PAGE).forEach(r=>{
-    const e=new Date(r.start);e.setDate(e.getDate()+r.days);
-    const b=document.createElement('button');b.type='button';b.className='ci';
+    const e=r.start?new Date(r.start):null;if(e)e.setDate(e.getDate()+r.days);
+    const b=document.createElement('button');b.type='button';b.className='ci'+(r.dep?' dep':'');
     b.innerHTML='<div class="i"><div class="g"></div><div class="s"></div></div><div class="p"></div>';
     b.querySelector('.g').textContent=[r.no?'#'+r.no:'',r.who].filter(Boolean).join(' · ')||'-';
-    b.querySelector('.s').textContent=(r.pkg==='SuperGrok'?'SuperGrok':'Lite')+' · '+r.days+' วัน · '+fmt(r.start)+' ถึง '+fmt(e);
+    b.querySelector('.s').textContent=(r.pkg==='SuperGrok'?'SuperGrok':'Lite')+' · '+r.days+' วัน · '+(r.start?fmt(r.start)+' ถึง '+fmt(e):'ยังไม่กำหนดวันเริ่ม');
+    if(r.dep){const t=document.createElement('span');t.className='tag';t.textContent='มัดจำ';b.querySelector('.g').appendChild(t)}
     b.querySelector('.p').textContent=r.price+' ฿';
     b.onclick=()=>show(r);L.appendChild(b);
   });
   $('more').style.display=f.length>PAGE?'':'none';
 }
 function show(r){
-  const s=r.start,e=new Date(s);e.setDate(e.getDate()+r.days);
+  const s=r.start,e=s?new Date(s):null;if(e)e.setDate(e.getDate()+r.days);
+  const dep=Math.min(DEPOSIT[r.pkg]||0,r.price);
+  $('rTitle').textContent=r.dep?'ใบรับมัดจำ':'ใบเสร็จการเช่า';
+  $('rPaid').textContent=r.dep?'มัดจำแล้ว':'ชำระแล้ว';$('rPaid').className='paid'+(r.dep?' dep':'');
+  $('rDep').style.display=r.dep?'':'none';
+  $('dFull').textContent=r.price+' บาท';$('dPaid').textContent=dep+' บาท';$('dDue').textContent=(r.price-dep)+' บาท';
   $('rNo').textContent=r.no?'เลขที่ '+r.no:'';
-  $('rIssue').textContent='ใบเสร็จย้อนหลัง';
+  $('rIssue').textContent=r.dep?'ใบรับมัดจำ':'ใบเสร็จย้อนหลัง';
   $('rWhoK').textContent='Gmail';$('rWho').textContent=r.who;$('rWho').parentNode.style.display=r.who?'':'none';
-  $('rPkg').textContent=r.pkg;$('rStart').textContent=fmt(s);$('rDays').textContent=r.days+' วัน';
-  $('rEnd').innerHTML=fmt(e)+' <small>00.00 น.</small>';$('rPrice').textContent=r.price+' บาท';
-  drawCal(s,e);
+  $('rPkg').textContent=r.pkg;$('rDays').textContent=r.days+' วัน';
+  $('rPrice').textContent=r.price+' บาท';$('rPrice').parentNode.style.display=r.dep?'none':'';
+  $('rCal').style.display=s?'':'none';
+  if(s){$('rStart').textContent=fmt(s);$('rEnd').innerHTML=fmt(e)+' <small>00.00 น.</small>';drawCal(s,e)}
   $('listPanel').style.display='none';$('view').style.display='';window.scrollTo(0,0);
 }
 function back(){$('view').style.display='none';$('listPanel').style.display='';}
