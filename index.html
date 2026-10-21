@@ -419,6 +419,27 @@
             .tip div + div { border-top: 1px solid #374151; margin-top: 6px; padding-top: 6px; }
         }
         .month-list { margin-top: 18px; }
+        /* ===== ปฏิทินแบบชิปจำนวน + การ์ดรายวัน ===== */
+        .day .chips { display:flex; flex-wrap:wrap; gap:2px; }
+        .chip { font-size:.66rem; font-weight:800; color:#fff; border-radius:6px; padding:0 4px; line-height:15px; white-space:nowrap; }
+        .chip.grok { background:var(--grok); } .chip.lite { background:var(--lite); } .chip.sale { background:var(--red); }
+        .day.has.ready { border-color:#22c55e; background:#f0fdf4; }
+        .day.past { opacity:.45; }
+        .cal-hint { font-size:.85rem; color:#475569; background:#f4f7fc; border-radius:12px; padding:8px 10px; margin-top:8px; }
+        .dcard { background:#fff; border:2px solid #e2e8f0; border-radius:16px; padding:10px 12px; margin-bottom:10px; scroll-margin-top:80px; transition:box-shadow .3s,border-color .3s; }
+        .dcard.flash { border-color:var(--navy); box-shadow:0 0 0 4px rgba(11,42,91,.15); }
+        .dc-h { display:flex; align-items:center; gap:10px; margin-bottom:4px; width:100%; background:none; border:0; padding:0; font:inherit; color:inherit; text-align:left; cursor:pointer; }
+        .dc-box { background:var(--navy); color:#fff; border-radius:12px; width:46px; text-align:center; padding:3px 0; line-height:1.1; flex:none; }
+        .dc-box b { font-size:1.15rem; display:block; } .dc-box small { font-size:.7rem; }
+        .dc-t { font-weight:800; color:var(--navy); } .dc-s { font-size:.8rem; color:#64748b; }
+        .dc-ln { display:flex; align-items:center; gap:6px; width:100%; background:none; border:0; border-top:1px dashed #e2e8f0; padding:7px 0; font:inherit; color:var(--text); text-align:left; cursor:pointer; flex-wrap:wrap; }
+        .dc-ic { width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex:none; }
+        .dc-ic.grok { background:#f3efff; color:var(--grok); } .dc-ic.lite { background:#e6f4fc; color:var(--lite); } .dc-ic.sale { background:#fee2e2; color:var(--red); }
+        .dc-x { background:#eef2f8; border-radius:8px; padding:0 6px; font-weight:800; font-size:.8rem; }
+        .dc-pr { margin-left:auto; font-weight:800; }
+        .dc-b { font-size:.72rem; font-weight:800; border-radius:99px; padding:2px 8px; white-space:nowrap; }
+        .dc-b.ok { background:#dcfce7; color:#15803d; } .dc-b.q { background:#fff1e0; color:#c2410c; } .dc-b.sale { background:#fee2e2; color:#b91c1c; }
+        .dc-note { flex-basis:100%; font-size:.78rem; color:#64748b; padding-left:32px; }
         .ml-item { width: 100%; text-align: left; border: 2px solid #cbd5e1; background: #fff; border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; display: block; color: var(--text); font-size: 1.05rem; }
         .ml-item b { font-size: 1.15rem; color: var(--navy); display: block; }
 
@@ -438,6 +459,12 @@
         .deposit-box .dep-title b { color: #c2410c; font-size: 1.6rem; white-space: nowrap; }
         .deposit-box ul { margin: 0; padding-left: 1.2em; font-weight: 700; }
         .deposit-box li { margin: 2px 0; }
+        .deposit-box .dep-note { font-weight: 700; font-size: 1.05rem; }
+        .deposit-box .dep-tbl .r { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid #fed7aa; }
+        .deposit-box .dep-tbl .r:last-child { border-bottom: 0; }
+        .deposit-box .dep-tbl .r span { font-weight: 700; color: #7c2d12; }
+        .deposit-box .dep-tbl .r b { white-space: nowrap; color: #111827; }
+        .deposit-box .dep-tbl .r.due b { color: #c2410c; font-size: 1.35rem; }
         .deposit-box .dep-pay { margin-top: 10px; background: #fff; border: 2px dashed #ea580c; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; font-weight: 800; color: #7c2d12; }
         #modal-price { font-size: 2.2rem; font-weight: 800; color: var(--navy); margin: 6px 0 14px; }
         .modal-close-btn { margin-top: 10px; }
@@ -650,17 +677,21 @@ h2.home-h { margin:0 0 12px; }
 #home-slots .p-card.none-card .p-img img { filter:grayscale(1); opacity:.6; }
 #home-slots .slot .p-badge { display:none; }
 #home-slots .slot .p-body { padding:16px 8px 0; gap:0; }
-#home-slots .p-name { font-size:19px; font-weight:500; color:var(--navy); line-height:1.35; }
+#home-slots .p-name { font-size:21px; font-weight:800; color:var(--navy); line-height:1.35; }
 #home-slots .q-head { align-items:baseline; }
-#home-slots .q-days { background:none; color:var(--c-mute); font-size:13px; font-weight:400; padding:0; margin-left:4px; vertical-align:baseline; }
+#home-slots .q-days { background:var(--c-brown); color:#fff; font-size:14px; font-weight:700; padding:1px 10px; margin-left:6px; border-radius:99px; vertical-align:3px; line-height:22px; }
 #home-slots .pill { display:inline-block; vertical-align:3px; margin-left:8px; background:#fbe9cf; color:var(--c-brown); font-size:11.5px; font-weight:500; padding:0 9px; border-radius:99px; line-height:20px; white-space:nowrap; }
 #home-slots .pill.ok { background:#e3f1e5; color:#1f6b33; } #home-slots .pill.none { background:#eee; color:#6b7280; }
 #home-slots .q-price { font-size:14px; font-weight:400; color:var(--c-mute); }
-#home-slots .q-price b { font-size:38px; font-weight:600; color:var(--navy); line-height:1; margin-right:3px; }
-#home-slots .p-note { background:none; border:0; padding:0; margin:6px 0 0; font-size:13px; font-weight:400; color:var(--c-brown); border-radius:0; }
+#home-slots .q-price b { font-size:40px; font-weight:800; color:var(--navy); line-height:1; margin-right:3px; }
+#home-slots .p-note { background:#fdf3e2; border:0; border-left:3px solid #e0a35a; padding:4px 10px; margin:8px 0 0; font-size:13px; font-weight:500; color:var(--c-brown-d); border-radius:8px; line-height:1.4; }
 #home-slots .slot .p-meta, #home-slots .month .p-meta { display:flex; flex-wrap:wrap; gap:6px 14px; margin:14px 0 16px; }
 #home-slots .slot .chip.feature, #home-slots .month .chip.feature { flex-direction:row; background:none; border:0; padding:0; border-radius:0; font-size:13.5px; font-weight:400; color:#5a4a3a; gap:5px; line-height:1.4; }
 #home-slots .chip.feature::before { content:''; width:15px; height:15px; flex:none; background:var(--c-brown); -webkit-mask:var(--ico) no-repeat center/contain; mask:var(--ico) no-repeat center/contain; font-size:0; }
+#home-slots .slot .p-body, #home-slots .month .m-info { container-type:inline-size; }
+#home-slots .slot .p-meta, #home-slots .month .p-meta { flex-wrap:nowrap; gap:0 clamp(4px,2cqi,12px); }
+#home-slots .slot .chip.feature, #home-slots .month .chip.feature { white-space:nowrap; flex:none; font-size:clamp(10.5px,3.75cqi,13.5px); gap:3px; }
+#home-slots .slot .chip.feature::before, #home-slots .month .chip.feature::before { width:clamp(12px,4.4cqi,15px); height:clamp(12px,4.4cqi,15px); }
 #home-slots .chip.feature.f-shield { --ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E"); }
 #home-slots .chip.feature.f-user { --ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6'/%3E%3C/svg%3E"); }
 #home-slots .chip.feature.f-lock { --ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 018 0v4'/%3E%3C/svg%3E"); }
@@ -905,7 +936,7 @@ h2.home-h { margin:0 0 12px; }
             <button type="button" class="back-btn" onclick="goTo('home')"><svg class="ic"><use href="#i-back"/></svg> กลับหน้าแรก</button>
             <div class="card" id="calendar-section">
                 <h2>ปฏิทินเช็คคิวว่าง</h2>
-                <p class="lead">แตะวันที่มีแถบสี เพื่อดูรายละเอียด และเช่าหรือจองล่วงหน้า</p>
+                <p class="lead">ตัวเลขบนช่อง = จำนวนที่ว่างให้เช่า/จอง แตะวันเพื่อดูรายละเอียด</p>
                 <div class="month-title" id="calendar-month-year">กำลังโหลด...</div>
                 <div class="month-nav">
                     <button type="button" class="btn light" onclick="changeMonth(-1)"><svg class="ic"><use href="#i-back"/></svg> เดือนก่อน</button>
@@ -913,10 +944,11 @@ h2.home-h { margin:0 0 12px; }
                 </div>
                 <div class="legend">
                     <span><i class="sw grok"></i> Supergrok</span><span><i class="sw lite"></i> Lite</span>
-                    <span><i class="sw sale"></i> ลดราคา</span><span><i class="sw queue"></i> รอคิว</span>
+                    <span><i class="sw sale"></i> ลดราคา</span><span><i class="sw" style="background:#fff;border:2px solid #22c55e"></i> พร้อมเช่าเลย</span>
                 </div>
                 <div class="cal-head"><div>อา.</div><div>จ.</div><div>อ.</div><div>พ.</div><div>พฤ.</div><div>ศ.</div><div>ส.</div></div>
                 <div id="calendar-grid" class="cal-grid"></div>
+                <div class="cal-hint">เช่น <b>SG 8</b> = SuperGrok ว่าง 8 ที่ · <b>L 2</b> = Lite ว่าง 2 ที่ · ขอบเขียว = มีรหัสพร้อมเช่าเลย</div>
                 <div class="month-list">
                     <h3><svg class="ic"><use href="#i-cal"/></svg> คิวในเดือนนี้</h3>
                     <div id="month-list"></div>
@@ -1032,11 +1064,16 @@ h2.home-h { margin:0 0 12px; }
         function noteText(item) {
             const n = String(item && item.note != null ? item.note : '').trim();
             if (!n || n === '-' || n === '—' || n === '–') return '';
-            return n;
+            return n.replace(/^!\s*/, ''); // '!' นำหน้า = โน้ตพิเศษ (ซ่อนเครื่องหมายเวลาแสดง)
+        }
+        // การ์ดปฏิทิน: แสดงโน้ตคอลัมน์ G เฉพาะที่ขึ้นต้นด้วย '!'
+        function calNote(item) {
+            const n = String(item && item.note != null ? item.note : '').trim();
+            return n.startsWith('!') ? n.slice(1).trim() : '';
         }
         function noteHtml(item) {
             const n = noteText(item);
-            return n ? `<div class="p-note">${esc(n)}</div>` : '';
+            return n ? `<div class="p-note">📢 ${esc(n)}</div>` : '';
         }
         function benefitChipsHtml() {
             return '<span class="chip feature f-shield">มีประกันตลอดการใช้งาน</span>' +
@@ -1645,7 +1682,7 @@ h2.home-h { margin:0 0 12px; }
             let waitHtml = '';
             if (!ready) {
                 waitHtml = t
-                    ? `<div class="q-wait" role="timer"><div class="q-wait-main"><svg class="ic"><use href="#i-clock"/></svg> <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main"><svg class="ic"><use href="#i-clock"/></svg> <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(พร้อมส่งวันที่ ${qDateTxt}${qClock})</div></div>`
                     : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
             }
             const btnHtml = ready
@@ -1761,7 +1798,7 @@ h2.home-h { margin:0 0 12px; }
                 const qDateTxt = qd ? `${p2(qd.getDate())}/${p2(qd.getMonth() + 1)}/${p2((qd.getFullYear() + 543) % 100)}` : esc(item.queue);
                 const qClock = clockLabel(item.resetClock) ? ` เวลา ${esc(clockLabel(item.resetClock))} น.` : '';
                 waitHtml = t
-                    ? `<div class="q-wait" role="timer"><div class="q-wait-main"><svg class="ic"><use href="#i-clock"/></svg> <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(วันที่ ${qDateTxt}${qClock})</div></div>`
+                    ? `<div class="q-wait" role="timer"><div class="q-wait-main"><svg class="ic"><use href="#i-clock"/></svg> <b data-u="days"></b> วัน <b data-u="hours"></b> ชม. <b data-u="minutes"></b> น. <b data-u="seconds"></b> ว.</div><div class="q-wait-date">(พร้อมส่งวันที่ ${qDateTxt}${qClock})</div></div>`
                     : `<div class="q-wait"><div class="q-wait-date">คิวถัดไป: วันที่ ${qDateTxt}${qClock}</div></div>`;
             }
             const pill = isQueue ? '<span class="pill">รอคิว</span>' : '<span class="pill ok">พร้อมขาย</span>';
@@ -1870,41 +1907,97 @@ h2.home-h { margin:0 0 12px; }
                 grid.appendChild(createDayCellElement(i, true, null));
             }
 
-            // รายการแบบตัวใหญ่ใต้ปฏิทิน (อ่านง่ายกว่าช่องเล็กบนมือถือ)
+            // การ์ดรายวันแบบกะทัดรัด (เฉพาะวันนี้เป็นต้นไป) จัดกลุ่มรายการที่เหมือนกัน
             const list = document.getElementById('month-list');
             list.innerHTML = '';
-            if (!monthDays.length) {
-                list.innerHTML = '<div class="section-empty">เดือนนี้ยังไม่มีคิว</div>';
+            const todayKey = dateKeyOf(now);
+            const upcoming = monthDays.filter(d => d.dateKey >= todayKey);
+            if (!upcoming.length) {
+                list.innerHTML = '<div class="section-empty">เดือนนี้ไม่มีคิวว่างแล้ว</div>';
             }
-            monthDays.forEach(({ dateKey, items }) => {
-                const b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'ml-item';
-                b.innerHTML = `<b>${esc(thaiDateFromKey(dateKey))}</b>` +
-                    items.map(it => `${esc(it.product)} · ${esc(it.status)} · ${esc(it.day)} วัน · ${esc(fmtPrice(it.price))} บาท${noteText(it) ? ' · ' + esc(noteText(it)) : ''}`).join('<br>');
-                b.onclick = () => openCalendarDayModal(dateKey, items);
-                list.appendChild(b);
+            upcoming.forEach(({ dateKey, items }) => {
+                const card = document.createElement('div');
+                card.className = 'dcard';
+                card.id = 'dc-' + dateKey;
+                const d = new Date(dateKey + 'T00:00:00');
+                const rel = dateKey === todayKey ? 'วันนี้' : (dateKey === dateKeyOf(new Date(now.getTime() + 864e5)) ? 'พรุ่งนี้' : 'วัน' + THAI_WEEKDAYS[d.getDay()]);
+                const head = document.createElement('button');
+                head.type = 'button'; head.className = 'dc-h';
+                head.innerHTML = `<div class="dc-box"><b>${d.getDate()}</b><small>${THAI_MONTHS_SHORT[d.getMonth()]}</small></div><div><div class="dc-t">${rel}</div><div class="dc-s">ได้รหัส ${d.getDate()} ${THAI_MONTHS_SHORT[d.getMonth()]} · ว่าง ${items.length} ที่</div></div>`;
+                head.onclick = () => openCalendarDayModal(dateKey, items);
+                card.appendChild(head);
+                groupItems(items).forEach(g => {
+                    const it = g.item, k = itemKind(it), pk = isLiteItem(it) ? 'lite' : 'grok';
+                    const ready = k !== 'queue';
+                    const ln = document.createElement('button');
+                    ln.type = 'button'; ln.className = 'dc-ln';
+                    const badge = k === 'sale' ? '<span class="dc-b sale">🔥 ลดราคา</span>' : ready ? '<span class="dc-b ok">● พร้อมเช่าเลย</span>' : '<span class="dc-b q">⏳ จองคิว</span>';
+                    ln.innerHTML = `<span class="dc-ic ${k === 'sale' ? 'sale' : pk}">${pk === 'lite' ? CAL_ICON_LITE : CAL_ICON_GROK}</span><b>${esc(it.product)}</b> ${esc(it.day)} วัน <span class="dc-x">×${g.count}</span><span class="dc-pr">${esc(fmtPrice(it.price))}฿</span>${badge}` +
+                        (calNote(it) ? `<span class="dc-note">${esc(calNote(it))}</span>` : '');
+                    ln.setAttribute('aria-label', `${it.product} ${it.day} วัน ${g.count} ที่ ราคา ${fmtPrice(it.price)} บาท`);
+                    ln.onclick = () => openDetail(it, k === 'queue' ? 'queue' : (k === 'sale' ? 'sale' : 'normal'));
+                    card.appendChild(ln);
+                });
+                list.appendChild(card);
             });
+            if (upcoming.length) {
+                const n = document.createElement('div');
+                n.className = 'cal-hint';
+                n.innerHTML = `⏳ <b>จองคิว</b> = วางมัดจำ SuperGrok ${esc(fmtPrice(DEPOSIT_SUPERGROK))}฿ / Lite ${esc(fmtPrice(DEPOSIT_LITE))}฿ แล้วหักจากราคาในวันรับรหัส`;
+                list.appendChild(n);
+            }
+        }
+
+        const THAI_WEEKDAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+        const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        const CAL_ICON_GROK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>';
+        const CAL_ICON_LITE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
+        function dateKeyOf(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+        function groupItems(items) {
+            const m = new Map();
+            items.forEach(it => {
+                const key = [it.product, it.day, it.price, itemKind(it), calNote(it)].join('|');
+                if (m.has(key)) m.get(key).count++; else m.set(key, { item: it, count: 1 });
+            });
+            return [...m.values()];
+        }
+        function focusDayCard(dateKey) {
+            const c = document.getElementById('dc-' + dateKey);
+            if (!c) return;
+            c.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash');
+            setTimeout(() => c.classList.remove('flash'), 2200);
         }
 
         function createDayCellElement(dayNum, isMuted, items, isToday = false, dateKey = '') {
             const hasItems = !isMuted && items && items.length > 0;
             const cell = document.createElement(hasItems ? 'button' : 'div');
             if (hasItems) cell.type = 'button';
-            cell.className = 'day' + (isMuted ? ' muted' : '') + (hasItems ? ' has' : '') + (isToday ? ' today' : '');
+            const todayMid = new Date(); todayMid.setHours(0, 0, 0, 0);
+            const isPast = !isMuted && dateKey && dateKey < dateKeyOf(todayMid);
+            const hasReady = hasItems && items.some(it => itemKind(it) !== 'queue');
+            cell.className = 'day' + (isMuted ? ' muted' : '') + (hasItems ? ' has' : '') + (hasReady ? ' ready' : '') + (isPast ? ' past' : '') + (isToday ? ' today' : '');
             if (isMuted) {
                 cell.innerHTML = `<span class="n">${dayNum}</span>`;
                 return cell;
             }
             let html = `<span class="n">${dayNum}${isToday ? '<span class="today-tag">วันนี้</span>' : ''}</span>`;
             if (hasItems) {
-                items.slice(0, 3).forEach(item => { html += `<span class="bar ${itemKind(item)}"></span>`; });
-                if (items.length > 3) html += `<span class="plus">+${items.length - 3}</span>`;
+                // ชิปจำนวน: SG 3 / L 1 (สีแดง = ลดราคา)
+                const cnt = {};
+                items.forEach(item => {
+                    const k = (isLiteItem(item) ? 'lite' : 'grok') + (itemKind(item) === 'sale' ? '-sale' : '');
+                    cnt[k] = (cnt[k] || 0) + 1;
+                });
+                html += '<span class="chips">' + Object.keys(cnt).map(k => {
+                    const [p, sale] = k.split('-');
+                    return `<span class="chip ${sale ? 'sale' : p}">${p === 'lite' ? 'L' : 'SG'} ${cnt[k]}</span>`;
+                }).join('') + '</span>';
                 html += '<div class="tip"><b>รายละเอียดวันนี้</b>' + items.map(item =>
                     `<div><b>${esc(item.product)}</b><br>สถานะ: ${esc(item.status)} (${esc(item.day)} วัน)<br>ราคา: ${esc(fmtPrice(item.price))} บาท</div>`).join('') +
                     '<div>คลิกเพื่อดูรายละเอียด</div></div>';
                 cell.setAttribute('aria-label', `${thaiDateFromKey(dateKey)} มี ${items.length} รายการ`);
-                cell.onclick = () => openCalendarDayModal(dateKey, items);
+                cell.onclick = () => { focusDayCard(dateKey); openCalendarDayModal(dateKey, items); };
             }
             cell.innerHTML = html;
             return cell;
@@ -1931,7 +2024,7 @@ h2.home-h { margin:0 0 12px; }
             document.getElementById('modal-title').textContent = item.product;
             const modalNote = document.getElementById('modal-note');
             const note = noteText(item);
-            modalNote.textContent = note;
+            modalNote.textContent = note ? '📢 ' + note : '';
             modalNote.classList.toggle('hidden', !note);
             document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน`;
             document.getElementById('modal-price').textContent = `${fmtPrice(item.price)} บาท`;
@@ -1979,12 +2072,12 @@ h2.home-h { margin:0 0 12px; }
             const dep = depositFor(item);
             const price = Number(item.price);
             let html = dep !== null
-                ? `<div class="dep-title"><svg class="ic"><use href="#i-shield"/></svg><span>การจองคิว คือการวางมัดจำ <b>${esc(fmtPrice(dep))} บาท</b></span></div>`
-                : `<div class="dep-title"><svg class="ic"><use href="#i-shield"/></svg><span>การจองคิว คือการวางมัดจำ (สอบถามยอดทางเพจ)</span></div>`;
-            html += `<ul><li>เพื่อล็อคสิทธิ์ไม่ให้ใครแย่งคิวนี้</li><li>เงินมัดจำนี้จะนำไปลดราคาในวันที่รับรหัส</li></ul>`;
+                ? `<div class="dep-title"><svg class="ic"><use href="#i-shield"/></svg><span>จองคิว = มัดจำ <b>${esc(fmtPrice(dep))} บาท</b></span></div>`
+                : `<div class="dep-title"><svg class="ic"><use href="#i-shield"/></svg><span>จองคิว = มัดจำ (สอบถามยอดทางเพจ)</span></div>`;
+            html += `<div class="dep-note">จองคิว = วางมัดจำ ล็อกคิวนี้ไว้ให้คุณ แล้วหักจากราคาในวันรับรหัส</div>`;
             if (dep !== null && isFinite(price) && price > 0) {
                 html += price > dep
-                    ? `<div class="dep-pay">จ่ายวันนี้ ${esc(fmtPrice(dep))} บาท · วันรับรหัสจ่ายอีก ${esc(fmtPrice(price - dep))} บาท</div>`
+                    ? `<div class="dep-pay dep-tbl"><div class="r"><span>ราคา</span><b>${esc(fmtPrice(price))} บาท</b></div><div class="r"><span>มัดจำ (จ่ายวันนี้)</span><b>${esc(fmtPrice(dep))} บาท</b></div><div class="r due"><span>จ่ายอีก (วันรับรหัส)</span><b>${esc(fmtPrice(price - dep))} บาท</b></div></div>`
                     : `<div class="dep-pay">จ่ายวันนี้ ${esc(fmtPrice(dep))} บาท</div>`;
             }
             box.classList.add('hidden');
