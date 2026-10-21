@@ -96,6 +96,7 @@ button{font:inherit;cursor:pointer}
 .total{padding:10px 16px;margin-top:4px}.total .k{font-size:16px}.total .v{font-size:28px}
 .note{font-size:12.5px;margin-top:8px;line-height:1.4}
 .thanks{font-size:14px;margin-top:8px}
+.dep-box{background:#fffbeb;border:2px solid #f59e0b;border-radius:14px;padding:6px 12px;margin-top:6px}.dep-box .item{border-bottom:1px solid #fde68a}.dep-box .item:last-child{border-bottom:0}.dep-box .due .v{color:#b42318;font-size:22px}
 </style>
 </head>
 <body>
@@ -202,7 +203,12 @@ function logout(){forgetKey();showLock('')}
     <div style="margin-top:8px;font-size:16px;font-weight:700">รวม <span id="rDays"></span></div>
   </div>
 
-  <div class="total"><span class="k">ราคา</span><span class="v" id="rPrice"></span></div>
+  <div class="total" id="rTotal"><span class="k">ราคา</span><span class="v" id="rPrice"></span></div>
+  <div class="dep-box" id="rDep" style="display:none">
+    <div class="item"><span class="k">ราคาทั้งหมด</span><span class="v" id="dFull"></span></div>
+    <div class="item"><span class="k">มัดจำแล้ว</span><span class="v" id="dPaid"></span></div>
+    <div class="item due"><span class="k">จ่ายอีก</span><span class="v" id="dDue"></span></div>
+  </div>
   <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
@@ -217,6 +223,7 @@ function logout(){forgetKey();showLock('')}
 <script>
 const $=id=>document.getElementById(id);
 const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const DEPOSIT={'SuperGrok':40,'SuperGrok Lite':20};
 const PRICES={'SuperGrok':{1:59,3:99,7:179,14:329,30:599},'SuperGrok Lite':{1:35,3:59,7:99,14:179,30:329}};
 let st='ชำระแล้ว',pkg='SuperGrok',days=7,touched=false,curNo='';
 const pad=n=>String(n).padStart(2,'0');
@@ -241,7 +248,10 @@ function render(){
   $('rStart').textContent=fmt(s);
   $('rDays').textContent=days+' วัน';
   $('rEnd').innerHTML=fmt(e)+' <small>'+($('endTime').value||'00:00').replace(':','.')+' น.</small>';
-  $('rPrice').textContent=(parseInt($('price').value)||0)+' บาท';
+  const price=parseInt($('price').value)||0,isDep=st==='มัดจำ',dep=Math.min(DEPOSIT[pkg]||0,price);
+  $('rPrice').textContent=price+' บาท';
+  $('rTotal').style.display=isDep?'none':'';$('rDep').style.display=isDep?'':'none';
+  $('dFull').textContent=price+' บาท';$('dPaid').textContent=dep+' บาท';$('dDue').textContent=(price-dep)+' บาท';
   drawCal(s,e);
 }
 const DOW=['อา','จ','อ','พ','พฤ','ศ','ส'],MF=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
@@ -286,7 +296,7 @@ async function saveImg(){render();const c=await html2canvas($('receipt'),{scale:
   o.innerHTML='<div style="color:#fff;font-weight:700;margin-bottom:10px">กดค้างที่รูป แล้วเลือก "เพิ่มลงในรูปภาพ"</div><img src="'+u+'" style="width:100%;max-width:520px;border-radius:12px"><br><button class="big" style="margin-top:14px;max-width:300px" onclick="this.parentNode.remove()">ปิด</button>';
   document.body.appendChild(o);
 }
-function copyText(){render();const t='ใบเสร็จ ร้าน SuperGolf (Treethep)\nเลขที่: '+(curNo||'-')+'\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nสถานะ: '+st+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent;navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
+function copyText(){render();const t='ใบเสร็จ ร้าน SuperGolf (Treethep)\nเลขที่: '+(curNo||'-')+'\n'+$('rWhoK').textContent+': '+$('rWho').textContent+'\nสถานะ: '+st+'\nแพ็กเกจ: '+pkg+'\nเริ่มเช่า: '+$('rStart').textContent+'\nระยะเวลา: '+days+' วัน\nหมดอายุ: '+$('rEnd').textContent+'\nราคา: '+$('rPrice').textContent+(st==='มัดจำ'?'\nมัดจำแล้ว: '+$('dPaid').textContent+'\nจ่ายอีก: '+$('dDue').textContent:'');navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว'))}
 
 /* ประวัติประกัน (เก็บในเครื่องนี้) */
 const KEY='sg_warranty';
