@@ -45,8 +45,10 @@ svg text{font-family:Sarabun;font-size:11px}
 
 <div class="sec" id="cost">
  <div class="card" style="cursor:default">
-  <div class="row"><span>บัญชี SuperGrok / เดือน</span><input type="number" id="nSG" min="0"></div>
-  <div class="row"><span>ต้นทุน SuperGrok (บาท)</span><input type="number" id="cSG" min="0"></div>
+  <div class="row"><span>บัญชี SuperGrok โปรเก่า / เดือน</span><input type="number" id="nSGo" min="0"></div>
+  <div class="row"><span>ต้นทุน SuperGrok โปรเก่า (บาท)</span><input type="number" id="cSGo" min="0"></div>
+  <div class="row"><span>บัญชี SuperGrok โปรใหม่ / เดือน</span><input type="number" id="nSG" min="0"></div>
+  <div class="row"><span>ต้นทุน SuperGrok โปรใหม่ (บาท)</span><input type="number" id="cSG" min="0"></div>
   <div class="row"><span>บัญชี Lite / เดือน</span><input type="number" id="nLite" min="0"></div>
   <div class="row"><span>ต้นทุน Lite (บาท)</span><input type="number" id="cLite" min="0"></div>
   <div class="row"><span>ต้นทุนแฝง (%)</span><input type="number" id="hid" min="0"></div>
@@ -80,7 +82,7 @@ async function unlock(){const v=$('pin').value.trim();if(!v){$('pinErr').textCon
  $('pinErr').textContent='กำลังตรวจสอบ...';const j=await loadSheet(v);$('pin').value='';
  if(j&&j.auth===true){localStorage.setItem('gcAdminKey',v);localStorage.setItem('sg_ok',String(Date.now()));$('pinErr').textContent='';$('lock').style.display='none'}
  else $('pinErr').textContent=j?(lockMsg(j)||'รหัสไม่ถูกต้อง'):'เชื่อมต่อไม่สำเร็จ'}
-/* ---- ข้อมูล: J=รายรับ, B=ประเภท, ว่าง/old=โปรเก่า → J>100=SuperGrok ไม่งั้น Lite ---- */
+/* ---- ข้อมูล: E=รายรับ, B=ประเภท, ว่าง/old=โปรเก่า → J>100=SuperGrok ไม่งั้น Lite ---- */
 let sales=[];
 const num=c=>{if(!c)return 0;let v=c.v;if(typeof v==='number')return v;v=String(c.f!=null?c.f:v||'').replace(/[^\d.\-]/g,'');return parseFloat(v)||0};
 const txt=c=>c?String(c.f!=null&&String(c.f).trim()!==''?c.f:(c.v==null?'':c.v)).trim():'';
@@ -92,16 +94,16 @@ async function loadSheet(tryKey){const key=tryKey||localStorage.getItem('gcAdmin
   try{const r=await fetch(API_URL+'?key='+encodeURIComponent(key),{signal:ac.signal,redirect:'follow'});if(!r.ok)throw 0;t=await r.text()}finally{clearTimeout(tm)}
   const j=JSON.parse(t.substring(t.indexOf('{'),t.lastIndexOf('}')+1));
   if(j.auth!==true){if(!tryKey){if(!j.adminLocked)forgetKey();showLock(lockMsg(j)||'กรุณาเข้าสู่ระบบใหม่')}$('stat').textContent='';return j}
-  sales=[];j.table.rows.forEach(r=>{const c=r.c;if(!c)return;const amt=num(c[9]);if(!amt)return;
+  sales=[];j.table.rows.forEach(r=>{const c=r.c;if(!c)return;const amt=num(c[4]);if(!amt)return;
    const d=parseD(txt(c[7]));sales.push({amt,type:typeOf(txt(c[1]),amt),ym:d?d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'):'?'})});
-  $('warn').style.display=sales.length?'none':'block';$('warn').textContent='ไม่พบตัวเลขในคอลัมน์ J — ต้องให้ Apps Script ส่งคอลัมน์ J มาตอนเข้าสู่ระบบ';
+  $('warn').style.display=sales.length?'none':'block';$('warn').textContent='ไม่พบราคาในคอลัมน์ E';
   $('stat').textContent='อัปเดต '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' · '+sales.length+' รายการ';
   render();return j}catch(e){$('stat').textContent='โหลดไม่สำเร็จ';return null}}
 /* ---- ต้นทุน (เก็บในเครื่อง) ---- */
-const DEF={nSG:1,cSG:550,nLite:1,cLite:200,hid:10};
+const DEF={nSGo:0,cSGo:350,nSG:1,cSG:550,nLite:1,cLite:200,hid:10};
 let cfg=Object.assign({},DEF,JSON.parse(localStorage.getItem('gcFinCfg')||'{}'));
 Object.keys(DEF).forEach(k=>{$(k).value=cfg[k];$(k).oninput=()=>{cfg[k]=Math.max(0,+$(k).value||0);localStorage.setItem('gcFinCfg',JSON.stringify(cfg));render()}});
-function costs(){const base=cfg.nSG*cfg.cSG+cfg.nLite*cfg.cLite;return{base,hidden:base*cfg.hid/100,total:base*(1+cfg.hid/100)}}
+function costs(){const base=cfg.nSGo*cfg.cSGo+cfg.nSG*cfg.cSG+cfg.nLite*cfg.cLite;return{base,hidden:base*cfg.hid/100,total:base*(1+cfg.hid/100)}}
 function card(l,v,m,cls){return'<div class="card"><div class="l">'+l+'</div><div class="v '+(cls||'')+'">'+v+'</div><div class="more">'+m+'</div></div>'}
 function render(){const C=costs(),tot=sales.reduce((a,s)=>a+s.amt,0),T={},M={};
  sales.forEach(s=>{(T[s.type]=T[s.type]||{a:0,n:0});T[s.type].a+=s.amt;T[s.type].n++;
@@ -119,14 +121,14 @@ function render(){const C=costs(),tot=sales.reduce((a,s)=>a+s.amt,0),T={},M={};
  ck.forEach((k,i)=>{const h=M[k].a/mx*H;s+='<rect x="'+(i*bw+4)+'" y="'+(H-h)+'" width="'+(bw-8)+'" height="'+h+'" rx="4" fill="#38bdf8"/><text x="'+(i*bw+bw/2)+'" y="'+(H+14)+'" text-anchor="middle">'+MS[+k.slice(5)-1]+'</text>'});
  const cy=H-C.total/mx*H;s+='<line x1="0" x2="'+W+'" y1="'+cy+'" y2="'+cy+'" stroke="#dc2626" stroke-dasharray="4"/><text x="'+W+'" y="'+(cy-3)+'" text-anchor="end" fill="#dc2626">ต้นทุน</text></svg>';
  $('chart').innerHTML=ck.length?s:'<div style="color:#6b7280">ยังไม่มีข้อมูล</div>';
- $('tCost').textContent=fmt(C.total);$('tCostM').innerHTML='SuperGrok '+cfg.nSG+'×'+cfg.cSG+' + Lite '+cfg.nLite+'×'+cfg.cLite+' = '+fmt(C.base)+'<br>ต้นทุนแฝง '+cfg.hid+'% = '+fmt(C.hidden);
+ $('tCost').textContent=fmt(C.total);$('tCostM').innerHTML='SuperGrok เก่า '+cfg.nSGo+'×'+cfg.cSGo+' + ใหม่ '+cfg.nSG+'×'+cfg.cSG+' + Lite '+cfg.nLite+'×'+cfg.cLite+' = '+fmt(C.base)+'<br>ต้นทุนแฝง '+cfg.hid+'% = '+fmt(C.hidden);
  /* คาดการณ์: 4 สัปดาห์/บัญชี */
- const full=cfg.nSG*4*229+cfg.nLite*4*99,cons=cfg.nSG*(229*2+199+149)+cfg.nLite*(99*2+89+59);
+ const nS=cfg.nSG+cfg.nSGo,full=nS*4*229+cfg.nLite*4*99,cons=nS*(229*2+199+149)+cfg.nLite*(99*2+89+59);
  const pf=full-C.total,pc=cons-C.total;
  $('fFull').textContent=fmt(pf);$('fFull').className='v '+(pf>=0?'pos':'neg');$('fFullM').innerHTML='รายรับ '+fmt(full)+' (SuperGrok 4×229, Lite 4×99)<br>− ต้นทุน+แฝง '+fmt(C.total);
  $('fCons').textContent=fmt(pc);$('fCons').className='v '+(pc>=0?'pos':'neg');$('fConsM').innerHTML='รายรับ '+fmt(cons)+'<br>สมมติ 2 สัปดาห์ราคาเต็ม + 1 สัปดาห์ 199/89 + 1 สัปดาห์ 149/59<br>− ต้นทุน+แฝง '+fmt(C.total);
  const be=x=>Math.ceil(x*(1+cfg.hid/100)/4);
- $('fBE').textContent='SG '+be(cfg.cSG)+' / Lite '+be(cfg.cLite)+' ฿';$('fBEM').innerHTML='ราคาต่อสัปดาห์ขั้นต่ำที่ไม่ขาดทุน (รวมต้นทุนแฝง '+cfg.hid+'%)';
+ $('fBE').textContent='SG ใหม่ '+be(cfg.cSG)+' / เก่า '+be(cfg.cSGo)+' / Lite '+be(cfg.cLite)+' ฿';$('fBEM').innerHTML='ราคาต่อสัปดาห์ขั้นต่ำที่ไม่ขาดทุน (รวมต้นทุนแฝง '+cfg.hid+'%)';
 }
 document.addEventListener('click',e=>{const c=e.target.closest('.card');if(c&&!e.target.closest('input'))c.classList.toggle('open');
  const b=e.target.closest('.tabs button');if(b){document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.sec').forEach(x=>x.classList.toggle('on',x.id===b.dataset.t))}});
