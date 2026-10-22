@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>รายรับรายจ่าย · SuperGolf</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0b2a5b;--sky:#38bdf8;--green:#16a34a;--red:#dc2626;--amber:#d97706;--bg:#f2f4f8;--text:#111827;--gray:#4b5563}
+*{box-sizing:border-box}body{margin:0;font-family:Sarabun,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.hd{background:var(--navy);color:#fff;padding:12px 16px 14px;border-bottom:5px solid var(--sky)}.hd h1{margin:6px 0 0;font-size:1.4rem}
+.btn{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--sky);color:var(--navy);font-weight:800;text-decoration:none;border:0;font-family:inherit;font-size:.9rem;cursor:pointer}
+.wrap{max-width:720px;margin:0 auto;padding:14px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{flex:1;padding:10px;border-radius:12px;border:2px solid #d1d5db;background:#fff;font:800 1rem Sarabun}.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer}
+.card .l{font-size:.9rem;color:var(--gray);font-weight:700}.card .v{font-size:1.5rem;font-weight:800}
+.card .more{display:none;margin-top:8px;font-size:.9rem;color:var(--gray);border-top:1px dashed #d1d5db;padding-top:8px}.card.open .more{display:block}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.row{display:flex;justify-content:space-between;gap:8px;padding:4px 0}
+input[type=number]{width:90px;padding:6px;border:2px solid #d1d5db;border-radius:10px;font:700 1rem Sarabun;text-align:right}
+.sec{display:none}.sec.on{display:block}h3{margin:14px 0 8px}
+#lock{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9}
+#lock .b{background:#fff;border-radius:18px;padding:24px;width:min(340px,90vw);text-align:center}
+#lock input{width:100%;padding:12px;font-size:1.4rem;text-align:center;border:2px solid #d1d5db;border-radius:12px;margin:10px 0}
+#lock .big{width:100%;padding:12px;font-size:1.1rem}.e{color:var(--red);min-height:1.4em;margin-top:6px}
+.warn{background:#fef3c7;color:#7c2d12;border-radius:12px;padding:10px;font-weight:700;margin-bottom:10px;display:none}
+svg text{font-family:Sarabun;font-size:11px}
+</style></head><body>
+<div id="lock"><div class="b"><h2>🔒 รายรับรายจ่าย</h2>
+<input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" onkeydown="if(event.key==='Enter')unlock()">
+<button class="btn big" onclick="unlock()">เข้าสู่ระบบ</button><div class="e" id="pinErr"></div></div></div>
+<div class="hd"><a class="btn" href="DAW21W.html">← หลังร้าน</a> <button class="btn" onclick="logout()">ออก</button> <button class="btn" onclick="loadSheet()">↻</button>
+<h1>💰 รายรับรายจ่าย</h1><div id="stat" style="font-size:.85rem;opacity:.8"></div></div>
+<div class="wrap">
+<div class="warn" id="warn"></div>
+<div class="tabs"><button class="on" data-t="sum">สรุป</button><button data-t="cost">ต้นทุน</button><button data-t="fc">คาดการณ์</button></div>
+
+<div class="sec on" id="sum">
+ <div class="grid">
+  <div class="card"><div class="l">รายรับรวม</div><div class="v" id="tInc">-</div><div class="more" id="tIncM"></div></div>
+  <div class="card"><div class="l">กำไรเดือนนี้</div><div class="v" id="tProf">-</div><div class="more" id="tProfM"></div></div>
+ </div>
+ <div class="grid" id="byType"></div>
+ <h3>รายเดือน</h3><div class="card" style="cursor:default"><div id="chart"></div></div>
+ <div id="months"></div>
+</div>
+
+<div class="sec" id="cost">
+ <div class="card" style="cursor:default">
+  <div class="row"><span>บัญชี SuperGrok / เดือน</span><input type="number" id="nSG" min="0"></div>
+  <div class="row"><span>ต้นทุน SuperGrok (บาท)</span><input type="number" id="cSG" min="0"></div>
+  <div class="row"><span>บัญชี Lite / เดือน</span><input type="number" id="nLite" min="0"></div>
+  <div class="row"><span>ต้นทุน Lite (บาท)</span><input type="number" id="cLite" min="0"></div>
+  <div class="row"><span>ต้นทุนแฝง (%)</span><input type="number" id="hid" min="0"></div>
+ </div>
+ <div class="card"><div class="l">รายจ่าย / เดือน (รวมต้นทุนแฝง)</div><div class="v neg" id="tCost">-</div><div class="more" id="tCostM"></div></div>
+</div>
+
+<div class="sec" id="fc">
+ <div class="card"><div class="l">ขายเต็ม 4 สัปดาห์ (ราคาเต็ม)</div><div class="v" id="fFull">-</div><div class="more" id="fFullM"></div></div>
+ <div class="card"><div class="l">แบบระวัง (ขายลดราคาบางส่วน)</div><div class="v" id="fCons">-</div><div class="more" id="fConsM"></div></div>
+ <div class="card"><div class="l">จุดคุ้มทุน</div><div class="v" id="fBE">-</div><div class="more" id="fBEM"></div></div>
+</div>
+</div>
+<script>
+const API_URL='https://script.google.com/macros/s/AKfycbwDYGFa8912A6rqhyNoFt6xpxzAPF1n-GVvuBS6ukPhFRsy9eHySHKZKZwml6dXmh8Y/exec';
+const REMEMBER_MS=864e5,$=id=>document.getElementById(id);
+const TM={'ม.ค.':0,'ก.พ.':1,'มี.ค.':2,'เม.ย.':3,'พ.ค.':4,'มิ.ย.':5,'ก.ค.':6,'ส.ค.':7,'ก.ย.':8,'ต.ค.':9,'พ.ย.':10,'ธ.ค.':11};
+const MS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const fmt=n=>Math.round(n).toLocaleString('th-TH')+' ฿';
+function parseD(s){s=String(s||'').trim();let d,m,y,r;
+ if(r=s.match(/^Date\((\d+),(\d+),(\d+)/))return new Date(+r[1],+r[2],+r[3]);
+ if(r=s.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/)){d=+r[1];m=+r[2]-1;y=+r[3]}
+ else if(r=s.match(/(\d{1,2})\s*(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s*(\d{2,4})?/)){d=+r[1];m=TM[r[2]];y=r[3]?+r[3]:new Date().getFullYear()}
+ else return null; if(y>2400)y-=543;if(y<100)y+=2000;const dt=new Date(y,m,d);return isNaN(dt)?null:dt}
+/* ---- ล็อก: PIN ตรวจที่ API (ADMIN_KEY) เหมือน DAW21W ---- */
+function showLock(msg){$('lock').style.display='flex';$('pinErr').textContent=msg||'';sales=[];render()}
+function forgetKey(){localStorage.removeItem('gcAdminKey');localStorage.removeItem('sg_ok')}
+function logout(){forgetKey();showLock('')}
+const lockMsg=j=>j&&j.adminLocked?'ใส่รหัสผิดหลายครั้ง ระบบล็อก '+(+j.lockMinutes||0)+' นาที':'';
+async function unlock(){const v=$('pin').value.trim();if(!v){$('pinErr').textContent='กรุณากรอกรหัส';return}
+ $('pinErr').textContent='กำลังตรวจสอบ...';const j=await loadSheet(v);$('pin').value='';
+ if(j&&j.auth===true){localStorage.setItem('gcAdminKey',v);localStorage.setItem('sg_ok',String(Date.now()));$('pinErr').textContent='';$('lock').style.display='none'}
+ else $('pinErr').textContent=j?(lockMsg(j)||'รหัสไม่ถูกต้อง'):'เชื่อมต่อไม่สำเร็จ'}
+/* ---- ข้อมูล: J=รายรับ, B=ประเภท, ว่าง/old=โปรเก่า → J>100=SuperGrok ไม่งั้น Lite ---- */
+let sales=[];
+const num=c=>{if(!c)return 0;let v=c.v;if(typeof v==='number')return v;v=String(c.f!=null?c.f:v||'').replace(/[^\d.\-]/g,'');return parseFloat(v)||0};
+const txt=c=>c?String(c.f!=null&&String(c.f).trim()!==''?c.f:(c.v==null?'':c.v)).trim():'';
+function typeOf(b,amt){b=b.toLowerCase();if(b.includes('lite'))return'Lite';if(b.includes('supergrok')||b.includes('super'))return'SuperGrok';
+ if(!b||b==='old')return amt>100?'SuperGrok':'Lite';return'อื่น ๆ'}
+async function loadSheet(tryKey){const key=tryKey||localStorage.getItem('gcAdminKey')||'';if(!key){showLock('');return null}
+ $('stat').textContent='กำลังโหลด...';
+ try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),30000);let t;
+  try{const r=await fetch(API_URL+'?key='+encodeURIComponent(key),{signal:ac.signal,redirect:'follow'});if(!r.ok)throw 0;t=await r.text()}finally{clearTimeout(tm)}
+  const j=JSON.parse(t.substring(t.indexOf('{'),t.lastIndexOf('}')+1));
+  if(j.auth!==true){if(!tryKey){if(!j.adminLocked)forgetKey();showLock(lockMsg(j)||'กรุณาเข้าสู่ระบบใหม่')}$('stat').textContent='';return j}
+  sales=[];j.table.rows.forEach(r=>{const c=r.c;if(!c)return;const amt=num(c[9]);if(!amt)return;
+   const d=parseD(txt(c[7]));sales.push({amt,type:typeOf(txt(c[1]),amt),ym:d?d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'):'?'})});
+  $('warn').style.display=sales.length?'none':'block';$('warn').textContent='ไม่พบตัวเลขในคอลัมน์ J — ต้องให้ Apps Script ส่งคอลัมน์ J มาตอนเข้าสู่ระบบ';
+  $('stat').textContent='อัปเดต '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' · '+sales.length+' รายการ';
+  render();return j}catch(e){$('stat').textContent='โหลดไม่สำเร็จ';return null}}
+/* ---- ต้นทุน (เก็บในเครื่อง) ---- */
+const DEF={nSG:1,cSG:550,nLite:1,cLite:200,hid:10};
+let cfg=Object.assign({},DEF,JSON.parse(localStorage.getItem('gcFinCfg')||'{}'));
+Object.keys(DEF).forEach(k=>{$(k).value=cfg[k];$(k).oninput=()=>{cfg[k]=Math.max(0,+$(k).value||0);localStorage.setItem('gcFinCfg',JSON.stringify(cfg));render()}});
+function costs(){const base=cfg.nSG*cfg.cSG+cfg.nLite*cfg.cLite;return{base,hidden:base*cfg.hid/100,total:base*(1+cfg.hid/100)}}
+function card(l,v,m,cls){return'<div class="card"><div class="l">'+l+'</div><div class="v '+(cls||'')+'">'+v+'</div><div class="more">'+m+'</div></div>'}
+function render(){const C=costs(),tot=sales.reduce((a,s)=>a+s.amt,0),T={},M={};
+ sales.forEach(s=>{(T[s.type]=T[s.type]||{a:0,n:0});T[s.type].a+=s.amt;T[s.type].n++;
+  (M[s.ym]=M[s.ym]||{a:0,n:0,SuperGrok:0,Lite:0});M[s.ym].a+=s.amt;M[s.ym].n++;if(M[s.ym][s.type]!=null)M[s.ym][s.type]+=s.amt});
+ $('tInc').textContent=fmt(tot);$('tIncM').innerHTML=sales.length+' รายการ · เฉลี่ย '+fmt(sales.length?tot/sales.length:0);
+ const now=new Date(),cur=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'),ci=(M[cur]||{a:0}).a,p=ci-C.total;
+ $('tProf').textContent=fmt(p);$('tProf').className='v '+(p>=0?'pos':'neg');$('tProfM').innerHTML='รายรับ '+fmt(ci)+'<br>รายจ่าย+แฝง '+fmt(C.total);
+ $('byType').innerHTML=Object.keys(T).sort().map(k=>card(k,fmt(T[k].a),T[k].n+' รายการ · '+(tot?Math.round(T[k].a/tot*100):0)+'%')).join('');
+ const ks=Object.keys(M).sort();
+ $('months').innerHTML=ks.slice().reverse().map(k=>{const pr=M[k].a-C.total,lb=k==='?'?'ไม่ระบุวันที่':MS[+k.slice(5)-1]+' '+(+k.slice(0,4)+543);
+  return card(lb,fmt(M[k].a),M[k].n+' รายการ<br>SuperGrok '+fmt(M[k].SuperGrok)+' · Lite '+fmt(M[k].Lite)+'<br>หักต้นทุน+แฝง: <b class="'+(pr>=0?'pos':'neg')+'">'+fmt(pr)+'</b>')}).join('');
+ /* กราฟแท่ง SVG */
+ const ck=ks.filter(k=>k!=='?').slice(-8),mx=Math.max(C.total,...ck.map(k=>M[k].a),1),W=320,H=160,bw=W/Math.max(ck.length,1);
+ let s='<svg viewBox="0 0 '+W+' '+(H+20)+'" width="100%">';
+ ck.forEach((k,i)=>{const h=M[k].a/mx*H;s+='<rect x="'+(i*bw+4)+'" y="'+(H-h)+'" width="'+(bw-8)+'" height="'+h+'" rx="4" fill="#38bdf8"/><text x="'+(i*bw+bw/2)+'" y="'+(H+14)+'" text-anchor="middle">'+MS[+k.slice(5)-1]+'</text>'});
+ const cy=H-C.total/mx*H;s+='<line x1="0" x2="'+W+'" y1="'+cy+'" y2="'+cy+'" stroke="#dc2626" stroke-dasharray="4"/><text x="'+W+'" y="'+(cy-3)+'" text-anchor="end" fill="#dc2626">ต้นทุน</text></svg>';
+ $('chart').innerHTML=ck.length?s:'<div style="color:#6b7280">ยังไม่มีข้อมูล</div>';
+ $('tCost').textContent=fmt(C.total);$('tCostM').innerHTML='SuperGrok '+cfg.nSG+'×'+cfg.cSG+' + Lite '+cfg.nLite+'×'+cfg.cLite+' = '+fmt(C.base)+'<br>ต้นทุนแฝง '+cfg.hid+'% = '+fmt(C.hidden);
+ /* คาดการณ์: 4 สัปดาห์/บัญชี */
+ const full=cfg.nSG*4*229+cfg.nLite*4*99,cons=cfg.nSG*(229*2+199+149)+cfg.nLite*(99*2+89+59);
+ const pf=full-C.total,pc=cons-C.total;
+ $('fFull').textContent=fmt(pf);$('fFull').className='v '+(pf>=0?'pos':'neg');$('fFullM').innerHTML='รายรับ '+fmt(full)+' (SuperGrok 4×229, Lite 4×99)<br>− ต้นทุน+แฝง '+fmt(C.total);
+ $('fCons').textContent=fmt(pc);$('fCons').className='v '+(pc>=0?'pos':'neg');$('fConsM').innerHTML='รายรับ '+fmt(cons)+'<br>สมมติ 2 สัปดาห์ราคาเต็ม + 1 สัปดาห์ 199/89 + 1 สัปดาห์ 149/59<br>− ต้นทุน+แฝง '+fmt(C.total);
+ const be=x=>Math.ceil(x*(1+cfg.hid/100)/4);
+ $('fBE').textContent='SG '+be(cfg.cSG)+' / Lite '+be(cfg.cLite)+' ฿';$('fBEM').innerHTML='ราคาต่อสัปดาห์ขั้นต่ำที่ไม่ขาดทุน (รวมต้นทุนแฝง '+cfg.hid+'%)';
+}
+document.addEventListener('click',e=>{const c=e.target.closest('.card');if(c&&!e.target.closest('input'))c.classList.toggle('open');
+ const b=e.target.closest('.tabs button');if(b){document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.sec').forEach(x=>x.classList.toggle('on',x.id===b.dataset.t))}});
+render();
+(async()=>{const t=+localStorage.getItem('sg_ok')||0;if(!localStorage.getItem('gcAdminKey')||Date.now()-t>=REMEMBER_MS){forgetKey();showLock('');return}
+ const j=await loadSheet();if(j&&j.auth===true)$('lock').style.display='none';else if(!j)showLock('เชื่อมต่อไม่สำเร็จ กรอกรหัสอีกครั้ง')})();
+</script></body></html>
