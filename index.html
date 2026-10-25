@@ -597,7 +597,17 @@
         .sale-hero .sh-img::after { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.18) 50%,transparent 60%); transform:translateX(-120%); animation:hero-shine 3.5s ease-in-out infinite; pointer-events:none; }
         @keyframes hero-shine { 60%,100% { transform:translateX(120%); } }
         @media (prefers-reduced-motion: reduce) { .sale-hero .sh-img::after { animation:none; } }
-        @media (min-width:760px) {
+        .slot-grid .p-card.sale-hero { min-width:0; }
+        .sale-hero .sh-img { overflow:hidden; }
+        .sale-hero .sh-img img { height:120px; }
+        .sale-hero .sh-body { min-width:0; }
+        .sale-hero .sh-price { flex-wrap:wrap; row-gap:0; min-width:0; }
+        .sale-hero .sh-price b { font-size:clamp(2.6rem,13vw,3.6rem); }
+        .slot-grid .p-card.sale-hero .p-meta { flex-wrap:wrap; }
+        .slot-grid .p-card.sale-hero .chip.feature { flex:1 1 auto; min-width:0; white-space:normal; text-align:center; }
+        .sale-hero .p-note { overflow-wrap:anywhere; }
+        @media (min-width:600px) and (max-width:999px) { .sale-hero .sh-img img { height:150px; } }
+        @media (min-width:1000px) {
             .slot-grid .p-card.sale-hero { flex-direction:row; align-items:stretch; }
             .sale-hero .sh-img { flex:0 0 46%; border-bottom:0; border-right:3px solid #fde047; display:grid; align-items:center; }
             .sale-hero .sh-img img { height:100%; min-height:260px; }
@@ -729,6 +739,31 @@ h2.home-h { margin:0 0 12px; }
 }
 
 /* ===== ปริมาณการใช้งาน (บรรทัดย่อบนการ์ด + หน้าต่างคุณสมบัติ) + ปุ่มคู่ ===== */
+/* ความโหดทะลุหลอด (Plus / Ultra) */
+.burst-wrap { position:relative; display:flex; align-items:center; gap:8px; padding:4px 0; overflow:hidden; contain:paint; }
+.burst-track { position:relative; flex:1 1 auto; max-width:70%; height:9px; background:#f3e7d4; border-radius:99px; overflow:visible; }
+.burst-track i { position:absolute; left:0; top:-2px; height:13px; width:142%; border-radius:99px; background:linear-gradient(90deg,#f6b13b,#f0731d 45%,#e5241a 75%,rgba(229,36,26,0)); box-shadow:0 0 10px 2px rgba(240,115,29,.55); animation:burst-pulse 1.4s ease-in-out infinite; }
+.burst-track i::after { content:'🔥✨'; position:absolute; right:12%; top:50%; transform:translateY(-55%); font-size:15px; letter-spacing:-3px; }
+.burst-track::after { content:''; position:absolute; right:-2px; top:-4px; bottom:-4px; width:3px; border-radius:2px; background:#c9b79f; }
+.burst-tag { flex:none; margin-left:auto; font-size:12px; font-weight:700; color:#fff; background:linear-gradient(90deg,#e5531a,#b91c1c); border-radius:99px; padding:1px 9px; white-space:nowrap; animation:burst-pulse 1.4s ease-in-out infinite; }
+@keyframes burst-pulse { 50% { filter:brightness(1.25) saturate(1.2); box-shadow:0 0 16px 4px rgba(240,115,29,.7); } }
+@media (prefers-reduced-motion: reduce) { .burst-track i, .burst-tag { animation:none; } }
+#home-slots .p-burst { margin:8px 0 0; padding:0 0 0 14px; }
+@media (min-width:760px) { #home-slots .p-burst { padding:0; } }
+#home-slots .p-burst .b-n { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 12px; font-size:13px; color:#5a4a3a; }
+#home-slots .p-burst .b-n b { font-size:clamp(18px,5.4vw,22px); font-weight:800; color:#b4400f; line-height:1.1; }
+#home-slots .p-burst.ultra .b-n b { font-size:clamp(19px,5.8vw,25px); color:#c2160f; }
+#home-slots .p-burst .b-n small { font-size:11px; color:#8a7a68; }
+#modal-usage .u-burst-tag { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 8px; margin:0 0 8px; font-weight:700; color:#c2160f; font-size:16px; }
+#modal-usage .u-burst-tag small { font-weight:400; font-size:11.5px; color:#8a7a68; }
+#modal-usage .u-card.hype { background:linear-gradient(180deg,#fff,#fff6ea); border-color:#f3c99a; }
+#modal-usage .u-c-n.big { font-size:26px; font-weight:800; color:#b4400f; }
+#modal-usage .u-card.hype:first-child .u-c-n.big { font-size:30px; }
+.p-power .f-bar { flex:1 1 60px; max-width:140px; height:7px; background:#f3e7d4; border-radius:99px; overflow:hidden; }
+.p-power .f-bar i { display:block; height:100%; background:linear-gradient(90deg,#f6b13b,#e5531a); border-radius:99px; }
+.p-power .pw-h { color:#6e3a10; white-space:nowrap; } .p-power .pw-h b { color:#b4400f; font-weight:700; }
+.p-card .p-usage.p-power { display:flex; align-items:center; gap:4px 6px; flex-wrap:wrap; font-size:13px; color:#5a4a3a; margin:6px 0 10px; line-height:1.4; }
+.p-card .p-usage.p-power b { font-weight:600; color:var(--navy); } .p-card .p-usage.p-power .sep { color:#c9b79f; }
 #home-slots .p-usage { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:-6px 0 14px; font-size:13.5px; color:#5a4a3a; }
 #home-slots .p-usage b { font-weight:600; color:var(--navy); }
 #home-slots .p-usage .sep { color:#c9b79f; }
@@ -750,6 +785,46 @@ h2.home-h { margin:0 0 12px; }
 #modal-usage .u-n { font-weight:600; color:var(--navy); text-align:right; white-space:nowrap; }
 #modal-usage .u-head .u-n { font-weight:400; color:#8a7a68; }
 #modal-usage .u-fit { margin:10px 0 0; background:#f3e7d4; color:#6e3a10; border-radius:12px; padding:8px 12px; font-size:14px; line-height:1.5; }
+/* แท็บเลือกรุ่นรายเดือน + มิเตอร์ความโหด */
+#home-slots .m-wrap { display:flex; flex-direction:column; gap:14px; min-width:0; }
+#home-slots .m-tabs { display:grid; grid-template-columns:repeat(auto-fit,minmax(0,1fr)); gap:4px; background:#f3e7d4; border:1px solid #e6d3b6; border-radius:99px; padding:4px; }
+#home-slots .m-tab { border:0; background:transparent; border-radius:99px; padding:6px 4px; font-family:inherit; font-size:14.5px; font-weight:600; color:var(--c-brown-d); cursor:pointer; display:flex; flex-direction:column; align-items:center; line-height:1.15; min-width:0; }
+#home-slots .m-tab small { font-size:11px; font-weight:400; color:var(--c-brown); white-space:nowrap; }
+#home-slots .m-tab.on { background:var(--c-brown); color:#fff; box-shadow:0 4px 10px -6px rgba(138,75,22,.8); }
+#home-slots .m-tab.on small { color:#fde7c4; }
+#home-slots .m-tab:focus-visible { outline:2px solid var(--c-brown); outline-offset:2px; }
+#home-slots .m-stage { position:relative; touch-action:pan-y; min-width:0; }
+#home-slots .m-arrow { position:absolute; top:50%; z-index:2; width:40px; height:40px; margin-top:-20px; border-radius:50%; border:1.5px solid #d9b98f; background:rgba(255,253,249,.95); color:var(--c-brown-d); font-size:26px; line-height:1; font-family:inherit; display:grid; place-items:center; padding:0 0 3px; cursor:pointer; box-shadow:0 4px 12px -6px rgba(110,58,16,.6); }
+#home-slots .m-arrow.prev { left:-12px; } #home-slots .m-arrow.next { right:-12px; }
+#home-slots .m-arrow:hover:not(:disabled) { background:#f3e7d4; }
+#home-slots .m-arrow:focus-visible { outline:2px solid var(--c-brown); outline-offset:2px; }
+#home-slots .m-arrow:disabled { opacity:.35; cursor:default; box-shadow:none; }
+@media (min-width:760px) { #home-slots .m-arrow.prev { left:-20px; } #home-slots .m-arrow.next { right:-20px; } }
+@media (max-width:420px) { #home-slots .m-arrow.prev { left:-8px; } #home-slots .m-arrow.next { right:-8px; } }
+#home-slots .p-card.month.m-in-r { animation:m-in-r .28s ease-out; } #home-slots .p-card.month.m-in-l { animation:m-in-l .28s ease-out; }
+@keyframes m-in-r { from { opacity:0; transform:translateX(24px); } } @keyframes m-in-l { from { opacity:0; transform:translateX(-24px); } }
+@media (prefers-reduced-motion: reduce) { #home-slots .p-card.month.m-in-r, #home-slots .p-card.month.m-in-l { animation:none; } }
+#home-slots .p-fire { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:10px 0 0; font-size:14px; color:#5a4a3a; }
+#home-slots .p-fire b { font-weight:700; color:#b4400f; }
+#home-slots .p-fire .f-ico { letter-spacing:-2px; }
+#home-slots .p-fire .f-bar { flex:1 1 60px; max-width:140px; height:7px; background:#f3e7d4; border-radius:99px; overflow:hidden; }
+#home-slots .p-fire .f-bar i { display:block; height:100%; background:linear-gradient(90deg,#f6b13b,#e5531a); border-radius:99px; }
+/* หน้าต่างคุณสมบัติแบบการ์ด */
+#modal-usage .u-fire { display:flex; align-items:center; gap:12px; background:linear-gradient(135deg,#fff1dc,#fbd9b0); border:1px solid #f0c48c; border-radius:16px; padding:10px 14px; margin:0 0 12px; }
+#modal-usage .u-fire-ico { font-size:24px; letter-spacing:-4px; white-space:nowrap; }
+#modal-usage .u-fire-t { font-size:17px; color:#6e3a10; } #modal-usage .u-fire-t b { font-size:22px; color:#b4400f; }
+#modal-usage .u-fire-s { font-size:12.5px; color:#8a4b16; }
+#modal-usage .u-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+#modal-usage .u-card { background:#fff; border:1px solid #efe3d0; border-radius:14px; padding:10px 10px 9px; display:flex; flex-direction:column; gap:3px; min-width:0; }
+#modal-usage .u-card:first-child { grid-column:1 / -1; }
+#modal-usage .u-c-ico { font-size:24px; line-height:1; }
+#modal-usage .u-c-n { font-size:22px; font-weight:700; color:var(--navy); line-height:1.15; white-space:nowrap; }
+#modal-usage .u-c-n small { font-size:12px; font-weight:400; color:#8a7a68; }
+#modal-usage .u-c-l { font-size:13px; color:#5a4a3a; }
+#modal-usage .u-c-en { display:flex; align-items:center; gap:6px; } #modal-usage .u-c-en small { font-size:11px; color:#8a7a68; white-space:nowrap; }
+#modal-usage .u-bar { flex:1; height:6px; background:#f3e7d4; border-radius:99px; overflow:hidden; }
+#modal-usage .u-bar i { display:block; height:100%; background:linear-gradient(90deg,#8bc48a,#e0a35a,#d9534f); background-size:300px 100%; border-radius:99px; }
+@media (min-width:600px) { #modal-usage .u-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } #modal-usage .u-card:first-child { grid-column:auto; } }
 #modal-usage .u-foot { margin:8px 0 0; font-size:11.5px; color:#8a7a68; line-height:1.5; }
 #feat-go { border-radius:99px; background:#8a4b16; min-height:54px; font-family:inherit; font-size:17px; font-weight:500; }
 @media (min-width:760px) {
@@ -1030,6 +1105,9 @@ h2.home-h { margin:0 0 12px; }
             'lite': 'https://cdnstatic.tencentcs.com/edgeone/pages/assets/1791030105438-UbDK.png',
             'default': 'https://static.kinguin.net/media/images/products/000_202508040930_supergroksmall.jpg'
         };
+        // ยังไม่มีรูปเฉพาะของ Plus / Ultra จึงใช้โลโก้ SuperGrok ไปก่อน (เปลี่ยน URL ได้ที่นี่)
+        PRODUCT_IMAGES.plus = PRODUCT_IMAGES.supergrok;
+        PRODUCT_IMAGES.ultra = PRODUCT_IMAGES.supergrok;
 
         const FACEBOOK_LINK = 'https://www.facebook.com/TreethepGolf';
         // Messenger deep link — บน iOS เปิดแอป Messenger ได้เสถียรกว่าเพจ facebook.com + target=_blank
@@ -1113,7 +1191,11 @@ h2.home-h { margin:0 0 12px; }
         function getProductImage(productName) {
             if (!productName) return PRODUCT_IMAGES['default'];
             const name = productName.toLowerCase();
-            if (name.includes('lite')) {
+            if (name.includes('ultra')) {
+                return PRODUCT_IMAGES['ultra'];
+            } else if (name.includes('plus')) {
+                return PRODUCT_IMAGES['plus'];
+            } else if (name.includes('lite')) {
                 return PRODUCT_IMAGES['lite'];
             } else if (name.includes('supergrok') || name.includes('grok')) {
                 return PRODUCT_IMAGES['supergrok'];
@@ -1248,7 +1330,20 @@ h2.home-h { margin:0 0 12px; }
             const n = Number(p);
             return isNaN(n) ? String(p) : n.toLocaleString();
         }
-        function isLiteItem(item) { return item.product.toLowerCase().includes('lite'); }
+        // แยกรุ่น: plus / ultra เป็นหมวดของตัวเอง (ไม่ตกไปอยู่ในหมวด supergrok หรือ lite)
+        function planKind(item) {
+            const n = String(item && item.product || '').toLowerCase();
+            if (n.includes('ultra')) return 'ultra';
+            if (n.includes('plus')) return 'plus';
+            if (n.includes('lite')) return 'lite';
+            if (n.includes('grok')) return 'grok';
+            return null;
+        }
+        function isLiteItem(item) { return planKind(item) === 'lite'; }
+        const isTierItem = item => { const k = planKind(item); return k === 'plus' || k === 'ultra'; };
+        // ชิปปฏิทิน / ไอคอน: lite = L, plus = P, ultra = U, ที่เหลือ = SG
+        const calKind = item => { const k = planKind(item); return k === 'lite' || k === 'plus' || k === 'ultra' ? k : 'grok'; };
+        const CAL_CHIP_LABEL = { lite: 'L', grok: 'SG', plus: 'P', ultra: 'U' };
         function thaiDateFromKey(dateKey) {
             const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey || '');
             if (!m) return dateKey;
@@ -1259,6 +1354,7 @@ h2.home-h { margin:0 0 12px; }
             if (item.role.includes('ลดราคา')) return 'sale';
             return isLiteItem(item) ? 'lite' : 'grok';
         }
+
 
         // ===== แถบโหลดแบบดาวน์โหลด: วิ่งเข้าใกล้ 90% ระหว่างรอ แล้วกระโดดเป็น 100% เมื่อเสร็จ =====
         const loadPg = (function () {
@@ -1401,14 +1497,10 @@ h2.home-h { margin:0 0 12px; }
             if (currentFilter === 'all') {
                 filteredProducts = [...allProducts];
             } else if (currentFilter === 'supergrok') {
-                filteredProducts = allProducts.filter(item => 
-                    item.product.toLowerCase().includes('supergrok') || 
-                    (item.product.toLowerCase().includes('grok') && !item.product.toLowerCase().includes('lite'))
-                );
+                // SuperGrok รวมรุ่น Plus / Ultra (เป็นแพ็กเกจระดับสูงของ SuperGrok)
+                filteredProducts = allProducts.filter(item => { const k = planKind(item); return k === 'grok' || k === 'plus' || k === 'ultra'; });
             } else if (currentFilter === 'lite') {
-                filteredProducts = allProducts.filter(item => 
-                    item.product.toLowerCase().includes('lite')
-                );
+                filteredProducts = allProducts.filter(isLiteItem);
             }
             renderProducts();
         }
@@ -1449,7 +1541,7 @@ h2.home-h { margin:0 0 12px; }
             }
 
             if (normalProducts.length > 0) {
-                normalProducts.forEach(item => grid.appendChild(createProductCard(item, 'normal')));
+                normalProducts.forEach(item => grid.appendChild(withPower(createProductCard(item, 'normal'), item)));
             } else {
                 grid.innerHTML = `<div class="section-empty">ไม่มีสินค้าพร้อมขายทันทีในรอบนี้</div>`;
             }
@@ -1459,7 +1551,7 @@ h2.home-h { margin:0 0 12px; }
                 const limitCount = 7;
                 const visibleQueue = queueExpanded ? queueProducts : queueProducts.slice(0, limitCount);
                 const hiddenCount = queueProducts.length - limitCount;
-                visibleQueue.forEach(item => queueGrid.appendChild(createProductCard(item, 'queue')));
+                visibleQueue.forEach(item => queueGrid.appendChild(withPower(createProductCard(item, 'queue'), item)));
 
                 if (hiddenCount > 0) {
                     const toggleBtn = document.createElement('button');
@@ -1513,6 +1605,12 @@ h2.home-h { margin:0 0 12px; }
             return card;
         }
 
+        // เติมบรรทัดความโหดใต้ชิปในรายการสินค้า (ไม่เปลี่ยนปุ่มเดิม)
+        function withPower(card, item) {
+            const html = usageLineHtml(item), meta = card.querySelector('.p-meta');
+            if (html && meta) meta.insertAdjacentHTML('afterend', html);
+            return card;
+        }
         function createProductCard(item, type, home) {
             const card = document.createElement('article');
             card.className = 'p-card ' + (type === 'sale' ? 'sale' : type === 'queue' ? 'queue' : 'normal');
@@ -1571,17 +1669,56 @@ h2.home-h { margin:0 0 12px; }
 
         // ===== หน้าแรก: สินค้าลดราคา (เต็มแถว) + 2 ช่อง SuperGrok / Lite =====
         // แยกหมวดแบบเดียวกับตัวกรองเดิม (ช่อง SuperGrok ไม่นับสินค้าที่มีคำว่า lite เพื่อไม่ให้ซ้ำกับช่อง Lite)
-        const isGrokItem = item => {
-            const n = item.product.toLowerCase();
-            return (n.includes('supergrok') || n.includes('grok')) && !n.includes('lite');
-        };
-        // แพ็กเกจรายเดือน (SuperGrok 30 วัน) แสดงเป็นการ์ดแนวนอนบนสุด และไม่นับในช่อง SuperGrok 7 วัน
-        const isMonthly = item => isGrokItem(item) && parseFloat(String(item.day).trim()) === 30;
+        const isGrokItem = item => planKind(item) === 'grok';
+        // แพ็กเกจรายเดือน 30 วัน (Lite / SuperGrok / Plus / Ultra) อยู่ในการ์ดแนวนอนบนสุด สลับรุ่นได้ และไม่นับในช่อง 7 วัน
+        const MONTHLY_PLANS = [
+            { kind: 'lite', label: 'Lite', mult: 1 },
+            { kind: 'grok', label: 'SuperGrok', mult: 4 },
+            { kind: 'plus', label: 'Plus', mult: 15 },
+            { kind: 'ultra', label: 'Ultra', mult: 50 }
+        ];
+        const monthlyPlanOf = item => MONTHLY_PLANS.find(m => m.kind === planKind(item)) || null;
+        const isMonthly = item => !!monthlyPlanOf(item) && parseFloat(String(item.day).trim()) === 30;
+        let monthlySel = 'grok';
         const HOME_SLOTS = [
             { key: 'supergrok', label: 'SuperGrok', match: item => isGrokItem(item) && !isMonthly(item), img: PRODUCT_IMAGES['supergrok'] },
-            { key: 'lite', label: 'Lite', match: isLiteItem, img: PRODUCT_IMAGES['lite'] }
+            { key: 'lite', label: 'Lite', match: item => isLiteItem(item) && !isMonthly(item), img: PRODUCT_IMAGES['lite'] }
         ];
         let countdownTargets = [];
+        let monthlyState = null;
+        // สลับรุ่นรายเดือน: วาดการ์ดใหม่เฉพาะส่วนรายเดือน
+        function stepMonthly(dir) {
+            if (!monthlyState) return;
+            const o = monthlyState.order, i = o.indexOf(monthlySel) + dir;
+            if (i >= 0 && i < o.length) switchMonthly(o[i], dir);
+        }
+        function switchMonthly(kind, dir) {
+            if (!monthlyState || !monthlyState.items[kind]) return;
+            if (!dir && monthlySel !== kind && monthlyState.stage.querySelector('.p-card.month')) {
+                const o = monthlyState.order; dir = o.indexOf(kind) > o.indexOf(monthlySel) ? 1 : -1;
+            }
+            monthlySel = kind;
+            const w = monthlyState.wrap;
+            w.querySelectorAll('.m-tab').forEach(b => {
+                const on = b.dataset.plan === kind;
+                b.classList.toggle('on', on);
+                b.setAttribute('aria-selected', String(on));
+            });
+            const old = w.querySelector('.p-card.month');
+            countdownTargets = countdownTargets.filter(t => t.el !== old);
+            if (old) old.remove();
+            const nc = createMonthlyCard(monthlyState.items[kind]);
+            if (dir) nc.classList.add(dir > 0 ? 'm-in-r' : 'm-in-l');
+            monthlyState.stage.appendChild(nc);
+            const o = monthlyState.order, idx = o.indexOf(kind);
+            const pv = w.querySelector('.m-arrow.prev'), nx = w.querySelector('.m-arrow.next');
+            if (pv) pv.disabled = idx <= 0;
+            if (nx) nx.disabled = idx >= o.length - 1;
+            const act = w.querySelector('.m-tab.on');
+            if (act && dir && act.scrollIntoView) act.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+            bindExternalLinks(w);
+            tickCountdown();
+        }
 
         function renderHomeReady(state) {
             const box = document.getElementById('home-slots');
@@ -1606,9 +1743,56 @@ h2.home-h { margin:0 0 12px; }
             });
 
             // 0) รายเดือน: การ์ดแนวนอนเต็มแถว บนสุด (พร้อมขายก่อน ถ้าไม่มีใช้คิวที่ใกล้ที่สุด)
-            const monthlyReady = normalItems.find(isMonthly);
-            const monthlyItem = monthlyReady || getClosestQueueItem(queueItems.filter(isMonthly));
-            if (monthlyItem) box.appendChild(createMonthlyCard(monthlyItem));
+            const monthlyItems = {};
+            MONTHLY_PLANS.forEach(m => {
+                const match = it => isMonthly(it) && planKind(it) === m.kind;
+                const it = normalItems.find(match) || getClosestQueueItem(queueItems.filter(match));
+                if (it) monthlyItems[m.kind] = it;
+            });
+            const shownPlans = MONTHLY_PLANS.filter(m => monthlyItems[m.kind]);
+            if (shownPlans.length) {
+                if (!monthlyItems[monthlySel]) monthlySel = (monthlyItems.grok ? 'grok' : shownPlans[0].kind);
+                const mWrap = document.createElement('section');
+                mWrap.className = 'm-wrap span-all';
+                mWrap.id = 'monthly-wrap';
+                if (shownPlans.length > 1) {
+                    const tabs = document.createElement('div');
+                    tabs.className = 'm-tabs';
+                    tabs.setAttribute('role', 'tablist');
+                    tabs.setAttribute('aria-label', 'เลือกแพ็กเกจรายเดือน');
+                    shownPlans.forEach(m => {
+                        const b = document.createElement('button');
+                        b.type = 'button';
+                        b.className = 'm-tab';
+                        b.dataset.plan = m.kind;
+                        b.setAttribute('role', 'tab');
+                        b.innerHTML = `${esc(m.label)}<small>🔥 ${m.mult} เท่า</small>`;
+                        b.onclick = () => switchMonthly(m.kind);
+                        tabs.appendChild(b);
+                    });
+                    mWrap.appendChild(tabs);
+                }
+                const stage = document.createElement('div');
+                stage.className = 'm-stage';
+                if (shownPlans.length > 1) {
+                    stage.innerHTML = `<button type="button" class="m-arrow prev" aria-label="เลื่อนไปซ้าย">‹</button><button type="button" class="m-arrow next" aria-label="เลื่อนไปขวา">›</button>`;
+                    stage.querySelector('.prev').onclick = () => stepMonthly(-1);
+                    stage.querySelector('.next').onclick = () => stepMonthly(1);
+                    // ปัดซ้าย/ขวาบนมือถือ (เกณฑ์ ~50px, ไม่รบกวนการเลื่อนหน้าขึ้นลง)
+                    let sx = null, sy = 0;
+                    stage.addEventListener('touchstart', e => { const t = e.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+                    stage.addEventListener('touchend', e => {
+                        if (sx === null) return;
+                        const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+                        sx = null;
+                        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) stepMonthly(dx < 0 ? 1 : -1);
+                    }, { passive: true });
+                }
+                mWrap.appendChild(stage);
+                box.appendChild(mWrap);
+                monthlyState = { wrap: mWrap, stage, items: monthlyItems, order: shownPlans.map(m => m.kind) };
+                switchMonthly(monthlySel);
+            } else monthlyState = null;
 
             // 1) ลดราคาพิเศษ: ทุกรายการ เต็มความกว้าง อยู่บนสุด
             saleItems.forEach(item => {
@@ -1716,23 +1900,51 @@ h2.home-h { margin:0 0 12px; }
             img: '<span class="u-ico" role="img" aria-label="ภาพ">🖼️</span>'
         };
         const USAGE_UNIT = { clip: 'คลิป', img: 'ภาพ' };
+        // Plus / Ultra: ค่าประมาณจากเท่าตัวของแพ็กเกจ เทียบ SuperGrok (= 4 เท่าของ Lite) ปัดลงทีละ 5
+        const USAGE_MULT = { lite: 1, grok: 4, plus: 15, ultra: 50 };
+        const USAGE_DERIVED = { plus: true, ultra: true };
+        ['plus', 'ultra'].forEach(k => USAGE_ROWS.forEach(r => { r[k] = r.grok.map(n => Math.floor(n * USAGE_MULT[k] / 4 / 5) * 5); }));
         const USAGE_FIT = {
             lite: 'Lite เหมาะกับคนที่อยากลองเล่น ทำภาพหรือคลิปสั้นเป็นบางครั้ง ราคาเบากว่า',
-            grok: 'SuperGrok เหมาะกับคนที่ทำคลิปบ่อย ทำคลิปยาวหรือคมชัดสูง และไม่อยากให้พลังงานหมดไว'
+            grok: 'SuperGrok เหมาะกับคนที่ทำคลิปบ่อย ทำคลิปยาวหรือคมชัดสูง และไม่อยากให้พลังงานหมดไว',
+            plus: 'Plus แรงกว่า SuperGrok ราว 3.75 เท่า เหมาะกับคนที่ทำภาพและคลิปจำนวนมาก',
+            ultra: 'Ultra แรงกว่า SuperGrok ราว 12.5 เท่า สำหรับสายผลิตงานจำนวนมหาศาล'
         };
-        const USAGE_FOOT = 'ตัวเลขเป็นค่าประมาณจากการใช้งานจริงของร้าน (ปัดเศษลง) อาจเปลี่ยนได้ตามการปรับของผู้ให้บริการ';
+        const USAGE_DERIVED_FOOT = 'Plus / Ultra เป็นค่าประมาณจากเท่าตัวของแพ็กเกจ (เทียบ SuperGrok) ไม่ได้วัดจริง อาจเปลี่ยนตามผู้ให้บริการ';
+        const USAGE_FOOT = 'ตัวเลขเป็นค่าประมาณจากร้าน (ปัดเศษลง) อาจเปลี่ยนตามผู้ให้บริการ';
         // เฉพาะ Lite/SuperGrok 7 หรือ 30 วัน; ตัวเลขเป็นต่อ 7 วันเสมอ (รายเดือนรีเซ็ตทุกสัปดาห์)
         function usagePlan(item) {
             if (!item) return null;
-            const plan = isLiteItem(item) ? 'lite' : (isGrokItem(item) ? 'grok' : null);
+            const k = planKind(item);
+            const plan = USAGE_MULT[k] ? k : null;
             const d = parseFloat(String(item.day).trim());
             if (!plan || (d !== 7 && d !== 30)) return null;
             return { plan, monthly: d === 30, period: d === 30 ? 'ต่อ 7 วัน (รีเซ็ตทุกสัปดาห์ ใช้ได้ 4 สัปดาห์)' : 'ต่อ 7 วัน' };
         }
         const usageNum = arr => arr.map(n => n.toLocaleString()).join('–');
+        // ความโหด (ตัวคูณเทียบ Lite) ของแพ็กเกจรายเดือน
+        function fireMeterHtml(item) {
+            const m = monthlyPlanOf(item);
+            if (!m) return '';
+            const flames = m.mult >= 50 ? 5 : m.mult >= 15 ? 4 : m.mult >= 4 ? 2 : 1;
+            const pct = Math.max(6, Math.round(Math.log(m.mult + 1) / Math.log(51) * 100));
+            const fire = `<div class="p-fire" aria-label="ความโหด ${m.mult} เท่าของ Lite"><span class="f-ico" aria-hidden="true">${'🔥'.repeat(flames)}</span><span>ความโหด <b>${m.mult} เท่า</b></span><span class="f-bar" aria-hidden="true"><i style="width:${pct}%"></i></span></div>`;
+            if (!USAGE_DERIVED[m.kind]) return fire;
+            const img = usageNum(USAGE_ROWS.find(r => r.key === 'image')[m.kind]);
+            const clip = usageNum(USAGE_ROWS.find(r => r.key === 'clip480s6')[m.kind]);
+            return fire + `<div class="p-burst ${m.kind}" aria-label="ทำได้ประมาณ ${img} ภาพ หรือ ${clip} คลิป 480p ต่อ 7 วัน (ค่าประมาณ)"><div class="b-n"><span>🖼️ <b>${img}</b> ภาพ</span><span>🎬 <b>${clip}</b> คลิป</span><small>/ 7 วัน*</small></div><div class="burst-wrap" aria-hidden="true"><span class="burst-track"><i></i></span><span class="burst-tag">💥 ทะลุหลอด!</span></div></div>`;
+        }
+        // 7 วัน / Lite-SuperGrok รายเดือน: ความโหด + ทำได้กี่อัน (ตัวเลขเดิมจาก USAGE_ROWS)
+        function usageCountHtml(plan) {
+            const mult = USAGE_MULT[plan];
+            const pct = Math.max(6, Math.round(Math.log(mult + 1) / Math.log(51) * 100));
+            return `<div class="p-usage p-power" aria-label="ความโหด ${mult} เท่าของ Lite"><span class="pw-h">🔥 ความโหด <b>×${mult}</b></span><span class="f-bar" aria-hidden="true"><i style="width:${pct}%"></i></span></div>`;
+        }
         function usageLineHtml(item) {
+            if (isMonthly(item)) return fireMeterHtml(item);
             const u = usagePlan(item);
             if (!u) return '';
+            if (!u.monthly) return usageCountHtml(u.plan);
             const clip = usageNum(USAGE_ROWS.find(r => r.key === 'clip480s6')[u.plan]);
             const img = usageNum(USAGE_ROWS.find(r => r.key === 'image')[u.plan]);
             return `<div class="p-usage" title="ภาพ ${img} ภาพ · คลิป 480p 6 วินาที ~${clip} คลิป / 7 วัน"><span>${USAGE_ICO.img} <b aria-label="${img} ภาพ">${img}</b></span><span class="sep">·</span><span>${USAGE_ICO.clip} 480p 6วิ <b aria-label="ประมาณ ${clip} คลิป">~${clip}</b> / 7 วัน</span></div>`;
@@ -1744,7 +1956,7 @@ h2.home-h { margin:0 0 12px; }
             const meta = card.querySelector('.p-meta');
             if (html && meta) meta.insertAdjacentHTML('afterend', html);
             const primary = card.querySelector('.btn');
-            if (!primary || !usagePlan(item)) return;
+            if (!primary || !(usagePlan(item) || isMonthly(item))) return;
             const row = document.createElement('div');
             row.className = 'btn-row';
             if (card.classList.contains('month')) card.appendChild(row);
@@ -1759,20 +1971,43 @@ h2.home-h { margin:0 0 12px; }
         }
         function renderUsage(item) {
             const box = document.getElementById('modal-usage');
+            if (!box) return;
             const u = usagePlan(item);
-            if (!box || !u) { if (box) box.innerHTML = ''; return; }
-            const rows = USAGE_ROWS.map(r => {
-                const n = usageNum(r[u.plan]);
-                return `<div class="u-row"><span title="${r.aria}">${USAGE_ICO[r.ico]} ${r.label}</span><span class="u-en" aria-label="ใช้พลังงาน ${r.energy}">${r.energy}</span><span class="u-n" aria-label="${n} ${USAGE_UNIT[r.ico]}">${n}</span></div>`;
-            }).join('');
-            box.innerHTML = `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div>
-                <div class="u-row u-head"><span>งาน</span><span class="u-en">พลังงาน</span><span class="u-n">ทำได้</span></div>${rows}
-                <div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>
-                <div class="u-foot">${esc(USAGE_FOOT)}</div>`;
+            const m = isMonthly(item) ? monthlyPlanOf(item) : null;
+            if (!u && !m) { box.innerHTML = ''; return; }
+            const enNum = r => parseFloat(String(r.energy).split(/[–-]/).pop());
+            const maxEn = Math.max(...USAGE_ROWS.map(enNum));
+            let html = '';
+            if (m) {
+                const fire = '🔥'.repeat(m.mult >= 50 ? 5 : m.mult >= 15 ? 4 : m.mult >= 4 ? 2 : 1);
+                const rel = m.mult === 1 ? 'Lite เป็นฐาน 1 เท่า' : `ใช้งานได้ราว ${m.mult} เท่าของ Lite`;
+                html += `<div class="u-fire"><div class="u-fire-ico" aria-hidden="true">${fire}</div><div><div class="u-fire-t">ความโหด <b>${m.mult} เท่า</b></div><div class="u-fire-s">${esc(rel)} · 30 วัน</div></div></div>`;
+            }
+            const hype = u && USAGE_DERIVED[u.plan];
+            if (hype) {
+                const cards = USAGE_ROWS.map(r => {
+                    const n = usageNum(r[u.plan]);
+                    const lbl = r.ico === 'img' ? 'ภาพ 1 ภาพ' : 'คลิป ' + r.label.replace(/(\d+)วิ$/, '· $1 วิ');
+                    return `<div class="u-card hype"><div class="u-c-ico" aria-hidden="true">${r.ico === 'img' ? '🖼️' : '🎬'}</div><div class="u-c-n big" aria-label="ทำได้ประมาณ ${n} ${USAGE_UNIT[r.ico]}"><small>ทำได้</small> ${n} <small>${USAGE_UNIT[r.ico]}</small></div><div class="u-c-l" title="${r.aria}">${esc(lbl)}</div><div class="burst-wrap" aria-hidden="true"><span class="burst-track"><i></i></span></div></div>`;
+                }).join('');
+                html += `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div><div class="u-burst-tag">💥 ทะลุหลอด! <small>ค่าประมาณจากเท่าตัวของแพ็กเกจ</small></div><div class="u-grid">${cards}</div><div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>`;
+            } else if (u) {
+                const cards = USAGE_ROWS.map(r => {
+                    const n = usageNum(r[u.plan]);
+                    const w = Math.max(8, Math.round(enNum(r) / maxEn * 100));
+                    const lbl = r.ico === 'img' ? 'ภาพ 1 ภาพ' : 'คลิป ' + r.label.replace(/(\d+)วิ$/, '· $1 วิ');
+                    return `<div class="u-card"><div class="u-c-ico" aria-hidden="true">${r.ico === 'img' ? '🖼️' : '🎬'}</div><div class="u-c-n" aria-label="ทำได้ ${n} ${USAGE_UNIT[r.ico]}"><small>ทำได้</small> ${n} <small>${USAGE_UNIT[r.ico]}</small></div><div class="u-c-l" title="${r.aria}">${esc(lbl)}</div><div class="u-c-en" aria-label="ใช้พลังงาน ${r.energy}"><span class="u-bar"><i style="width:${w}%"></i></span><small>${r.energy}</small></div></div>`;
+                }).join('');
+                html += `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div><div class="u-grid">${cards}</div><div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>`;
+            } else if (m) {
+                html += `<div class="u-fit">แพ็กเกจ ${esc(m.label)} ใช้งานได้มากกว่า Lite ประมาณ ${m.mult} เท่า เหมาะกับคนที่ทำภาพและคลิปจำนวนมาก</div>`;
+            }
+            html += `<div class="u-foot">${esc(hype ? USAGE_DERIVED_FOOT : (m && !u ? 'ตัวคูณเป็นค่าประมาณเทียบกับ Lite อาจเปลี่ยนได้ตามผู้ให้บริการ' : USAGE_FOOT))}</div>`;
+            box.innerHTML = html;
         }
         // หน้าต่างคุณสมบัติ (แยกจากหน้าต่างจอง/มัดจำเดิม) — ปุ่มด้านล่างเรียกปุ่มหลักเดิมของการ์ด
         function openFeatures(item, primary) {
-            document.getElementById('feat-title').textContent = `${item.product} ${item.day} วัน`;
+            document.getElementById('feat-title').textContent = `${monthlyPlanOf(item) && isMonthly(item) ? monthlyPlanOf(item).label : item.product} ${item.day} วัน`;
             renderUsage(item);
             const go = document.getElementById('feat-go');
             go.textContent = (primary.textContent || '').trim() || 'ดูรายละเอียด';
@@ -1786,7 +2021,7 @@ h2.home-h { margin:0 0 12px; }
             const card = document.createElement('article');
             const t = item.status.includes('รอคิว') ? calculateRemainingTime(item.queue, item.resetClock) : null;
             const isQueue = item.status.includes('รอคิว') && !(t && t.isReady);
-            card.className = 'p-card month span-all ' + (isQueue ? 'queue' : 'normal');
+            card.className = 'p-card month ' + (isQueue ? 'queue' : 'normal');
             card.id = 'slot-monthly';
             const p2 = n => String(n).padStart(2, '0');
             const days = parseFloat(item.day) || 30;
@@ -1809,7 +2044,7 @@ h2.home-h { margin:0 0 12px; }
                 <span class="m-best">คุ้มกว่ารายสัปดาห์</span>
                 <div class="p-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} รายเดือน ${esc(item.day)} วัน" loading="lazy"></div>
                 <div class="m-info">
-                    <h4 class="p-name">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span> ${pill}</h4>
+                    <h4 class="p-name">${esc(monthlyPlanOf(item) ? monthlyPlanOf(item).label : item.product)} <span class="q-days">${esc(item.day)} วัน</span> ${pill}</h4>
                     ${noteHtml(item)}
                     <div class="p-meta">${benefitChipsHtml()}</div>
                     ${waitHtml}
@@ -1927,12 +2162,12 @@ h2.home-h { margin:0 0 12px; }
                 head.onclick = () => openCalendarDayModal(dateKey, items);
                 card.appendChild(head);
                 groupItems(items).forEach(g => {
-                    const it = g.item, k = itemKind(it), pk = isLiteItem(it) ? 'lite' : 'grok';
+                    const it = g.item, k = itemKind(it), pk = calKind(it);
                     const ready = k !== 'queue';
                     const ln = document.createElement('button');
                     ln.type = 'button'; ln.className = 'dc-ln';
                     const badge = k === 'sale' ? '<span class="dc-b sale">🔥 ลดราคา</span>' : ready ? '<span class="dc-b ok">● พร้อมเช่าเลย</span>' : '<span class="dc-b q">⏳ จองคิว</span>';
-                    ln.innerHTML = `<span class="dc-ic ${k === 'sale' ? 'sale' : pk}">${pk === 'lite' ? CAL_ICON_LITE : CAL_ICON_GROK}</span><b>${esc(it.product)}</b> ${esc(it.day)} วัน <span class="dc-x">×${g.count}</span><span class="dc-pr">${esc(fmtPrice(it.price))}฿</span>${badge}` +
+                    ln.innerHTML = `<span class="dc-ic ${k === 'sale' ? 'sale' : pk}">${pk === 'lite' ? CAL_ICON_LITE : pk === 'grok' ? CAL_ICON_GROK : CAL_ICON_TIER}</span><b>${esc(it.product)}</b> ${esc(it.day)} วัน <span class="dc-x">×${g.count}</span><span class="dc-pr">${esc(fmtPrice(it.price))}฿</span>${badge}` +
                         (calNote(it) ? `<span class="dc-note">${esc(calNote(it))}</span>` : '');
                     ln.setAttribute('aria-label', `${it.product} ${it.day} วัน ${g.count} ที่ ราคา ${fmtPrice(it.price)} บาท`);
                     ln.onclick = () => openDetail(it, k === 'queue' ? 'queue' : (k === 'sale' ? 'sale' : 'normal'));
@@ -1951,6 +2186,7 @@ h2.home-h { margin:0 0 12px; }
         const THAI_WEEKDAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
         const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
         const CAL_ICON_GROK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>';
+        const CAL_ICON_TIER = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2c1 4 5 5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg>';
         const CAL_ICON_LITE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
         function dateKeyOf(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function groupItems(items) {
@@ -1986,12 +2222,12 @@ h2.home-h { margin:0 0 12px; }
                 // ชิปจำนวน: SG 3 / L 1 (สีแดง = ลดราคา)
                 const cnt = {};
                 items.forEach(item => {
-                    const k = (isLiteItem(item) ? 'lite' : 'grok') + (itemKind(item) === 'sale' ? '-sale' : '');
+                    const k = calKind(item) + (itemKind(item) === 'sale' ? '-sale' : '');
                     cnt[k] = (cnt[k] || 0) + 1;
                 });
                 html += '<span class="chips">' + Object.keys(cnt).map(k => {
                     const [p, sale] = k.split('-');
-                    return `<span class="chip ${sale ? 'sale' : p}">${p === 'lite' ? 'L' : 'SG'} ${cnt[k]}</span>`;
+                    return `<span class="chip ${sale ? 'sale' : p}">${CAL_CHIP_LABEL[p] || 'SG'} ${cnt[k]}</span>`;
                 }).join('') + '</span>';
                 html += '<div class="tip"><b>รายละเอียดวันนี้</b>' + items.map(item =>
                     `<div><b>${esc(item.product)}</b><br>สถานะ: ${esc(item.status)} (${esc(item.day)} วัน)<br>ราคา: ${esc(fmtPrice(item.price))} บาท</div>`).join('') +
@@ -2174,11 +2410,11 @@ h2.home-h { margin:0 0 12px; }
         // Google เรนเดอร์ JS ได้ จึงอ่านราคาจริงได้ โดยไม่ต้องฮาร์ดโค้ดราคาไว้ใน HTML
         function updateOfferSchema(items) {
             try {
-                const groups = { supergrok: { name: 'เช่า SuperGrok', prices: [] }, lite: { name: 'เช่า SuperGrok Lite', prices: [] } };
+                const groups = { supergrok: { name: 'เช่า SuperGrok', prices: [] }, lite: { name: 'เช่า SuperGrok Lite', prices: [] }, plus: { name: 'เช่า SuperGrok Plus', prices: [] }, ultra: { name: 'เช่า SuperGrok Ultra', prices: [] } };
                 (items || []).forEach(it => {
                     const p = Number(it.price);
                     if (!isFinite(p) || p <= 0) return;
-                    (isLiteItem(it) ? groups.lite : groups.supergrok).prices.push(p);
+                    (groups[planKind(it) === 'grok' ? 'supergrok' : planKind(it)] || groups.supergrok).prices.push(p);
                 });
                 const offers = Object.values(groups).filter(g => g.prices.length).map(g => ({
                     '@type': 'AggregateOffer', name: g.name, priceCurrency: 'THB',
