@@ -692,6 +692,8 @@ h2.home-h { margin:0 0 12px; }
 #home-slots .q-days { background:var(--c-brown); color:#fff; font-size:14px; font-weight:700; padding:1px 10px; margin-left:6px; border-radius:99px; vertical-align:3px; line-height:22px; }
 #home-slots .pill { display:inline-block; vertical-align:3px; margin-left:8px; background:#fbe9cf; color:var(--c-brown); font-size:11.5px; font-weight:500; padding:0 9px; border-radius:99px; line-height:20px; white-space:nowrap; }
 #home-slots .pill.ok { background:#e3f1e5; color:#1f6b33; } #home-slots .pill.none { background:#eee; color:#6b7280; }
+#home-slots .pill.on-img { position:absolute; top:10px; left:10px; margin:0; z-index:2; vertical-align:baseline; font-size:15px; font-weight:600; line-height:24px; padding:0 14px; color:#fff; background:#d98a1b; box-shadow:0 2px 8px rgba(0,0,0,.35); }
+#home-slots .pill.on-img.ok { background:#1f9d4a; } #home-slots .pill.on-img.none { background:#6b7280; }
 #home-slots .q-price { font-size:14px; font-weight:400; color:var(--c-mute); }
 #home-slots .q-price b { font-size:40px; font-weight:800; color:var(--navy); line-height:1; margin-right:3px; }
 #home-slots .p-note { background:#fdf3e2; border:0; border-left:3px solid #e0a35a; padding:4px 10px; margin:8px 0 0; font-size:13px; font-weight:500; color:var(--c-brown-d); border-radius:8px; line-height:1.4; }
@@ -748,7 +750,8 @@ h2.home-h { margin:0 0 12px; }
 .burst-tag { flex:none; margin-left:auto; font-size:12px; font-weight:700; color:#fff; background:linear-gradient(90deg,#e5531a,#b91c1c); border-radius:99px; padding:1px 9px; white-space:nowrap; animation:burst-pulse 1.4s ease-in-out infinite; }
 @keyframes burst-pulse { 50% { filter:brightness(1.25) saturate(1.2); box-shadow:0 0 16px 4px rgba(240,115,29,.7); } }
 @media (prefers-reduced-motion: reduce) { .burst-track i, .burst-tag { animation:none; } }
-#home-slots .p-burst { margin:8px 0 0; padding:0 0 0 14px; }
+#home-slots .p-burst { margin:4px 0 0; padding:0 0 0 14px; }
+#home-slots .p-burst .burst-wrap { margin:0 0 4px; }
 @media (min-width:760px) { #home-slots .p-burst { padding:0; } }
 #home-slots .p-burst .b-n { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 12px; font-size:13px; color:#5a4a3a; }
 #home-slots .p-burst .b-n b { font-size:clamp(18px,5.4vw,22px); font-weight:800; color:#b4400f; line-height:1.1; }
@@ -773,6 +776,11 @@ h2.home-h { margin:0 0 12px; }
 #home-slots .btn-row .btn { width:100%; margin:0; min-width:0; white-space:nowrap; }
 #home-slots .btn-sec { min-height:52px; min-width:0; border:1.5px solid var(--c-brown); background:transparent; color:var(--c-brown); border-radius:99px; font-family:inherit; font-size:15px; font-weight:500; cursor:pointer; padding:8px 10px; white-space:nowrap; }
 #home-slots .btn-sec:hover { background:#f3e7d4; }
+/* แยกสีปุ่ม: เช่าเลย = เขียว, กดจอง = ส้ม */
+#home-slots .slot .p-card .btn.rent, #home-slots .month .btn.rent { background:#1f9d4a; box-shadow:0 6px 16px -8px rgba(31,157,74,.8); }
+#home-slots .slot .p-card .btn.rent:hover, #home-slots .month .btn.rent:hover { background:#17803a; }
+#home-slots .slot .p-card .btn.book, #home-slots .month .btn.book { background:#e8870c; box-shadow:0 6px 16px -8px rgba(232,135,12,.8); }
+#home-slots .slot .p-card .btn.book:hover, #home-slots .month .btn.book:hover { background:#c8730a; }
 #home-slots .month .btn-row { margin:0 8px; }
 #features-modal .feat-box { max-width:460px; font-family:'Kanit','Sarabun',sans-serif; }
 #feat-title { font-size:20px; font-weight:500; color:var(--navy); margin:4px 0 12px; padding-right:56px; }
@@ -1845,7 +1853,10 @@ h2.home-h { margin:0 0 12px; }
                 }
                 wrap.innerHTML = `<div class="slot-cat">${esc(slot.label)} ${pill}</div>`;
                 const nameEl = card.querySelector('.p-name');
-                if (nameEl) nameEl.insertAdjacentHTML('beforeend', ' ' + pill.replace('class="pill"', 'class="pill ok"').replace('<span ', '<span aria-hidden="true" '));
+                const imgEl = card.querySelector('.p-img');
+                const pillOnImg = pill.replace('class="pill"', 'class="pill ok"').replace('class="pill', 'class="pill on-img').replace('<span ', '<span aria-hidden="true" ');
+                if (imgEl) imgEl.insertAdjacentHTML('beforeend', pillOnImg);
+                else if (nameEl) nameEl.insertAdjacentHTML('beforeend', ' ' + pillOnImg);
                 wrap.appendChild(card);
                 box.appendChild(wrap);
                 bindExternalLinks(wrap);
@@ -1928,11 +1939,15 @@ h2.home-h { margin:0 0 12px; }
             if (!m) return '';
             const flames = m.mult >= 50 ? 5 : m.mult >= 15 ? 4 : m.mult >= 4 ? 2 : 1;
             const pct = Math.max(6, Math.round(Math.log(m.mult + 1) / Math.log(51) * 100));
-            const fire = `<div class="p-fire" aria-label="ความโหด ${m.mult} เท่าของ Lite"><span class="f-ico" aria-hidden="true">${'🔥'.repeat(flames)}</span><span>ความโหด <b>${m.mult} เท่า</b></span><span class="f-bar" aria-hidden="true"><i style="width:${pct}%"></i></span></div>`;
+            const fireBar = `<span class="f-bar" aria-hidden="true"><i style="width:${pct}%"></i></span>`;
+            const fireHead = `<span class="f-ico" aria-hidden="true">${'🔥'.repeat(flames)}</span><span>ความโหด <b>${m.mult} เท่า</b></span>`;
+            const fire = `<div class="p-fire" aria-label="ความโหด ${m.mult} เท่าของ Lite">${fireHead}${fireBar}</div>`;
             if (!USAGE_DERIVED[m.kind]) return fire;
+            // Plus/Ultra: ใช้หลอด "ทะลุหลอด" เป็นหลอดความโหดแทน (ไม่มีหลอดซ้ำ)
+            const fireNoBar = `<div class="p-fire" aria-label="ความโหด ${m.mult} เท่าของ Lite">${fireHead}</div>`;
             const img = usageNum(USAGE_ROWS.find(r => r.key === 'image')[m.kind]);
             const clip = usageNum(USAGE_ROWS.find(r => r.key === 'clip480s6')[m.kind]);
-            return fire + `<div class="p-burst ${m.kind}" aria-label="ทำได้ประมาณ ${img} ภาพ หรือ ${clip} คลิป 480p ต่อ 7 วัน (ค่าประมาณ)"><div class="b-n"><span>🖼️ <b>${img}</b> ภาพ</span><span>🎬 <b>${clip}</b> คลิป</span><small>/ 7 วัน*</small></div><div class="burst-wrap" aria-hidden="true"><span class="burst-track"><i></i></span><span class="burst-tag">💥 ทะลุหลอด!</span></div></div>`;
+            return fireNoBar + `<div class="p-burst ${m.kind}" aria-label="ทำได้ประมาณ ${img} ภาพ หรือ ${clip} คลิป 480p ต่อ 7 วัน (ค่าประมาณ)"><div class="burst-wrap" aria-hidden="true"><span class="burst-track"><i></i></span><span class="burst-tag">💥 ทะลุหลอด!</span></div><div class="b-n"><span>🖼️ <b>${img}</b> ภาพ</span><span>🎬 <b>${clip}</b> คลิป</span><small>/ 7 วัน*</small></div></div>`;
         }
         // 7 วัน / Lite-SuperGrok รายเดือน: ความโหด + ทำได้กี่อัน (ตัวเลขเดิมจาก USAGE_ROWS)
         function usageCountHtml(plan) {
@@ -2042,9 +2057,9 @@ h2.home-h { margin:0 0 12px; }
                 : `<button type="button" class="btn rent">เช่าเลย</button>`;
             card.innerHTML = `
                 <span class="m-best">คุ้มกว่ารายสัปดาห์</span>
-                <div class="p-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} รายเดือน ${esc(item.day)} วัน" loading="lazy"></div>
+                <div class="p-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} รายเดือน ${esc(item.day)} วัน" loading="lazy">${pill.replace('class="pill', 'class="pill on-img')}</div>
                 <div class="m-info">
-                    <h4 class="p-name">${esc(monthlyPlanOf(item) ? monthlyPlanOf(item).label : item.product)} <span class="q-days">${esc(item.day)} วัน</span> ${pill}</h4>
+                    <h4 class="p-name">${esc(monthlyPlanOf(item) ? monthlyPlanOf(item).label : item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4>
                     ${noteHtml(item)}
                     <div class="p-meta">${benefitChipsHtml()}</div>
                     ${waitHtml}
