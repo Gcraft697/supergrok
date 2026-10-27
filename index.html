@@ -841,6 +841,22 @@ h2.home-h { margin:0 0 12px; }
     #home-slots .month .btn-row { grid-column:2 / 4; justify-self:end; width:340px; margin:0; }
     #home-slots .month .btn-row .btn { width:100%; }
 }
+/* ===== ระบบช่วงลดราคา (sell) : ป้ายคูปอง + ราคาขีดฆ่า + พลุ ===== */
+.promo-banner { position:relative; display:flex; align-items:stretch; margin:0 0 14px; border-radius:14px; color:#6e3a10; font-family:'Kanit','Sarabun',sans-serif; background:radial-gradient(circle at 0 50%,var(--bg,#f2f4f8) 11px,transparent 12px),radial-gradient(circle at 100% 50%,var(--bg,#f2f4f8) 11px,transparent 12px),linear-gradient(90deg,#fff1dc,#ffd29a); box-shadow:0 2px 6px rgba(138,75,22,.10); }
+.promo-banner::before { content:""; position:absolute; inset:5px 16px; border:1.5px dashed rgba(138,75,22,.45); border-radius:9px; pointer-events:none; }
+.promo-banner .pb-stub { flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 14px 10px 22px; border-right:2px dashed rgba(138,75,22,.55); line-height:1; color:#c2410c; }
+.promo-banner .pb-ico { width:26px; height:26px; margin-bottom:3px; }
+.promo-banner .pb-stub b { font-size:1.7rem; font-weight:600; }
+.promo-banner .pb-stub small { font-size:.8rem; margin-top:3px; color:#8a4b16; }
+.promo-banner .pb-text { flex:1 1 auto; min-width:0; padding:12px 22px 12px 14px; font-weight:500; font-size:1rem; line-height:1.45; text-align:center; align-self:center; }
+@media (max-width:420px){ .promo-banner .pb-text{font-size:.86rem;padding-left:8px;padding-right:16px} .promo-banner .pb-stub{padding-left:18px;padding-right:8px} .promo-banner .pb-stub b{font-size:1.45rem} }
+.promo-banner .pb-text b { color:#c2410c; }
+.promo-banner .pb-sub { display:block; font-size:.85em; color:#8a4b16; font-weight:400; }
+.sale-old, #home-slots .sale-old, .sale-hero .sale-old { font-size:19px; line-height:1; font-weight:500; color:#6b7280; text-decoration:line-through; margin-right:6px; white-space:nowrap; }
+#modal-price .sale-old { font-size:18px; }
+.slot-grid .p-card .p-price .sale-old { color:#cbd5e1; }
+.sale-hero .sale-old { color:#fecaca; }
+#sale-confetti { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
 </style>
 </head>
 <body>
@@ -888,6 +904,8 @@ h2.home-h { margin:0 0 12px; }
         <section id="panel-home" class="panel">
 
             <!-- สินค้าหน้าแรก: ลดราคาพิเศษ (เต็มแถว) + 2 ช่อง SuperGrok / Lite -->
+            <!-- ป้ายช่วงลดราคา: ข้อความสร้างจากแถว sell ในชีตอัตโนมัติ (ไม่ต้องแก้ตรงนี้) -->
+            <div id="sale-banner" class="promo-banner hidden" role="note"></div>
             <h2 class="home-h"><svg class="ic"><use href="#i-box"/></svg> สินค้าของเรา</h2>
             <div id="home-slots" class="slot-grid" aria-live="polite">
                 <div class="loading-box span-all">กำลังโหลดข้อมูลสินค้า...</div>
@@ -1331,6 +1349,105 @@ h2.home-h { margin:0 0 12px; }
         let isLoading = false;
 
         // กันข้อความจากชีตไปเป็น HTML
+
+        // ===== ระบบช่วงลดราคา (sell) =====
+        // แถวในชีตที่คอลัมน์ B = "sell" คือแถวควบคุม: C เปิด/ปิด, D จำนวนวัน, E ส่วนลด (บาท) ทุกรายการ, H วันเริ่ม
+        // ช่วงลดราคา = วันเริ่ม 00:00 ถึงวันเริ่ม + D - 1 เวลา 23:59:59 (เวลาไทย) ถ้าเลยแล้วจะหายเอง
+        const SALE = { cfg: null, confettiDone: false };
+        function isSellRow(v) { return String(v == null ? '' : v).trim().toLowerCase() === 'sell'; }
+        function saleIsOpen(cell) {
+            if (!cell) return false;
+            if (cell.v === true) return true;
+            const t = String(cell.v == null ? '' : cell.v).trim().toLowerCase();
+            return ['เปิด', 'open', 'on', 'yes', 'y', 'true', '1', '✓', '✔', 'พร้อมขาย', 'เปิดขาย'].includes(t);
+        }
+        // คืนค่า [ปี ค.ศ., เดือน 0-11, วัน] ตามปฏิทินไทย
+        function saleParseYMD(cell) {
+            if (!cell || cell.v == null || cell.v === '') return null;
+            const v = cell.v;
+            const fixY = y => { y = Number(y); if (y < 100) y += (y >= 50 ? 2500 : 2000); if (y > 2400) y -= 543; return y; };
+            let m = /^Date\((\d+),(\d+),(\d+)/.exec(String(v));
+            if (m) return [Number(m[1]), Number(m[2]), Number(m[3])];
+            if (typeof v === 'number' && v > 20000) { const d = new Date(Math.round((v - 25569) * 86400000)); return [d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()]; }
+            const t = String(cell.f || v).trim();
+            if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(t))) return [fixY(m[1]), Number(m[2]) - 1, Number(m[3])];
+            if ((m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/.exec(t))) return [fixY(m[3]), Number(m[2]) - 1, Number(m[1])];
+            if ((m = /^(\d{1,2})\s+(\S+)\s+(\d{2,4})/.exec(t))) {
+                const mi = THAI_MONTHS_SHORT.indexOf(m[2]) >= 0 ? THAI_MONTHS_SHORT.indexOf(m[2]) : THAI_MONTHS_FULL.indexOf(m[2]);
+                if (mi >= 0) return [fixY(m[3]), mi, Number(m[1])];
+            }
+            return null;
+        }
+        // เวลาเที่ยงคืนไทย (UTC+7) ของวันนั้น เป็น ms
+        function saleBkkMs(y, mo, d) { return Date.UTC(y, mo, d) - 7 * 3600000; }
+        function saleNum(cell) {
+            if (!cell || cell.v == null) return NaN;
+            if (typeof cell.v === 'number') return cell.v;
+            const m = /\d+(\.\d+)?/.exec(String(cell.v).replace(/,/g, ''));
+            return m ? Number(m[0]) : NaN;
+        }
+        function readSaleConfig(row) {
+            if (!row || !row.c || !saleIsOpen(row.c[2])) return null;
+            const days = Math.floor(saleNum(row.c[3]));
+            const off = saleNum(row.c[4]);
+            const ymd = saleParseYMD(row.c[7]);
+            if (!(days >= 1) || !(off > 0) || !ymd) {
+                console.warn('แถว sell เปิดอยู่ แต่ D/E/H ไม่ถูกต้อง จึงไม่แสดงช่วงลดราคา (sell row is open but D/E/H is invalid)', { days: row.c[3], off: row.c[4], start: row.c[7] });
+                return null;
+            }
+            const start = saleBkkMs(ymd[0], ymd[1], ymd[2]);
+            const end = saleBkkMs(ymd[0], ymd[1], ymd[2] + days) - 1;
+            const now = Date.now();
+            if (now < start || now > end) return null; // ยังไม่ถึง หรือหมดเวลาแล้ว: ไม่แสดงอะไร
+            return { off: off, start: start, end: end };
+        }
+        function applySaleToItem(item) {
+            item.price = item.origPrice;
+            const cfg = SALE.cfg, n = Number(item.origPrice);
+            if (cfg && isFinite(n) && n > 0) item.price = Math.max(n - cfg.off, 0);
+        }
+        function saleOldHtml(item) {
+            return (SALE.cfg && item && item.origPrice != null && Number(item.origPrice) !== Number(item.price))
+                ? `<s class="sale-old">${esc(fmtPrice(item.origPrice))}</s>` : '';
+        }
+        function saleDateTxt(ms, withYear) {
+            const d = new Date(ms + 7 * 3600000);
+            return `${d.getUTCDate()} ${THAI_MONTHS_SHORT[d.getUTCMonth()]}` + (withYear ? ` ${(d.getUTCFullYear() + 543) % 100}` : '');
+        }
+        function renderSaleBanner() {
+            const el = document.getElementById('sale-banner');
+            if (!el) return;
+            const cfg = SALE.cfg;
+            if (!cfg) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+            const off = esc(fmtPrice(cfg.off));
+            const range = `${esc(saleDateTxt(cfg.start, false))} - ${esc(saleDateTxt(cfg.end, true))}`;
+            el.innerHTML = `<div class="pb-stub"><svg class="pb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v3a2 2 0 000 4v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 000-4z" fill="#f28c0f"/><path d="M14 6v12" stroke="#fff8ec" stroke-width="1.6" stroke-dasharray="2 2"/><text x="8.5" y="15" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">%</text></svg><b>-${off}</b><small>บาท</small></div>`
+                + `<div class="pb-text"><span style="display:inline-block">🎉 ช่วงลดราคา <b>${off} บาท</b></span> <span style="display:inline-block">ให้ลูกค้าทุกคน ทุกรายการ</span><span class="pb-sub">ตั้งแต่วันที่ ${range}</span></div>`;
+            el.classList.remove('hidden');
+            if (!SALE.confettiDone) { SALE.confettiDone = true; saleConfetti(); }
+        }
+        // พลุกระดาษ: เล่นครั้งเดียวต่อการเปิดหน้า ~3.5 วินาที ไม่บังการกด
+        function saleConfetti() {
+            if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const cv = document.createElement('canvas');
+            cv.id = 'sale-confetti';
+            document.body.appendChild(cv);
+            const ctx = cv.getContext('2d');
+            const W = cv.width = innerWidth, H = cv.height = innerHeight;
+            const colors = ['#f28c0f', '#22a04b', '#12275a', '#8b4a1b', '#fde047', '#ef4444'];
+            const N = innerWidth < 500 ? 70 : 130;
+            const ps = Array.from({ length: N }, () => ({ x: Math.random() * W, y: -20 - Math.random() * H * 0.5, vx: (Math.random() - 0.5) * 2, vy: 2 + Math.random() * 3, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.3, w: 6 + Math.random() * 6, c: colors[(Math.random() * colors.length) | 0] }));
+            const t0 = performance.now();
+            (function frame(t) {
+                const el = t - t0;
+                ctx.clearRect(0, 0, W, H);
+                ctx.globalAlpha = el > 2800 ? Math.max(0, 1 - (el - 2800) / 700) : 1;
+                ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.w / 4, p.w, p.w / 2); ctx.restore(); });
+                if (el < 3500) requestAnimationFrame(frame); else cv.remove();
+            })(t0);
+        }
+        // ===== จบระบบช่วงลดราคา =====
+
         function esc(s) {
             return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
         }
@@ -1425,11 +1542,13 @@ h2.home-h { margin:0 0 12px; }
 
                 allProducts = [];
                 dateProductMap = {};
+                let saleRow = null;
 
                 rows.forEach((row) => {
                     if (!row.c) return;
 
                     const product = row.c[1] ? row.c[1].v : ''; 
+                    if (isSellRow(product)) { saleRow = row; return; } // แถวควบคุมช่วงลดราคา ไม่ใช่สินค้า
                     const status = row.c[2] ? String(row.c[2].v).trim() : '';  
                     const day = row.c[3] ? row.c[3].v : '-';    
                     const price = row.c[4] ? row.c[4].v : '0';  
@@ -1448,6 +1567,7 @@ h2.home-h { margin:0 0 12px; }
 
                     const item = {
                         product: product || 'Supergrok',
+                        origPrice: price,
                         status: status,
                         day: day,
                         price: price,
@@ -1474,6 +1594,9 @@ h2.home-h { margin:0 0 12px; }
                     }
                 });
 
+                SALE.cfg = readSaleConfig(saleRow);
+                allProducts.forEach(applySaleToItem);
+                renderSaleBanner();
                 filterProducts();
                 renderHomeReady();
                 updateOfferSchema(allProducts);
@@ -1603,7 +1726,7 @@ h2.home-h { margin:0 0 12px; }
                 <div class="sh-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} ${esc(item.day)} วัน ลดราคาพิเศษ" loading="lazy"><span class="sh-ribbon">🔥 ลดราคาพิเศษ</span></div>
                 <div class="sh-body">
                     <h4 class="sh-title">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4>
-                    <div class="sh-price"><small>เหลือเพียง</small><b>${price}</b><small>บาท</small></div>
+                    <div class="sh-price"><small>เหลือเพียง</small>${saleOldHtml(item)}<b>${price}</b><small>บาท</small></div>
                     <div class="p-meta">${benefitChipsHtml()}</div>
                     ${noteHtml(item)}
                     <button type="button" class="btn sh-btn">เช่าทันที</button>
@@ -1633,7 +1756,7 @@ h2.home-h { margin:0 0 12px; }
                         <h4 class="p-name">${name}</h4>
                         ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
-                        <div class="p-price"><small>ราคาพิเศษเพียง</small><b>${price}</b><small>บาท</small></div>
+                        <div class="p-price"><small>ราคาพิเศษเพียง</small>${saleOldHtml(item)}<b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn">เช่าทันที</button>
                     </div>`;
             } else if (type === 'queue') {
@@ -1644,7 +1767,7 @@ h2.home-h { margin:0 0 12px; }
                         <h4 class="p-name">${name}</h4>
                         ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${waitText ? '' : `<span class="chip wait">คิว: ${esc(item.queue)}</span>`}${benefitChipsHtml()}</div>
-                        <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
+                        <div class="p-price"><small>ราคาเช่า</small>${saleOldHtml(item)}<b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn q-btn" aria-label="${esc((waitText || 'ดูรายละเอียด') + ' แตะเพื่อดูรายละเอียดและจองคิว')}">
                             <span class="q-big"><svg class="ic"><use href="#i-clock"/></svg> ${esc(waitText || 'ดูรายละเอียด / จองคิว')}</span>
                             <span class="q-sub">แตะเพื่อดูรายละเอียด / จองคิว</span>
@@ -1654,7 +1777,7 @@ h2.home-h { margin:0 0 12px; }
                 card.innerHTML = `
                     <div class="p-img">${img}<span class="p-badge ok">พร้อมขาย</span></div>
                     <div class="p-body">
-                        <div class="q-head"><h4 class="p-name">${name} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price"><b>${price}</b> บาท</div></div>
+                        <div class="q-head"><h4 class="p-name">${name} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price">${saleOldHtml(item)}<b>${price}</b> บาท</div></div>
                         ${noteHtml(item)}
                         <div class="p-meta">${benefitChipsHtml()}</div>
                         <button type="button" class="btn rent">เช่าเลย</button>
@@ -1666,7 +1789,7 @@ h2.home-h { margin:0 0 12px; }
                         <h4 class="p-name">${name}</h4>
                         ${noteHtml(item)}
                         <div class="p-meta"><span class="chip">${esc(item.day)} วัน</span><span class="chip price">${price} บาท</span>${benefitChipsHtml()}</div>
-                        <div class="p-price"><small>ราคาเช่า</small><b>${price}</b><small>บาท</small></div>
+                        <div class="p-price"><small>ราคาเช่า</small>${saleOldHtml(item)}<b>${price}</b><small>บาท</small></div>
                         <button type="button" class="btn rent">เช่าเลย</button>
                     </div>`;
             }
@@ -1886,7 +2009,7 @@ h2.home-h { margin:0 0 12px; }
             card.innerHTML = `
                 <div class="p-img"><img src="${esc(item.image)}" alt="เช่า ${esc(item.product)} ${esc(item.day)} วัน (จองคิว)" loading="lazy"><span class="p-badge queue">${ready ? 'พร้อมเช่า' : 'ต้องรอคิว'}</span></div>
                 <div class="p-body">
-                    <div class="q-head"><h4 class="p-name">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div></div>
+                    <div class="q-head"><h4 class="p-name">${esc(item.product)} <span class="q-days">${esc(item.day)} วัน</span></h4><div class="q-price">${saleOldHtml(item)}<b>${esc(fmtPrice(item.price))}</b> บาท</div></div>
                     ${noteHtml(item)}
                     <div class="p-meta">${benefitChipsHtml()}</div>
                     ${waitHtml}
@@ -2065,7 +2188,7 @@ h2.home-h { margin:0 0 12px; }
                     ${waitHtml}
                 </div>
                 <div class="m-buy">
-                    <div class="q-price"><b>${esc(fmtPrice(item.price))}</b> บาท</div>
+                    <div class="q-price">${saleOldHtml(item)}<b>${esc(fmtPrice(item.price))}</b> บาท</div>
                     ${perDay}
                     ${btnHtml}
                 </div>`;
@@ -2278,7 +2401,7 @@ h2.home-h { margin:0 0 12px; }
             modalNote.textContent = note ? '📢 ' + note : '';
             modalNote.classList.toggle('hidden', !note);
             document.getElementById('modal-day').textContent = `ระยะเวลาใช้งาน ${item.day} วัน`;
-            document.getElementById('modal-price').textContent = `${fmtPrice(item.price)} บาท`;
+            document.getElementById('modal-price').innerHTML = `${saleOldHtml(item)}${esc(fmtPrice(item.price))} บาท`;
             const contact = document.getElementById('modal-contact');
             const tmp = document.createElement('div');
             tmp.innerHTML = contactActionsHtml({
@@ -2357,7 +2480,7 @@ h2.home-h { margin:0 0 12px; }
                             <h4>${esc(item.product)}</h4>
                             ${noteHtml(item)}
                             <p>สถานะ: ${esc(item.status)} · ระยะเวลา ${esc(item.day)} วัน</p>
-                            <p class="pr">${esc(fmtPrice(item.price))} บาท</p>
+                            <p class="pr">${saleOldHtml(item)}${esc(fmtPrice(item.price))} บาท</p>
                         </div>
                     </div>
                     ${contactActionsHtml({ msgLabel: 'Messenger', fbLabel: 'Facebook', callLabel: 'โทรด่วน' })}`;
@@ -2427,7 +2550,7 @@ h2.home-h { margin:0 0 12px; }
             try {
                 const groups = { supergrok: { name: 'เช่า SuperGrok', prices: [] }, lite: { name: 'เช่า SuperGrok Lite', prices: [] }, plus: { name: 'เช่า SuperGrok Plus', prices: [] }, ultra: { name: 'เช่า SuperGrok Ultra', prices: [] } };
                 (items || []).forEach(it => {
-                    const p = Number(it.price);
+                    const p = Number(it.origPrice != null ? it.origPrice : it.price); // ราคาเดิม ไม่ใช่ราคาลดชั่วคราว
                     if (!isFinite(p) || p <= 0) return;
                     (groups[planKind(it) === 'grok' ? 'supergrok' : planKind(it)] || groups.supergrok).prices.push(p);
                 });
