@@ -97,6 +97,7 @@ button{font:inherit;cursor:pointer}
 .note{font-size:12.5px;margin-top:8px;line-height:1.4}
 .thanks{font-size:14px;margin-top:8px}
 .dep-box{background:#fffbeb;border:2px solid #f59e0b;border-radius:14px;padding:6px 12px;margin-top:6px}.dep-box .item{border-bottom:1px solid #fde68a}.dep-box .item:last-child{border-bottom:0}.dep-box .due .v{color:#b42318;font-size:22px}
+.endnote{font-size:12px;color:#b42318;margin:-2px 0 6px;text-align:center}
 </style>
 </head>
 <body>
@@ -197,7 +198,7 @@ function logout(){forgetKey();showLock('')}
 
   <div class="cal">
     <h3>📅 ใช้ได้ถึงวันไหน</h3>
-    <div class="sum"><div class="a">เริ่มเช่า<b id="rStart"></b></div><div class="b">ใช้ได้ถึง (สิ้นสุด)<b id="rEnd"></b></div></div>
+    <div class="sum"><div class="a">เริ่มเช่า<b id="rStart"></b></div><div class="b">ใช้ได้ถึง (สิ้นสุด)<b id="rEnd"></b></div></div><div class="endnote">* ใช้ได้ถึง 23.59 น. ของวันสิ้นสุด (ก่อนขึ้นวันใหม่)</div>
     <div id="months"></div>
     <div class="leg"><span><i style="background:#1a73e8"></i>วันเริ่ม</span><span><i style="background:#16a34a"></i>วันที่ใช้ได้</span><span><i style="background:#d92d20"></i>วันหมดอายุ</span></div>
     <div style="margin-top:8px;font-size:16px;font-weight:700">รวม <span id="rDays"></span></div>
@@ -209,7 +210,7 @@ function logout(){forgetKey();showLock('')}
     <div class="item"><span class="k">มัดจำแล้ว</span><span class="v" id="dPaid"></span></div>
     <div class="item due"><span class="k">จ่ายอีก</span><span class="v" id="dDue"></span></div>
   </div>
-  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
+  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดจำนวนวันที่เช่ามีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
 
@@ -247,7 +248,7 @@ function render(){
   $('rPkg').textContent=pkg;$('rPaid').textContent=st;$('rPaid').classList.toggle('dep',st==='มัดจำ');
   $('rStart').textContent=fmt(s);
   $('rDays').textContent=days+' วัน';
-  $('rEnd').innerHTML=fmt(e)+' <small>'+($('endTime').value||'00:00').replace(':','.')+' น.</small>';
+  {const et=$('endTime').value||'00:00';const ed=et==='00:00'?new Date(e.getTime()-60000):e;$('rEnd').innerHTML=fmt(ed)+' <small>'+(et==='00:00'?'23:59':et).replace(':','.')+' น.</small>';}
   const price=parseInt($('price').value)||0,isDep=st==='มัดจำ',dep=Math.min(DEPOSIT[pkg]||0,price);
   $('rPrice').textContent=price+' บาท';
   $('rTotal').style.display=isDep?'none':'';$('rDep').style.display=isDep?'':'none';
@@ -260,7 +261,7 @@ function drawCal(s,e){
   const last=new Date(e);last.setDate(last.getDate()-1); /* วันสุดท้ายที่ใช้ได้ */
   const same=(a,b)=>a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();
   let y=s.getFullYear(),m=s.getMonth();
-  while(y<e.getFullYear()||(y==e.getFullYear()&&m<=e.getMonth())){
+  while(y<last.getFullYear()||(y==last.getFullYear()&&m<=last.getMonth())){
     const wrap=document.createElement('div');wrap.className='mon';
     wrap.innerHTML='<div class="t">'+MF[m]+' '+(y+543)+'</div>';
     const g=document.createElement('div');g.className='g7';
@@ -274,9 +275,9 @@ function drawCal(s,e){
     for(let d=1;d<=dim;d++){
       if(!weeks.has(wk(d)))continue;
       const dt=new Date(y,m,d),c=document.createElement('div');c.className='c out';c.textContent=d;
-      if(same(dt,e)){c.className='c en'}
+      if(same(dt,last)){c.className='c en'}
       else if(same(dt,s)){c.className='c st'}
-      else if(dt>s&&dt<e){c.className='c in'}
+      else if(dt>s&&dt<last){c.className='c in'}
       g.appendChild(c);
     }
     wrap.appendChild(g);box.appendChild(wrap);

@@ -116,6 +116,7 @@ button{font:inherit;cursor:pointer}
 .note{font-size:12.5px;margin-top:8px;line-height:1.4}
 .thanks{text-align:center;font-size:14px;margin-top:8px;color:#555}
 @media(max-width:520px){.qcal .d{min-height:64px}.qcal .n{font-size:12px}.ct{min-width:16px;font-size:10px;padding:0 2px}}
+.endnote{font-size:12px;color:#b42318;margin:-2px 0 6px;text-align:center}
 </style>
 </head>
 <body>
@@ -182,7 +183,7 @@ button{font:inherit;cursor:pointer}
   <div class="item"><span class="k">หมดอายุปัจจุบัน</span><span class="v" id="sEnd"></span></div>
   <div class="cal">
     <h3>📅 รอบเช่าต่อที่เสนอ</h3>
-    <div class="sum"><div class="a">เริ่ม<b id="sNewStart"></b></div><div class="b">ใช้ได้ถึง<b id="sNewEnd"></b></div></div>
+    <div class="sum"><div class="a">เริ่ม<b id="sNewStart"></b></div><div class="b">ใช้ได้ถึง<b id="sNewEnd"></b></div></div><div class="endnote">* ใช้ได้ถึง 23.59 น. ของวันสิ้นสุด (ก่อนขึ้นวันใหม่)</div>
     <div id="sMonths"></div>
     <div class="lg2"><span><i style="background:#1a73e8"></i>วันเริ่ม</span><span><i style="background:#16a34a"></i>วันที่ใช้ได้</span><span><i style="background:#d92d20"></i>วันหมดอายุ</span></div>
     <div style="margin-top:6px;font-size:15px;font-weight:700">รวม <span id="sDays"></span></div>
@@ -480,7 +481,7 @@ function buildMsg(o){
     '✅ มีประกันตลอดการเช่า\n'+
     '\n'+
     '📦 ต่ออายุ '+o.days+' วัน ราคา '+o.price+' บาท\n'+
-    '📅 '+fmt(o.newStart)+' ถึง '+fmt(o.newEnd)+'\n'+
+    '📅 '+fmt(o.newStart)+' ถึง '+fmt(new Date(o.newEnd.getTime()-60000))+' 23.59 น. (ก่อนขึ้นวันใหม่)\n'+
     '\n'+
     'ถ้าสนใจต่ออายุ ตอบกลับภายในวันที่ '+fmt(o.deadline)+' ได้เลยครับ 🙏';
 }
@@ -497,7 +498,7 @@ function update(){
   $('sPkg').textContent=o.product;
   $('sEnd').textContent=fmt(o.r.end);
   if(d<=SOON_DAYS){const s=document.createElement('small');s.textContent=d<0?'หมดแล้ว':d===0?'วันนี้':'อีก '+d+' วัน';$('sEnd').appendChild(s)}
-  $('sNewStart').textContent=fmt(o.newStart);$('sNewEnd').textContent=fmt(o.newEnd);$('sDays').textContent=o.days+' วัน';
+  $('sNewStart').textContent=fmt(o.newStart);$('sNewEnd').textContent=fmt(new Date(o.newEnd.getTime()-60000))+' 23.59 น.';$('sDays').textContent=o.days+' วัน';
   $('sPrice').textContent=o.price+' บาท';
   $('sReply').textContent='⏳ ยืนยันต่ออายุภายในวันที่ '+fmt(o.deadline);
   drawCal(o.newStart,o.newEnd);
@@ -514,9 +515,10 @@ async function copyMsg(){
 /* ปฏิทินในใบเสนอ (แบบเดียวกับใบเสร็จ DAW21W) */
 function drawCal(s,e){
   const box=$('sMonths');box.innerHTML='';
+  const last=new Date(e);last.setDate(last.getDate()-1); /* วันสุดท้ายที่ใช้ได้ */
   const same=(a,b)=>ymd(a)===ymd(b);
   let y=s.getFullYear(),m=s.getMonth();
-  while(y<e.getFullYear()||(y==e.getFullYear()&&m<=e.getMonth())){
+  while(y<last.getFullYear()||(y==last.getFullYear()&&m<=last.getMonth())){
     const wrap=document.createElement('div');wrap.className='mon';
     wrap.innerHTML='<div class="t">'+MF[m]+' '+(y+543)+'</div>';
     const g=document.createElement('div');g.className='g7';
@@ -530,7 +532,7 @@ function drawCal(s,e){
     for(let d=1;d<=dim;d++){
       if(!weeks.has(wk(d)))continue;
       const dt=new Date(y,m,d),c=document.createElement('div');c.className='c';c.textContent=d;
-      if(same(dt,e))c.className='c en';else if(same(dt,s))c.className='c st';else if(dt>s&&dt<e)c.className='c in';
+      if(same(dt,last))c.className='c en';else if(same(dt,s))c.className='c st';else if(dt>s&&dt<last)c.className='c in';
       g.appendChild(c);
     }
     wrap.appendChild(g);box.appendChild(wrap);
@@ -657,6 +659,7 @@ button{font:inherit;cursor:pointer}
 .note{font-size:12.5px;margin-top:8px;line-height:1.4}
 .thanks{text-align:center;font-size:14px;margin-top:8px;color:#555}
 @media(max-width:520px){.qcal .d{min-height:64px}.qcal .n{font-size:12px}.ct{min-width:16px;font-size:10px;padding:0 2px}}
+.endnote{font-size:12px;color:#b42318;margin:-2px 0 6px;text-align:center}
 </style>
 </head>
 <body>
@@ -721,7 +724,7 @@ button{font:inherit;cursor:pointer}
   <div class="item"><span class="k">หมดอายุปัจจุบัน</span><span class="v" id="sEnd"></span></div>
   <div class="cal">
     <h3>📅 รอบเช่าต่อที่เสนอ</h3>
-    <div class="sum"><div class="a">เริ่ม<b id="sNewStart"></b></div><div class="b">ใช้ได้ถึง<b id="sNewEnd"></b></div></div>
+    <div class="sum"><div class="a">เริ่ม<b id="sNewStart"></b></div><div class="b">ใช้ได้ถึง<b id="sNewEnd"></b></div></div><div class="endnote">* ใช้ได้ถึง 23.59 น. ของวันสิ้นสุด (ก่อนขึ้นวันใหม่)</div>
     <div id="sMonths"></div>
     <div class="lg2"><span><i style="background:#1a73e8"></i>วันเริ่ม</span><span><i style="background:#16a34a"></i>วันที่ใช้ได้</span><span><i style="background:#d92d20"></i>วันหมดอายุ</span></div>
     <div style="margin-top:6px;font-size:15px;font-weight:700">รวม <span id="sDays"></span></div>
@@ -954,7 +957,7 @@ function buildMsg(o){
     '✅ มีประกันตลอดการเช่า\n'+
     '\n'+
     '📦 ต่ออายุ '+o.days+' วัน ราคา '+o.price+' บาท\n'+
-    '📅 '+fmt(o.newStart)+' ถึง '+fmt(o.newEnd)+'\n'+
+    '📅 '+fmt(o.newStart)+' ถึง '+fmt(new Date(o.newEnd.getTime()-60000))+' 23.59 น. (ก่อนขึ้นวันใหม่)\n'+
     '\n'+
     'ถ้าสนใจต่ออายุ ตอบกลับภายในวันที่ '+fmt(o.deadline)+' ได้เลยครับ 🙏';
 }
@@ -971,7 +974,7 @@ function update(){
   $('sPkg').textContent=o.product;
   $('sEnd').textContent=fmt(o.r.end);
   if(d<=SOON_DAYS){const s=document.createElement('small');s.textContent=d<0?'หมดแล้ว':d===0?'วันนี้':'อีก '+d+' วัน';$('sEnd').appendChild(s)}
-  $('sNewStart').textContent=fmt(o.newStart);$('sNewEnd').textContent=fmt(o.newEnd);$('sDays').textContent=o.days+' วัน';
+  $('sNewStart').textContent=fmt(o.newStart);$('sNewEnd').textContent=fmt(new Date(o.newEnd.getTime()-60000))+' 23.59 น.';$('sDays').textContent=o.days+' วัน';
   $('sPrice').textContent=o.price+' บาท';
   $('sReply').textContent='⏳ ยืนยันต่ออายุภายในวันที่ '+fmt(o.deadline);
   drawCal(o.newStart,o.newEnd);
@@ -988,9 +991,10 @@ async function copyMsg(){
 /* ปฏิทินในใบเสนอ (แบบเดียวกับใบเสร็จ DAW21W) */
 function drawCal(s,e){
   const box=$('sMonths');box.innerHTML='';
+  const last=new Date(e);last.setDate(last.getDate()-1); /* วันสุดท้ายที่ใช้ได้ */
   const same=(a,b)=>ymd(a)===ymd(b);
   let y=s.getFullYear(),m=s.getMonth();
-  while(y<e.getFullYear()||(y==e.getFullYear()&&m<=e.getMonth())){
+  while(y<last.getFullYear()||(y==last.getFullYear()&&m<=last.getMonth())){
     const wrap=document.createElement('div');wrap.className='mon';
     wrap.innerHTML='<div class="t">'+MF[m]+' '+(y+543)+'</div>';
     const g=document.createElement('div');g.className='g7';
@@ -1004,7 +1008,7 @@ function drawCal(s,e){
     for(let d=1;d<=dim;d++){
       if(!weeks.has(wk(d)))continue;
       const dt=new Date(y,m,d),c=document.createElement('div');c.className='c';c.textContent=d;
-      if(same(dt,e))c.className='c en';else if(same(dt,s))c.className='c st';else if(dt>s&&dt<e)c.className='c in';
+      if(same(dt,last))c.className='c en';else if(same(dt,s))c.className='c st';else if(dt>s&&dt<last)c.className='c in';
       g.appendChild(c);
     }
     wrap.appendChild(g);box.appendChild(wrap);

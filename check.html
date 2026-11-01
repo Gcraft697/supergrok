@@ -101,6 +101,7 @@ button{font:inherit;cursor:pointer}
 .ci{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:2px solid #cbd5e1;border-left:10px solid #16a34a;border-radius:14px;padding:12px;margin-top:8px;min-height:64px}
 .ci .i{flex:1;min-width:0}.ci .g{font-size:1rem;font-weight:800;color:#0b2a5b;word-break:break-word}.ci .s{font-size:.85rem;color:#4b5563}
 .ci .p{font-weight:800;color:#0b2a5b;white-space:nowrap;text-align:right}
+.endnote{font-size:12px;color:#b42318;margin:-2px 0 6px;text-align:center}
 </style></head><body>
 <div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a><br><b>SuperGolf<span> · ใบเสร็จ</span></b><p>เลือกรหัสของท่านเพื่อดูใบเสร็จ (รายการที่เคลียร์แล้ว และที่มัดจำไว้)</p></div></div>
 <div class="wrap">
@@ -124,7 +125,7 @@ button{font:inherit;cursor:pointer}
 
   <div class="cal" id="rCal">
     <h3>📅 ใช้ได้ถึงวันไหน</h3>
-    <div class="sum"><div class="a">เริ่มเช่า<b id="rStart"></b></div><div class="b">ใช้ได้ถึง (สิ้นสุด)<b id="rEnd"></b></div></div>
+    <div class="sum"><div class="a">เริ่มเช่า<b id="rStart"></b></div><div class="b">ใช้ได้ถึง (สิ้นสุด)<b id="rEnd"></b></div></div><div class="endnote">* ใช้ได้ถึง 23.59 น. ของวันสิ้นสุด (ก่อนขึ้นวันใหม่)</div>
     <div id="months"></div>
     <div class="leg"><span><i style="background:#1a73e8"></i>วันเริ่ม</span><span><i style="background:#16a34a"></i>วันที่ใช้ได้</span><span><i style="background:#d92d20"></i>วันหมดอายุ</span></div>
     <div style="margin-top:8px;font-size:16px;font-weight:700">รวม <span id="rDays"></span></div>
@@ -136,7 +137,7 @@ button{font:inherit;cursor:pointer}
     <div class="item"><span class="k">มัดจำแล้ว</span><span class="v" id="dPaid"></span></div>
     <div class="item due"><span class="k">ต้องจ่ายอีก</span><span class="v" id="dDue"></span></div>
   </div>
-  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดการใช้งานมีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
+  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดจำนวนวันที่เช่ามีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
 
@@ -187,7 +188,7 @@ function drawCal(s,e){
   const last=new Date(e);last.setDate(last.getDate()-1); /* วันสุดท้ายที่ใช้ได้ */
   const same=(a,b)=>a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();
   let y=s.getFullYear(),m=s.getMonth();
-  while(y<e.getFullYear()||(y==e.getFullYear()&&m<=e.getMonth())){
+  while(y<last.getFullYear()||(y==last.getFullYear()&&m<=last.getMonth())){
     const wrap=document.createElement('div');wrap.className='mon';
     wrap.innerHTML='<div class="t">'+MF[m]+' '+(y+543)+'</div>';
     const g=document.createElement('div');g.className='g7';
@@ -201,9 +202,9 @@ function drawCal(s,e){
     for(let d=1;d<=dim;d++){
       if(!weeks.has(wk(d)))continue;
       const dt=new Date(y,m,d),c=document.createElement('div');c.className='c out';c.textContent=d;
-      if(same(dt,e)){c.className='c en'}
+      if(same(dt,last)){c.className='c en'}
       else if(same(dt,s)){c.className='c st'}
-      else if(dt>s&&dt<e){c.className='c in'}
+      else if(dt>s&&dt<last){c.className='c in'}
       g.appendChild(c);
     }
     wrap.appendChild(g);box.appendChild(wrap);
@@ -277,7 +278,7 @@ function show(r){
   $('rPkg').textContent=r.pkg;$('rDays').textContent=r.days+' วัน';
   $('rPrice').textContent=r.price+' บาท';$('rPrice').parentNode.style.display=r.dep?'none':'';
   $('rCal').style.display=s?'':'none';
-  if(s){$('rStart').textContent=fmt(s);$('rEnd').innerHTML=fmt(e)+' <small>00.00 น.</small>';drawCal(s,e)}
+  if(s){$('rStart').textContent=fmt(s);$('rEnd').innerHTML=fmt(new Date(e.getTime()-60000))+' <small>23.59 น.</small>';drawCal(s,e)}
   $('listPanel').style.display='none';$('view').style.display='';window.scrollTo(0,0);
 }
 function back(){$('view').style.display='none';$('listPanel').style.display='';}
