@@ -829,12 +829,52 @@ h2.home-h { margin:0 0 12px; }
 #modal-usage .u-c-n { font-size:22px; font-weight:700; color:var(--navy); line-height:1.15; white-space:nowrap; }
 #modal-usage .u-c-n small { font-size:12px; font-weight:400; color:#8a7a68; }
 #modal-usage .u-c-l { font-size:13px; color:#5a4a3a; }
-#modal-usage .u-c-en { display:flex; align-items:center; gap:6px; } #modal-usage .u-c-en small { font-size:11px; color:#8a7a68; white-space:nowrap; }
-#modal-usage .u-bar { flex:1; height:6px; background:#f3e7d4; border-radius:99px; overflow:hidden; }
-#modal-usage .u-bar i { display:block; height:100%; background:linear-gradient(90deg,#8bc48a,#e0a35a,#d9534f); background-size:300px 100%; border-radius:99px; }
+#modal-usage .u-c-en { display:flex; align-items:center; gap:6px; margin-top:4px; }
+#modal-usage .u-bar { flex:1; height:8px; background:#f3e7d4; border-radius:99px; overflow:hidden; position:relative; }
+#modal-usage .u-bar i { display:block; height:100%; border-radius:99px; }
+#modal-usage .u-bar.wt-light i { background:#5fad6a; }
+#modal-usage .u-bar.wt-mid i { background:#e0a35a; }
+#modal-usage .u-bar.wt-heavy i { background:#d9534f; }
+#modal-usage .u-wt { flex:none; font-size:11px; font-weight:600; line-height:1; padding:4px 8px; border-radius:99px; white-space:nowrap; }
+#modal-usage .u-wt.wt-light { background:#e3f1e5; color:#1f6b33; }
+#modal-usage .u-wt.wt-mid { background:#fbe9cf; color:#8a4b16; }
+#modal-usage .u-wt.wt-heavy { background:#fde2e0; color:#b4400f; }
+#modal-usage .u-c-cost { font-size:12px; color:#6e3a10; margin-top:2px; line-height:1.35; }
+#modal-usage .u-c-cost b { font-weight:600; color:var(--navy); }
+#modal-usage .u-tip { margin:0 0 10px; background:#fff8ee; border:1px solid #ebdfcc; border-radius:14px; padding:10px 12px 8px; color:#5a4a3a; font-size:13px; line-height:1.45; }
+#modal-usage .u-tip-head { display:flex; align-items:flex-start; gap:8px; font-weight:600; color:#6e3a10; font-size:13.5px; line-height:1.4; }
+#modal-usage .u-tip-head .u-tip-ico { flex:none; font-size:16px; line-height:1.3; }
+#modal-usage .u-tip-head b { color:var(--navy); }
+#modal-usage .u-tip-ex { margin:8px 0 0; padding:0; list-style:none; display:grid; gap:4px; }
+#modal-usage .u-tip-ex li { position:relative; padding:0 0 0 14px; font-size:12.5px; color:#5a4a3a; line-height:1.4; }
+#modal-usage .u-tip-ex li::before { content:'·'; position:absolute; left:2px; color:#8a4b16; font-weight:700; }
+#modal-usage .u-tip-ex b { color:var(--navy); font-weight:600; }
+#modal-usage .u-batt { margin:8px 0 2px; display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; }
+#modal-usage .u-batt-pill { position:relative; display:inline-flex; align-items:center; min-width:72px; height:22px; padding:0 8px 0 6px; border-radius:7px; border:1.5px solid #c4a882; background:#fff; overflow:hidden; font-size:11px; font-weight:600; color:#6e3a10; }
+#modal-usage .u-batt-pill::after { content:''; position:absolute; right:-4px; top:6px; width:3px; height:8px; border-radius:0 2px 2px 0; background:#c4a882; }
+#modal-usage .u-batt-pill i { position:absolute; left:2px; top:2px; bottom:2px; width:0; border-radius:4px; background:linear-gradient(90deg,#f0c36a,#e0a95b); }
+#modal-usage .u-batt-pill.has-fill i { min-width:8px; }
+#modal-usage .u-batt-pill em { position:relative; z-index:1; font-style:normal; margin-left:2px; }
+#modal-usage .u-batt-arrow { color:#8a4b16; font-weight:600; font-size:13px; }
+#modal-usage .u-batt-note { flex:1 1 100%; font-size:11px; color:#8a7a68; margin:0; }
+#modal-usage .u-tip details { margin:6px 0 0; }
+#modal-usage .u-tip details > summary { list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:500; color:#8a4b16; background:#f3e7d4; border-radius:99px; padding:2px 9px; }
+#modal-usage .u-tip details > summary::-webkit-details-marker { display:none; }
+#modal-usage .u-tip details[open] > summary::after { content:' ▲'; }
+#modal-usage .u-tip details:not([open]) > summary::after { content:' ▼'; }
+#modal-usage .u-tip details > p { margin:6px 0 0; padding:8px 0 0; font-size:12px; color:#8a7a68; border-top:1px dashed #ebdfcc; line-height:1.45; }
+#modal-usage .u-rec { margin:0 0 10px; background:#eef7ea; border:1px solid #cfe3c6; border-radius:12px; padding:8px 12px; font-size:13px; line-height:1.45; color:#2f5d28; display:flex; align-items:flex-start; gap:6px; }
+#modal-usage .u-rec b { font-weight:600; color:#1f4a1a; }
 @media (min-width:600px) { #modal-usage .u-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } #modal-usage .u-card:first-child { grid-column:auto; } }
 #modal-usage .u-foot { margin:8px 0 0; font-size:11.5px; color:#8a7a68; line-height:1.5; }
 #feat-go { border-radius:99px; background:#8a4b16; min-height:54px; font-family:inherit; font-size:17px; font-weight:500; }
+#modal-usage .u-feats { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 12px; }
+#modal-usage .u-feat { background:#fff; border:1px solid #efe3d0; border-radius:12px; padding:8px 10px; font-size:13.5px; color:#5a4a3a; line-height:1.35; }
+#modal-usage .u-feat b { display:block; font-size:12px; font-weight:500; color:#8a4b16; margin-bottom:2px; }
+@media (max-width:420px) {
+  #features-modal { align-items:flex-end; padding:0; }
+  #features-modal .feat-box { max-width:none; width:100%; border-radius:22px 22px 0 0; max-height:min(92vh,920px); padding:18px 16px 20px; }
+}
 @media (min-width:760px) {
     #home-slots .p-card.month { grid-template-rows:auto auto; row-gap:12px; }
     #home-slots .month .p-img { grid-row:1 / span 2; }
@@ -1782,10 +1822,9 @@ body{background:var(--sg-cream)!important}
             return card;
         }
 
-        // เติมบรรทัดความโหดใต้ชิปในรายการสินค้า (ไม่เปลี่ยนปุ่มเดิม)
+        // เติมบรรทัดความโหด + ปุ่มดูคุณสมบัติในรายการสินค้า
         function withPower(card, item) {
-            const html = usageLineHtml(item), meta = card.querySelector('.p-meta');
-            if (html && meta) meta.insertAdjacentHTML('beforebegin', html);
+            addUsageLine(card, item);
             return card;
         }
         function createProductCard(item, type, home) {
@@ -2092,14 +2131,20 @@ body{background:var(--sg-cream)!important}
         };
         const USAGE_DERIVED_FOOT = 'Plus / Ultra เป็นค่าประมาณจากเท่าตัวของแพ็กเกจ (เทียบ SuperGrok) ไม่ได้วัดจริง อาจเปลี่ยนตามผู้ให้บริการ';
         const USAGE_FOOT = 'ตัวเลขเป็นค่าประมาณจากร้าน (ปัดเศษลง) อาจเปลี่ยนตามผู้ให้บริการ';
-        // เฉพาะ Lite/SuperGrok 7 หรือ 30 วัน; ตัวเลขเป็นต่อ 7 วันเสมอ (รายเดือนรีเซ็ตทุกสัปดาห์)
+        // Lite/SuperGrok/Plus/Ultra ทุกระยะเวลา; ตัวเลขพลังงานเป็นต่อ 1 รหัส (รายเดือนรีเซ็ตทุกสัปดาห์)
         function usagePlan(item) {
             if (!item) return null;
             const k = planKind(item);
             const plan = USAGE_MULT[k] ? k : null;
             const d = parseFloat(String(item.day).trim());
-            if (!plan || (d !== 7 && d !== 30)) return null;
-            return { plan, monthly: d === 30, period: d === 30 ? 'ต่อ 7 วัน (รีเซ็ตทุกสัปดาห์ ใช้ได้ 4 สัปดาห์)' : 'ต่อ 7 วัน' };
+            if (!plan || !(d > 0)) return null;
+            return {
+                plan,
+                monthly: d === 30,
+                period: d === 30
+                    ? 'ต่อ 7 วัน (รีเซ็ตทุกสัปดาห์ ใช้ได้ 4 สัปดาห์)'
+                    : 'ต่อ 1 รหัส'
+            };
         }
         const usageNum = arr => arr.map(n => n.toLocaleString()).join('–');
         // ความโหด (ตัวคูณเทียบ Lite) ของแพ็กเกจรายเดือน
@@ -2133,14 +2178,14 @@ body{background:var(--sg-cream)!important}
             const img = usageNum(USAGE_ROWS.find(r => r.key === 'image')[u.plan]);
             return `<div class="p-usage" title="ภาพ ${img} ภาพ · คลิป 480p 6 วินาที ~${clip} คลิป / 7 วัน"><span>${USAGE_ICO.img} <b aria-label="${img} ภาพ">${img}</b></span><span class="sep">·</span><span>${USAGE_ICO.clip} 480p 6วิ <b aria-label="ประมาณ ${clip} คลิป">~${clip}</b> / 7 วัน</span></div>`;
         }
-        // บรรทัดย่อ + ปุ่มคู่ (ปุ่มหลักเดิม + ดูคุณสมบัติ)
+        // บรรทัดย่อ + ปุ่มคู่ (ปุ่มหลักเดิม + ดูคุณสมบัติ) — ทุกการ์ดพร้อมเช่า/รอคิวที่มีปุ่มหลัก
         function addUsageLine(card, item) {
             if (!card || !item) return;
             const html = usageLineHtml(item);
             const meta = card.querySelector('.p-meta');
             if (html && meta) meta.insertAdjacentHTML('beforebegin', html);
             const primary = card.querySelector('.btn');
-            if (!primary || !(usagePlan(item) || isMonthly(item))) return;
+            if (!primary || primary.closest('.btn-row')) return;
             const row = document.createElement('div');
             row.className = 'btn-row';
             if (card.classList.contains('month')) card.appendChild(row);
@@ -2150,39 +2195,125 @@ body{background:var(--sg-cream)!important}
             sec.type = 'button';
             sec.className = 'btn-sec';
             sec.textContent = 'ดูคุณสมบัติ';
-            sec.onclick = () => openFeatures(item, primary);
+            sec.setAttribute('aria-label', 'ดูคุณสมบัติ ' + (item.product || ''));
+            sec.onclick = (e) => { e.stopPropagation(); openFeatures(item, primary); };
             row.appendChild(sec);
+        }
+        // พลังงานฐานใน USAGE_ROWS.energy = ของ Lite (×1); โปรอื่น = ฐาน / USAGE_MULT[plan]
+        // หลอดเทียบสเกลคงที่กับงานหนักสุดของ Lite (16%) เพื่อเทียบข้ามโปรได้
+        const LITE_ENERGY_SCALE = Math.max(...USAGE_ROWS.map(r => parseFloat(String(r.energy).split(/[–-]/).pop())));
+        function parseEnergyParts(energy) {
+            return String(energy).split(/[–-]/).map(s => parseFloat(s)).filter(n => n > 0);
+        }
+        function formatEnergyPct(v) {
+            if (!(v > 0)) return '0%';
+            if (v < 0.1) return '<0.1%';
+            const r2 = Math.round(v * 100) / 100;
+            if (Math.abs(r2 - Math.round(r2)) < 1e-9) return Math.round(r2) + '%';
+            const r1 = Math.round(v * 10) / 10;
+            if (Math.abs(v - r1) < 0.021) {
+                const s = String(r1);
+                return (s.endsWith('.0') ? s.slice(0, -2) : s) + '%';
+            }
+            let s = String(r2);
+            if (s.indexOf('.') >= 0) s = s.replace(/0+$/, '').replace(/\.$/, '');
+            return s + '%';
+        }
+        function planEnergyLabel(energy, mult) {
+            const parts = parseEnergyParts(energy).map(v => v / (mult || 1));
+            if (!parts.length) return '';
+            const fmt = parts.map(formatEnergyPct);
+            if (fmt.length === 1 || fmt[0] === fmt[1]) return fmt[0];
+            if (fmt[0].startsWith('<') || fmt[1].startsWith('<')) return fmt[0] + '–' + fmt[1];
+            return fmt[0].replace(/%$/, '') + '–' + fmt[1];
+        }
+        function energyWeightFromPct(v, unit) {
+            if (v <= 4) return { key: 'light', label: 'เบา', unit };
+            if (v <= 8) return { key: 'mid', label: 'กลาง', unit };
+            return { key: 'heavy', label: 'หนัก', unit };
+        }
+        function energyWeight(r, mult) {
+            const parts = parseEnergyParts(r.energy);
+            const hi = (parts.length ? Math.max(...parts) : 0) / (mult || 1);
+            const unit = r.ico === 'img' ? 'ต่อภาพ' : 'ต่อคลิป';
+            return energyWeightFromPct(hi, unit);
+        }
+        function energyBarWidth(r, mult) {
+            const parts = parseEnergyParts(r.energy);
+            const hi = (parts.length ? Math.max(...parts) : 0) / (mult || 1);
+            return Math.max(6, Math.round(hi / LITE_ENERGY_SCALE * 100));
+        }
+        function usageExamplePcts(mult) {
+            const m = mult || 1;
+            const img = USAGE_ROWS.find(r => r.key === 'image');
+            const clip = USAGE_ROWS.find(r => r.key === 'clip480s6');
+            const imgLabel = planEnergyLabel(img.energy, m);
+            const clipLabel = planEnergyLabel(clip.energy, m);
+            const clipUsed = (parseEnergyParts(clip.energy)[0] || 0) / m;
+            const usedLabel = formatEnergyPct(clipUsed);
+            // หลอดสาธิต: 0% ว่าง · หลังใช้แสดง % จริง (ขั้นต่ำเล็กน้อยให้เห็นสี)
+            const usedBar = clipUsed <= 0 ? 0 : Math.max(6, Math.min(100, Math.round(clipUsed)));
+            return { m, imgLabel, clipLabel, clipUsed, usedLabel, usedBar };
+        }
+        function usageTipHtml(mult) {
+            const ex = usageExamplePcts(mult);
+            const more = ex.m > 1
+                ? `หลอดนี้วัด "ใช้ไปแล้ว" เริ่มที่ 0% ทำภาพหรือคลิปทีละชิ้น % จะเพิ่มขึ้นจนเต็ม 100% ค่าตัวอย่างและแถบ = พลังงานฐานของ Lite หารด้วยความโหด ×${ex.m} ของโปรนี้ (ค่าประมาณจากร้าน · ยิ่งน้อยยิ่งทำได้เยอะ)`
+                : `หลอดนี้วัด "ใช้ไปแล้ว" เริ่มที่ 0% ทำภาพหรือคลิปทีละชิ้น % จะเพิ่มขึ้นจนเต็ม 100% (ค่าประมาณจากร้าน · ฐาน Lite ×1 · ยิ่งน้อยยิ่งทำได้เยอะ)`;
+            const batt = `<div class="u-batt" aria-hidden="true"><span class="u-batt-pill"><i style="width:0%"></i><em>0%</em></span><span class="u-batt-arrow">→</span><span class="u-batt-pill has-fill"><i style="width:${ex.usedBar}%"></i><em>${esc(ex.usedLabel)}</em></span><p class="u-batt-note">หลังทำคลิป 480p · 6 วิ 1 คลิป ใช้ไปแล้ว ${esc(ex.usedLabel)}</p></div>`;
+            return `<div class="u-tip"><div class="u-tip-head"><span class="u-tip-ico" aria-hidden="true">🔋</span><span>เริ่มต้นใช้ไป <b>0%</b> · ทำแต่ละชิ้น % จะเพิ่มขึ้น จนเต็ม <b>100%</b></span></div><ul class="u-tip-ex"><li>ทำภาพ 1 ภาพ ใช้ไป <b>~${esc(ex.imgLabel)}</b></li><li>คลิป 480p · 6 วิ 1 คลิป ใช้ไป <b>~${esc(ex.clipLabel)}</b></li></ul>${batt}<details><summary>ดูเพิ่ม</summary><p>${esc(more)}</p></details></div>`;
+        }
+        function usageRecHtml(mult) {
+            const ex = usageExamplePcts(mult);
+            return `<div class="u-rec" role="note"><span aria-hidden="true">💡</span><span><b>แนะนำ:</b> ทำคลิป 480p · 6 วิ คุ้มสุด ใช้แค่ ~${esc(ex.clipLabel)} ต่อคลิป · ทำได้เยอะสุดในกลุ่มคลิป</span></div>`;
+        }
+        function featSummaryHtml(item) {
+            const d = item && parseInt(item.day, 10);
+            const days = String(item && item.day != null ? item.day : '').trim();
+            const price = fmtPrice(item && item.price);
+            return `<div class="u-feats" aria-label="คุณสมบัติแพ็กเกจ">
+                <div class="u-feat"><b>ระยะเวลา</b>${esc(days || '-')} วัน</div>
+                <div class="u-feat"><b>ราคา</b>${esc(price)} บาท</div>
+                <div class="u-feat"><b>ประกัน</b>${d ? esc(String(d)) + ' วัน ตามวันเช่า' : 'ตามวันเช่า'}</div>
+                <div class="u-feat"><b>ใช้ส่วนตัว</b>ใช้คนเดียว ไม่แชร์</div>
+            </div>`;
         }
         function renderUsage(item) {
             const box = document.getElementById('modal-usage');
             if (!box) return;
             const u = usagePlan(item);
             const m = isMonthly(item) ? monthlyPlanOf(item) : null;
-            if (!u && !m) { box.innerHTML = ''; return; }
+            const k = planKind(item);
             const enNum = r => parseFloat(String(r.energy).split(/[–-]/).pop());
-            const maxEn = Math.max(...USAGE_ROWS.map(enNum));
-            let html = '';
+            const mult = u ? (USAGE_MULT[u.plan] || 1) : (m ? m.mult : 1);
+            let html = featSummaryHtml(item);
+            if (!u && !m) {
+                if (k && USAGE_FIT[k]) html += `<div class="u-fit">${esc(USAGE_FIT[k])}</div>`;
+                else html += `<div class="u-fit">รหัสใช้คนเดียว ไม่แชร์ มีประกันตามจำนวนวันเช่า</div>`;
+                html += `<div class="u-foot">${esc(USAGE_FOOT)}</div>`;
+                box.innerHTML = html;
+                return;
+            }
             if (m) {
                 const fire = '🔥'.repeat(m.mult >= 50 ? 5 : m.mult >= 15 ? 4 : m.mult >= 4 ? 2 : 1);
                 const rel = m.mult === 1 ? 'Lite เป็นฐาน 1 เท่า' : `ใช้งานได้ราว ${m.mult} เท่าของ Lite`;
                 html += `<div class="u-fire"><div class="u-fire-ico" aria-hidden="true">${fire}</div><div><div class="u-fire-t">ความโหด <b>${m.mult} เท่า</b></div><div class="u-fire-s">${esc(rel)} · 30 วัน</div></div></div>`;
             }
             const hype = u && USAGE_DERIVED[u.plan];
-            if (hype) {
+            if (hype || u) {
                 const cards = USAGE_ROWS.map(r => {
                     const n = usageNum(r[u.plan]);
+                    const wt = energyWeight(r, mult);
+                    const w = energyBarWidth(r, mult);
+                    const pctLabel = planEnergyLabel(r.energy, mult);
                     const lbl = r.ico === 'img' ? 'ภาพ 1 ภาพ' : 'คลิป ' + r.label.replace(/(\d+)วิ$/, '· $1 วิ');
-                    return `<div class="u-card hype"><div class="u-c-ico" aria-hidden="true">${r.ico === 'img' ? '🖼️' : '🎬'}</div><div class="u-c-n big" aria-label="ทำได้ประมาณ ${n} ${USAGE_UNIT[r.ico]}"><small>ทำได้</small> ${n} <small>${USAGE_UNIT[r.ico]}</small></div><div class="u-c-l" title="${r.aria}">${esc(lbl)}</div><div class="burst-wrap" aria-hidden="true"><span class="burst-track"><i></i></span></div></div>`;
+                    const cost = `ใช้ ~${pctLabel} ${wt.unit}`;
+                    const big = hype ? ' big' : '';
+                    const hypeExtra = hype ? `<div class="burst-wrap" aria-hidden="true"><span class="burst-track"><i></i></span></div>` : '';
+                    return `<div class="u-card${hype ? ' hype' : ''}"><div class="u-c-ico" aria-hidden="true">${r.ico === 'img' ? '🖼️' : '🎬'}</div><div class="u-c-n${big}" aria-label="ทำได้ ${n} ${USAGE_UNIT[r.ico]}"><small>ทำได้</small> ${n} <small>${USAGE_UNIT[r.ico]}</small></div><div class="u-c-l" title="${r.aria}">${esc(lbl)}</div><div class="u-c-en" aria-label="ใช้พลังงาน ${pctLabel} ${wt.unit} ระดับ${wt.label}"><span class="u-wt wt-${wt.key}">${wt.label}</span><span class="u-bar wt-${wt.key}" aria-hidden="true"><i style="width:${w}%"></i></span></div><div class="u-c-cost"><b>${esc(cost)}</b></div>${hypeExtra}</div>`;
                 }).join('');
-                html += `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div><div class="u-burst-tag">💥 ทะลุหลอด! <small>ค่าประมาณจากเท่าตัวของแพ็กเกจ</small></div><div class="u-grid">${cards}</div><div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>`;
-            } else if (u) {
-                const cards = USAGE_ROWS.map(r => {
-                    const n = usageNum(r[u.plan]);
-                    const w = Math.max(8, Math.round(enNum(r) / maxEn * 100));
-                    const lbl = r.ico === 'img' ? 'ภาพ 1 ภาพ' : 'คลิป ' + r.label.replace(/(\d+)วิ$/, '· $1 วิ');
-                    return `<div class="u-card"><div class="u-c-ico" aria-hidden="true">${r.ico === 'img' ? '🖼️' : '🎬'}</div><div class="u-c-n" aria-label="ทำได้ ${n} ${USAGE_UNIT[r.ico]}"><small>ทำได้</small> ${n} <small>${USAGE_UNIT[r.ico]}</small></div><div class="u-c-l" title="${r.aria}">${esc(lbl)}</div><div class="u-c-en" aria-label="ใช้พลังงาน ${r.energy}"><span class="u-bar"><i style="width:${w}%"></i></span><small>${r.energy}</small></div></div>`;
-                }).join('');
-                html += `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div><div class="u-grid">${cards}</div><div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>`;
+                const burst = hype ? `<div class="u-burst-tag">💥 ทะลุหลอด! <small>ค่าประมาณจากเท่าตัวของแพ็กเกจ</small></div>` : '';
+                html += `<div class="u-h">ทำได้ต่อ 1 รหัส <small>${esc(u.period)}</small></div>${usageTipHtml(mult)}${usageRecHtml(mult)}${burst}<div class="u-grid">${cards}</div><div class="u-fit">${esc(USAGE_FIT[u.plan])}</div>`;
             } else if (m) {
                 html += `<div class="u-fit">แพ็กเกจ ${esc(m.label)} ใช้งานได้มากกว่า Lite ประมาณ ${m.mult} เท่า เหมาะกับคนที่ทำภาพและคลิปจำนวนมาก</div>`;
             }
@@ -2191,12 +2322,15 @@ body{background:var(--sg-cream)!important}
         }
         // หน้าต่างคุณสมบัติ (แยกจากหน้าต่างจอง/มัดจำเดิม) — ปุ่มด้านล่างเรียกปุ่มหลักเดิมของการ์ด
         function openFeatures(item, primary) {
-            document.getElementById('feat-title').textContent = `${monthlyPlanOf(item) && isMonthly(item) ? monthlyPlanOf(item).label : item.product} ${item.day} วัน`;
+            const label = (isMonthly(item) && monthlyPlanOf(item)) ? monthlyPlanOf(item).label : (item.product || '');
+            document.getElementById('feat-title').textContent = `${label} ${item.day} วัน`;
             renderUsage(item);
             const go = document.getElementById('feat-go');
-            go.textContent = (primary.textContent || '').trim() || 'ดูรายละเอียด';
-            go.onclick = () => { closeFeatures(); primary.click(); };
+            go.textContent = (primary && (primary.textContent || '').trim()) || 'เช่าเลย';
+            go.onclick = () => { closeFeatures(); if (primary) primary.click(); };
             openModal('features-modal');
+            const box = document.querySelector('#features-modal .modal-box');
+            if (box) box.scrollTop = 0;
         }
         function closeFeatures() { closeModal('features-modal'); }
 
