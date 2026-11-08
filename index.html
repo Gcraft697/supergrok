@@ -937,6 +937,37 @@ body{background:var(--sg-cream)!important}
 .hero2-txt{min-width:0;overflow:visible;padding-left:2px}
 .hero2 .brand{white-space:nowrap;overflow:visible;text-indent:0;margin:0!important;font-size:clamp(24px,7.5vw,32px)!important}
 .hero2-mascot{max-width:42%;object-fit:contain;background:transparent}
+
+/* ===== ของเหลือ (Leftover) : สไตล์แบบหน้า Usage ===== */
+.lo-wrap{margin:18px 0 8px}
+.lo-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 2px 10px}
+.lo-head h2{font-size:18px;font-weight:700;color:var(--text);margin:0}
+.lo-head small{color:#6b7280;font-size:13px}
+.lo-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.lo-track::-webkit-scrollbar{height:6px}.lo-track::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:6px}
+.lo-card{flex:0 0 min(86%,360px);scroll-snap-align:start;background:#faf9f7;border:1px solid #ecebe8;border-radius:18px;padding:16px 18px 18px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.lo-label{font-size:13.5px;color:#6b6b6b;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.lo-label .i{width:15px;height:15px;border:1.5px solid #8a8a8a;border-radius:50%;font-size:10px;display:inline-grid;place-items:center;color:#8a8a8a}
+.lo-box{background:#fff;border:1px solid #efeeeb;border-radius:14px;padding:16px 18px}
+.lo-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.lo-pct{font-size:22px;font-weight:700;color:#111}.lo-pct span{font-size:15px;font-weight:400;color:#6b6b6b;margin-left:4px}
+.lo-reset{font-size:13.5px;color:#6b6b6b}.lo-reset b{color:#111;font-weight:500}
+.lo-bar{height:22px;background:#e8e8e8;border-radius:8px;margin-top:14px;overflow:hidden}
+.lo-fill{height:100%;background:#868686;border-radius:8px;transition:width .8s ease}
+.lo-fill.hi{background:#b3261e}.lo-fill.mid{background:#92400e}
+.lo-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
+.lo-price{font-size:20px;font-weight:700;color:var(--grok)}.lo-price small{font-size:12px;color:#6b7280;font-weight:400}
+.lo-btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;text-decoration:none}
+.lo-can{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.lo-can span{background:#f3f2ef;border-radius:8px;padding:4px 9px;font-size:12.5px;color:#333}.lo-can b{color:#111}
+.lo-foot{flex-wrap:wrap}.lo-btns{display:flex;gap:8px;width:100%}.lo-btns .lo-btn{flex:1;white-space:nowrap;padding:10px 8px}.lo-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}.lo-btn.full{width:100%;margin-top:14px;padding:12px;font-size:16px}
+.lo-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:flex-end;justify-content:center}.lo-modal.hidden{display:none}
+.lo-m-box{position:relative;background:#faf9f7;width:min(100%,460px);border-radius:20px 20px 0 0;padding:22px 18px 26px;max-height:88vh;overflow:auto}
+@media(min-width:600px){.lo-modal{align-items:center}.lo-m-box{border-radius:20px}}
+.lo-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:18px;cursor:pointer;color:#555}
+.lo-m-h{font-size:17px;margin:0 30px 12px 0}.lo-feat{background:#fff;border:1px solid #efeeeb;border-radius:14px;padding:14px 16px;margin-top:12px}
+.lo-feat-h{margin:0 0 8px;color:#444;font-size:14px}.lo-feat-row{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #f1f0ed;font-size:15px}
+.lo-feat-note{margin:8px 0 0;font-size:12px;color:#888}
+.lo-tag{display:inline-block;background:#fff4e0;color:#92400e;border-radius:999px;padding:2px 9px;font-size:12px;margin-left:6px}
 </style>
 </head>
 <body>
@@ -990,6 +1021,12 @@ body{background:var(--sg-cream)!important}
             <!-- สินค้าหน้าแรก: ลดราคาพิเศษ (เต็มแถว) + 2 ช่อง Premium (SuperGrok) / Plus (Lite) -->
             <!-- ป้ายช่วงลดราคา: ข้อความสร้างจากแถว sell ในชีตอัตโนมัติ (ไม่ต้องแก้ตรงนี้) -->
             <div id="sale-banner" class="promo-banner hidden" role="note"></div>
+            
+            <!-- ของเหลือ: อ่านแถวที่คอลัมน์ C = "ของเหลือ" (D=เวลาหมดอายุ, E=ราคา, F=% ที่ใช้ไป, H=วันที่) -->
+            <div id="lo-section" class="lo-wrap hidden">
+                <div class="lo-head"><h2>🔥 โล๊ะ Grok ราคาถูก</h2><small>เลื่อนดู ➜</small></div>
+                <div id="lo-track" class="lo-track"></div>
+            </div>
             <h2 class="home-h"><svg class="ic"><use href="#i-box"/></svg> สินค้าของเรา</h2>
             <div id="home-slots" class="slot-grid" aria-live="polite">
                 <div class="loading-box span-all">กำลังโหลดข้อมูลสินค้า...</div>
@@ -1640,6 +1677,7 @@ body{background:var(--sg-cream)!important}
 
                 allProducts = [];
                 dateProductMap = {};
+                const leftovers = [];
                 let saleRow = null;
 
                 rows.forEach((row) => {
@@ -1648,6 +1686,7 @@ body{background:var(--sg-cream)!important}
                     const product = row.c[1] ? row.c[1].v : ''; 
                     if (isSellRow(product)) { saleRow = row; return; } // แถวควบคุมช่วงลดราคา ไม่ใช่สินค้า
                     const status = row.c[2] ? String(row.c[2].v).trim() : '';  
+                    if (status === 'ของเหลือ') { leftovers.push(row); return; } // การ์ดของเหลือ แยกแสดง
                     const day = row.c[3] ? row.c[3].v : '-';    
                     const price = row.c[4] ? row.c[4].v : '0';  
                     const role = row.c[5] ? String(row.c[5].v).trim() : ''; 
@@ -1695,6 +1734,7 @@ body{background:var(--sg-cream)!important}
                 SALE.cfg = readSaleConfig(saleRow);
                 allProducts.forEach(applySaleToItem);
                 renderSaleBanner();
+                renderLeftovers(leftovers);
                 filterProducts();
                 renderHomeReady();
                 updateOfferSchema(allProducts);
@@ -1948,6 +1988,68 @@ body{background:var(--sg-cream)!important}
             tickCountdown();
         }
 
+
+        // ===== ของเหลือ =====
+        function loCell(row, i) { const c = row.c[i]; if (!c) return ''; const v = (c.f != null && String(c.f).trim() !== '') ? c.f : c.v; return v == null ? '' : String(v).trim(); }
+        function renderLeftovers(rows) {
+            const sec = document.getElementById('lo-section'), track = document.getElementById('lo-track');
+            if (!sec || !track) return;
+            if (!rows.length) { sec.classList.add('hidden'); return; }
+            LO_ITEMS = [];
+            track.innerHTML = rows.map((row, idx) => {
+                const prod = loCell(row, 1) || 'Supergrok';
+                const time = loCell(row, 3) || '-';                  // D เวลาหมดอายุ
+                const price = loCell(row, 4) || '-';                 // E ราคา
+                const pctRaw = loCell(row, 5);                       // F เปอร์เซ็นต์
+                let pct = parseFloat(String(pctRaw).replace('%', ''));
+                if (!isNaN(pct) && pct <= 1 && !String(pctRaw).includes('%')) pct *= 100;
+                pct = isNaN(pct) ? 0 : Math.max(0, Math.min(100, Math.round(pct)));
+                const date = loCell(row, 7);                         // H วันที่
+                const lvl = pct >= 80 ? 'hi' : pct >= 50 ? 'mid' : '';
+                // สูตร: จำนวนที่ทำได้ = จำนวนเต็มของแพ็ก (USAGE_ROWS) × % ที่เหลือ ÷ 100 (ปัดลง)
+                const kind = planKind({ product: prod }) || 'grok';
+                const left = 100 - pct;
+                const cnt = (key, idx) => { const r = key ? USAGE_ROWS.find(x => x.key === key) : null; const arr = r ? r[kind] : null; return arr ? Math.floor(arr[idx || 0] * left / 100) : 0; };
+                const row720 = USAGE_ROWS.find(r => r.label === '720p 6วิ');
+                const c720 = row720 && row720[kind] ? Math.floor(row720[kind][0] * left / 100) : 0;
+                const img = USAGE_ROWS.find(r => r.key === 'image')[kind] || [0];
+                const imgTxt = img.map(n => Math.floor(n * left / 100)).join('–');
+                LO_ITEMS[idx] = { prod, pct, left, date, time, price, imgTxt, c480: cnt('clip480s6'), c720 };
+                const canHtml = `<div class="lo-can"><span>🖼️ ภาพ <b>~${imgTxt}</b></span><span>🎬 480p 6วิ <b>~${cnt('clip480s6')}</b></span><span>🎬 720p 6วิ <b>~${c720}</b></span></div>`;
+                return `<div class="lo-card">
+                    <div class="lo-label">รหัส 1 วัน · ${esc(prod)} <span class="i">i</span><span class="lo-tag">โล๊ะราคาถูก</span></div>
+                    <div class="lo-box">
+                        <div class="lo-row"><div class="lo-pct">${pct}%<span>used</span></div>
+                        <div class="lo-reset">หมดอายุ <b>${date ? esc(date) + ' ' : ''}${esc(time)} น.</b></div></div>
+                        <div class="lo-bar"><div class="lo-fill ${lvl}" style="width:${pct}%"></div></div>
+
+                        <div class="lo-foot"><div class="lo-price">฿${esc(price)} <small>เหลือ ${100 - pct}%</small></div>
+                        <div class="lo-btns"><button type="button" class="lo-btn ghost" onclick="loOpen(${idx},'feat')">ดูคุณสมบัติ</button><button type="button" class="lo-btn" onclick="loOpen(${idx},'buy')">สั่งซื้อ</button></div></div>
+                    </div></div>`;
+            }).join('');
+            sec.classList.remove('hidden');
+        }
+
+        let LO_ITEMS = [];
+        function loOpen(i, mode) {
+            const it = LO_ITEMS[i]; if (!it) return;
+            const m = document.getElementById('lo-modal'), b = document.getElementById('lo-modal-body');
+            const head = `<h3 class="lo-m-h">${esc(it.prod)} · รหัส 1 วัน <span class="lo-tag">โล๊ะราคาถูก</span></h3>
+                <div class="lo-box"><div class="lo-row"><div class="lo-pct">${it.pct}%<span>used</span></div><div class="lo-reset">หมดอายุ <b>${esc(it.date)} ${esc(it.time)} น.</b></div></div>
+                <div class="lo-bar"><div class="lo-fill" style="width:${it.pct}%"></div></div></div>`;
+            if (mode === 'feat') {
+                b.innerHTML = head + `<div class="lo-feat"><p class="lo-feat-h">พลังงานเหลือ <b>${it.left}%</b> ทำได้อีกประมาณ</p>
+                    <div class="lo-feat-row"><span>🖼️ ภาพ</span><b>~${esc(it.imgTxt)} ภาพ</b></div>
+                    <div class="lo-feat-row"><span>🎬 คลิป 480p · 6 วิ</span><b>~${it.c480} คลิป</b></div>
+                    <div class="lo-feat-row"><span>🎬 คลิป 720p · 6 วิ</span><b>~${it.c720} คลิป</b></div>
+                    <p class="lo-feat-note">ใช้ได้ถึงเวลาหมดอายุ · ตัวเลขเป็นค่าประมาณจากร้าน (ปัดเศษลง)</p></div>
+                    <button type="button" class="lo-btn full" onclick="loOpen(${i},'buy')">สั่งซื้อ ฿${esc(it.price)}</button>`;
+            } else {
+                b.innerHTML = head + `<p class="lo-feat-h" style="margin-top:14px">สั่งซื้อ ฿${esc(it.price)} · เลือกช่องทางติดต่อ</p>` + contactActionsHtml();
+                bindExternalLinks(b);
+            }
+            openModal('lo-modal');
+        }
         function renderHomeReady(state) {
             const box = document.getElementById('home-slots');
             countdownTargets = [];
@@ -2795,6 +2897,10 @@ body{background:var(--sg-cream)!important}
             }
         }
     </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+    
+<div id="lo-modal" class="lo-modal hidden" role="dialog" aria-modal="true" onclick="if(event.target===this)closeModal('lo-modal')">
+  <div class="lo-m-box"><button type="button" class="modal-x lo-x" aria-label="ปิด" onclick="closeModal('lo-modal')">✕</button><div id="lo-modal-body"></div></div>
+</div>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
