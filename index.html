@@ -959,7 +959,7 @@ body{background:var(--sg-cream)!important}
 .lo-price{font-size:20px;font-weight:700;color:var(--grok)}.lo-price small{font-size:12px;color:#6b7280;font-weight:400}
 .lo-btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;text-decoration:none}
 .lo-can{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.lo-can span{background:#f3f2ef;border-radius:8px;padding:4px 9px;font-size:12.5px;color:#333}.lo-can b{color:#111}
-.lo-foot{flex-wrap:wrap}.lo-btns{display:flex;gap:8px;width:100%}.lo-btns .lo-btn{flex:1;white-space:nowrap;padding:10px 8px}.lo-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}.lo-btn.full{width:100%;margin-top:14px;padding:12px;font-size:16px}
+.lo-foot{flex-wrap:wrap}.lo-empty{background:#fff;border:2px dashed #fdba74;border-radius:16px;padding:16px;text-align:center;color:#9a3412;font-weight:700;font-size:15px;line-height:1.45}.lo-empty small{display:block;margin-top:6px;color:#b45309;font-weight:600;font-size:13px}.lo-hours{margin-top:10px;display:inline-block;background:#fff4e0;color:#b45309;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}.lo-btns{display:flex;gap:8px;width:100%}.lo-btns .lo-btn{flex:1;white-space:nowrap;padding:10px 8px}.lo-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}.lo-btn.full{width:100%;margin-top:14px;padding:12px;font-size:16px}
 .lo-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:flex-end;justify-content:center}.lo-modal.hidden{display:none}
 .lo-m-box{position:relative;background:#faf9f7;width:min(100%,460px);border-radius:20px 20px 0 0;padding:22px 18px 26px;max-height:88vh;overflow:auto}
 @media(min-width:600px){.lo-modal{align-items:center}.lo-m-box{border-radius:20px}}
@@ -1022,7 +1022,7 @@ body{background:var(--sg-cream)!important}
             <!-- ป้ายช่วงลดราคา: ข้อความสร้างจากแถว sell ในชีตอัตโนมัติ (ไม่ต้องแก้ตรงนี้) -->
             <div id="sale-banner" class="promo-banner hidden" role="note"></div>
             
-            <!-- ของเหลือ: อ่านแถวที่คอลัมน์ C = "ของเหลือ" (D=เวลาหมดอายุ, E=ราคา, F=% ที่ใช้ไป, H=วันที่) -->
+            <!-- ของเหลือ: C="ของเหลือ" และ K ว่าง (D=เวลาหมดอายุ, E=ราคา, F=% ที่ใช้ไป, H=วันที่) · K=clear ไปหน้าใบเสร็จ -->
             <div id="lo-section" class="lo-wrap hidden">
                 <div class="lo-head"><h2>🔥 โล๊ะ Grok ราคาถูก</h2><small>เลื่อนดู ➜</small></div>
                 <div id="lo-track" class="lo-track"></div>
@@ -1686,7 +1686,13 @@ body{background:var(--sg-cream)!important}
                     const product = row.c[1] ? row.c[1].v : ''; 
                     if (isSellRow(product)) { saleRow = row; return; } // แถวควบคุมช่วงลดราคา ไม่ใช่สินค้า
                     const status = row.c[2] ? String(row.c[2].v).trim() : '';  
-                    if (status === 'ของเหลือ') { leftovers.push(row); return; } // การ์ดของเหลือ แยกแสดง
+                    if (status === 'ของเหลือ') {
+                        const kRaw = row.c[10] ? (row.c[10].f != null && String(row.c[10].f).trim() !== '' ? row.c[10].f : row.c[10].v) : '';
+                        const k = String(kRaw == null ? '' : kRaw).trim().toLowerCase();
+                        // K ว่าง = โชว์การ์ดโล๊ะ · clear = ไม่โชว์ (ไปหน้าใบเสร็จ)
+                        if (!k || k === '-' || k === 'ว่าง') leftovers.push(row);
+                        return;
+                    }
                     const day = row.c[3] ? row.c[3].v : '-';    
                     const price = row.c[4] ? row.c[4].v : '0';  
                     const role = row.c[5] ? String(row.c[5].v).trim() : ''; 
@@ -1991,10 +1997,28 @@ body{background:var(--sg-cream)!important}
 
         // ===== ของเหลือ =====
         function loCell(row, i) { const c = row.c[i]; if (!c) return ''; const v = (c.f != null && String(c.f).trim() !== '') ? c.f : c.v; return v == null ? '' : String(v).trim(); }
+        function loHoursLeft(date, time) {
+            const TM = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+            const t = String(time || '').match(/(\d{1,2})[:.](\d{2})/); if (!t) return null;
+            const now = new Date(); let d = new Date(now);
+            const m = String(date || '').match(/(\d{1,2})\s*([^\s\d]+)\s*(\d{4})/);
+            if (m) { const mi = TM.indexOf(m[2]); let y = +m[3]; if (y > 2400) y -= 543; if (mi >= 0) d = new Date(y, mi, +m[1]); }
+            d.setHours(+t[1], +t[2], 0, 0);
+            const ms = d - now; if (ms <= 0) return 'หมดเวลาแล้ว';
+            const h = Math.floor(ms / 3600000), mn = Math.floor(ms % 3600000 / 60000);
+            return h > 0 ? `เหลือ ${h} ชม. ${mn} นาที (ได้ใช้ ${h} ชั่วโมง)` : `เหลือ ${mn} นาที (ได้ใช้ไม่ถึง 1 ชั่วโมง)`;
+        }
         function renderLeftovers(rows) {
             const sec = document.getElementById('lo-section'), track = document.getElementById('lo-track');
             if (!sec || !track) return;
-            if (!rows.length) { sec.classList.add('hidden'); return; }
+            sec.classList.remove('hidden');
+            if (!rows.length) {
+                LO_ITEMS = [];
+                track.innerHTML = '<div class="lo-empty">ตอนนี้ยังไม่มีราคาโล๊ะครับ<small>เมื่อมีรหัสของเหลือ จะขึ้นการ์ดให้เลือกที่นี่</small></div>';
+                const hint = sec.querySelector('.lo-head small'); if (hint) hint.style.display = 'none';
+                return;
+            }
+            const hint = sec.querySelector('.lo-head small'); if (hint) hint.style.display = '';
             LO_ITEMS = [];
             track.innerHTML = rows.map((row, idx) => {
                 const prod = loCell(row, 1) || 'Supergrok';
@@ -2022,6 +2046,7 @@ body{background:var(--sg-cream)!important}
                         <div class="lo-row"><div class="lo-pct">${pct}%<span>used</span></div>
                         <div class="lo-reset">หมดอายุ <b>${date ? esc(date) + ' ' : ''}${esc(time)} น.</b></div></div>
                         <div class="lo-bar"><div class="lo-fill ${lvl}" style="width:${pct}%"></div></div>
+                        ${(h => h ? `<div class="lo-hours">⏳ ${h}</div>` : '')(loHoursLeft(date, time))}
 
                         <div class="lo-foot"><div class="lo-price">฿${esc(price)} <small>เหลือ ${100 - pct}%</small></div>
                         <div class="lo-btns"><button type="button" class="lo-btn ghost" onclick="loOpen(${idx},'feat')">ดูคุณสมบัติ</button><button type="button" class="lo-btn" onclick="loOpen(${idx},'buy')">สั่งซื้อ</button></div></div>
@@ -2035,7 +2060,7 @@ body{background:var(--sg-cream)!important}
             const it = LO_ITEMS[i]; if (!it) return;
             const m = document.getElementById('lo-modal'), b = document.getElementById('lo-modal-body');
             const head = `<h3 class="lo-m-h">${esc(it.prod)} · รหัส 1 วัน <span class="lo-tag">โล๊ะราคาถูก</span></h3>
-                <div class="lo-box"><div class="lo-row"><div class="lo-pct">${it.pct}%<span>used</span></div><div class="lo-reset">หมดอายุ <b>${esc(it.date)} ${esc(it.time)} น.</b></div></div>
+                <div class="lo-box"><div class="lo-row"><div class="lo-pct">${it.pct}%<span>used</span></div><div class="lo-reset">หมดอายุ <b>${esc(it.date)} ${esc(it.time)} น.</b></div></div>${(h => h ? `<div class="lo-hours">⏳ ${h}</div>` : '')(loHoursLeft(it.date, it.time))}
                 <div class="lo-bar"><div class="lo-fill" style="width:${it.pct}%"></div></div></div>`;
             if (mode === 'feat') {
                 b.innerHTML = head + `<div class="lo-feat"><p class="lo-feat-h">พลังงานเหลือ <b>${it.left}%</b> ทำได้อีกประมาณ</p>
