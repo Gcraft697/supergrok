@@ -102,6 +102,28 @@ button{font:inherit;cursor:pointer}
 .ci .i{flex:1;min-width:0}.ci .g{font-size:1rem;font-weight:800;color:#0b2a5b;word-break:break-word}.ci .s{font-size:.85rem;color:#4b5563}
 .ci .p{font-weight:800;color:#0b2a5b;white-space:nowrap;text-align:right}
 .endnote{font-size:12px;color:#b42318;margin:-2px 0 6px;text-align:center}
+
+/* โล๊ะ + เส้นเวลาขีดๆ */
+.paid.lo{background:#ea580c}
+.ci.lo{border-left-color:#ea580c;background:#fff7ed}
+.ci .tag.lo{background:#ea580c}
+.hero-lo{background:#fff7ed;border:2px solid #fdba74;border-radius:14px;padding:12px;margin:8px 0;text-align:center}
+.hero-lo .big{font-size:1.55rem;font-weight:900;color:#c2410c;line-height:1.15}
+.hero-lo .sub{font-size:.85rem;color:#9a3412;font-weight:700;margin-top:2px}
+.hero-lo .when{margin-top:8px;font-size:.8rem;color:#7c2d12;font-weight:600}
+.tl{margin:10px 0 4px}
+.tl h3{margin:0 0 8px;font-size:15px}
+.tl-line{position:relative;margin:18px 8px 28px}
+.tl-rail{height:0;border-top:3px dashed #94a3b8;width:100%}
+.tl-marks{display:flex;justify-content:space-between;position:relative;margin-top:-9px}
+.tl-marks .m{position:relative;flex:1;text-align:center}
+.tl-marks .m .dot{width:14px;height:14px;border-radius:50%;background:#cbd5e1;border:3px solid #fff;box-shadow:0 0 0 2px #94a3b8;margin:0 auto;position:relative;z-index:1}
+.tl-marks .m.on .dot{background:#16a34a;box-shadow:0 0 0 2px #16a34a}
+.tl-marks .m.now .dot{background:#1a73e8;box-shadow:0 0 0 2px #1a73e8}
+.tl-marks .m.end .dot{background:#d92d20;box-shadow:0 0 0 2px #d92d20}
+.tl-marks .m .lab{font-size:11px;font-weight:800;color:#475569;margin-top:6px;white-space:nowrap}
+.tl-marks .m.now .lab,.tl-marks .m.end .lab{color:#0b2a5b}
+.tl-fill{position:absolute;left:0;top:-1.5px;height:3px;background:#16a34a;border-radius:2px;z-index:0}
 </style></head><body>
 <div class="hd"><div class="in"><a href="/" style="display:inline-block;margin-bottom:8px;padding:6px 14px;border-radius:999px;background:#38bdf8;color:#0b2a5b;font-weight:800;font-size:.9rem;text-decoration:none">← กลับหน้าแรก</a><br><b>SuperGolf<span> · ใบเสร็จ</span></b><p>เลือกรหัสของท่านเพื่อดูใบเสร็จ (รายการที่เคลียร์แล้ว และที่มัดจำไว้)</p></div></div>
 <div class="wrap">
@@ -131,13 +153,23 @@ button{font:inherit;cursor:pointer}
     <div style="margin-top:8px;font-size:16px;font-weight:700">รวม <span id="rDays"></span></div>
   </div>
 
+  <div id="rLo" style="display:none">
+    <span id="rLoTag" style="display:inline-block;background:#fff4e0;color:#b45309;font-weight:800;font-size:12px;padding:3px 10px;border-radius:999px;margin:4px 0 8px">🔥 รหัสโล๊ะ · ของเหลือ</span>
+    <div class="item"><span class="k">พลังงานตอนขาย</span><span class="v" id="rPct"></span></div>
+    <div class="hero-lo">
+      <div class="big" id="rHours"></div>
+      <div class="sub" id="rHoursSub"></div>
+      <div class="when">ใช้ได้ถึง <b id="rLoEnd"></b></div>
+    </div>
+  </div>
+
   <div class="total"><span class="k">ราคา</span><span class="v" id="rPrice"></span></div>
   <div class="dep-box" id="rDep" style="display:none">
     <div class="item"><span class="k">ราคา</span><span class="v" id="dFull"></span></div>
     <div class="item"><span class="k">มัดจำแล้ว</span><span class="v" id="dPaid"></span></div>
     <div class="item due"><span class="k">ต้องจ่ายอีก</span><span class="v" id="dDue"></span></div>
   </div>
-  <div class="note">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดจำนวนวันที่เช่ามีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
+  <div class="note" id="rNote">หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดจำนวนวันที่เช่ามีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า</div>
   <div class="thanks">ขอบคุณที่ใช้บริการครับ 🙏</div>
 </div>
 
@@ -179,6 +211,21 @@ function parseD(str){
   else return null;
   if(y>2400)y-=543;if(y<100)y+=2000;
   const dt=new Date(y,m,d);return isNaN(dt)?null:dt;
+}
+
+
+function parseTime(str){const r=String(str||'').match(/(\d{1,2})[:.](\d{2})/);return r?[+r[1],+r[2]]:null}
+function parseDateTime(dateStr,timeStr){
+  const d=parseD(dateStr); if(!d) return null;
+  const t=parseTime(timeStr); if(t) d.setHours(t[0],t[1],0,0); else d.setHours(23,59,0,0);
+  return d;
+}
+function hoursLeftTxt(end){
+  const ms=end-new Date();
+  if(ms<=0) return {txt:'หมดเวลาแล้ว',sub:'',pct:100,h:0};
+  const h=Math.floor(ms/3600000), mn=Math.floor(ms%3600000/60000);
+  return {txt:h>0?('เหลือ '+h+' ชม. '+mn+' นาที'):('เหลือ '+mn+' นาที'),
+    sub:h>0?('(ได้ใช้ '+h+' ชั่วโมง)'):('(ได้ใช้ไม่ถึง 1 ชั่วโมง)'), pct:0, h};
 }
 
 const TM_=0;
@@ -232,14 +279,29 @@ async function load(){
     rows=[];
     j.table.rows.forEach((r,idx)=>{const c=r.c;if(!c)return;
       const g=i=>c[i]?(c[i].f!=null&&String(c[i].f).trim()!==''?c[i].f:c[i].v):'';
-      const st=String(g(10)).toLowerCase(),isDep=st.includes('มัดจำ');
-      if(!st.includes('clear')&&!isDep)return;
-      const d=parseInt(g(3)),h=parseD(g(7)),who=String(g(17)||'').trim();/* อีเมลแบบปิดบัง (API สร้างจาก Q เช่น sup****you@gmail.com) — อีเมลจริงไม่ถูกส่งมา */
-      if(!(d>0)||(!h&&!isDep))return;
+      const st=String(g(10)).toLowerCase().trim(),isDep=st.includes('มัดจำ'),isClear=st.includes('clear');
+      const statusC=String(g(2)||'').trim();
+      const isLo=statusC==='ของเหลือ';
+      // โล๊ะ: C=ของเหลือ และ K=clear → ขึ้นใบเสร็จ (K ว่างไปโชว์หน้า index)
+      // ปกติ: K=clear หรือ มัดจำ
+      if(isLo){ if(!isClear) return; }
+      else { if(!isClear&&!isDep) return; }
+      const who=String(g(17)||'').trim();
       const p=parseInt(g(15));
-      rows.push({idx,pkg:/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok',days:d,start:h,price:parseInt(g(4))||0,dep:isDep,who:(who&&who!=='-')?who:'',no:isNaN(p)?'':String(p)});
+      const pkg=/lite/i.test(g(1))?'SuperGrok Lite':'SuperGrok';
+      const price=parseInt(g(4))||0;
+      if(isLo){
+        const end=parseDateTime(g(7),g(3)); if(!end) return;
+        let pct=parseFloat(String(g(5)).replace('%','')); if(!isNaN(pct)&&pct<=1&&!String(g(5)).includes('%'))pct*=100;
+        pct=isNaN(pct)?0:Math.max(0,Math.min(100,Math.round(pct)));
+        rows.push({idx,lo:true,pkg,days:0,start:null,end,price,dep:false,who:(who&&who!=='-')?who:'',no:isNaN(p)?'':String(p),pct,time:String(g(3)||''),date:String(g(7)||'')});
+      } else {
+        const d=parseInt(g(3)),h=parseD(g(7));
+        if(!(d>0)||(!h&&!isDep))return;
+        rows.push({idx,lo:false,pkg,days:d,start:h,end:null,price,dep:isDep,who:(who&&who!=='-')?who:'',no:isNaN(p)?'':String(p),pct:0});
+      }
     });
-    rows.sort((a,b)=>((b.start||0)-(a.start||0))||(b.idx-a.idx));
+    rows.sort((a,b)=>{const ta=a.lo?(a.end||0):(a.start||0),tb=b.lo?(b.end||0):(b.start||0);return (tb-ta)||(b.idx-a.idx)});
     renderList();
   }catch(e){$('stat').textContent='โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'}
 }
@@ -254,31 +316,56 @@ function renderList(){
   const f=rows.filter(r=>!q||(isMail?found[r.idx]!=null:(r.no===q.replace('#','')||(!/^#?\d+$/.test(q)&&r.who.toLowerCase().includes(q)))));
   $('stat').textContent=f.length?('พบ '+f.length+' รายการ'):(isMail?'ไม่พบรายการ (พิมพ์อีเมลให้ครบทั้งหมด)':'ไม่พบรายการ');
   f.slice(0,PAGE).forEach(r=>{
-    const e=r.start?new Date(r.start):null;if(e)e.setDate(e.getDate()+r.days);
-    const b=document.createElement('button');b.type='button';b.className='ci'+(r.dep?' dep':'');
+    const b=document.createElement('button');b.type='button';
+    b.className='ci'+(r.dep?' dep':'')+(r.lo?' lo':'');
     b.innerHTML='<div class="i"><div class="g"></div><div class="s"></div></div><div class="p"></div>';
     b.querySelector('.g').textContent=[r.no?'#'+r.no:'',r.who].filter(Boolean).join(' · ')||'-';
-    b.querySelector('.s').textContent=(r.pkg==='SuperGrok'?'SuperGrok':'Lite')+' · '+r.days+' วัน · '+(r.start?fmt(r.start)+' ถึง '+fmt(e):'ยังไม่กำหนดวันเริ่ม');
-    if(r.dep){const t=document.createElement('span');t.className='tag';t.textContent='มัดจำ';b.querySelector('.g').appendChild(t)}
+    if(r.lo){
+      const left=hoursLeftTxt(r.end);
+      b.querySelector('.s').textContent='โล๊ะ · หมดอายุ '+fmt(r.end)+' '+pad(r.end.getHours())+':'+pad(r.end.getMinutes())+' น. · '+left.txt;
+      const t=document.createElement('span');t.className='tag lo';t.textContent='โล๊ะ';b.querySelector('.g').appendChild(t);
+    } else {
+      const e=r.start?new Date(r.start):null;if(e)e.setDate(e.getDate()+r.days);
+      b.querySelector('.s').textContent=(r.pkg==='SuperGrok'?'SuperGrok':'Lite')+' · '+r.days+' วัน · '+(r.start?fmt(r.start)+' ถึง '+fmt(e):'ยังไม่กำหนดวันเริ่ม');
+      if(r.dep){const t=document.createElement('span');t.className='tag';t.textContent='มัดจำ';b.querySelector('.g').appendChild(t)}
+    }
     b.querySelector('.p').textContent=r.price+' ฿';
     b.onclick=()=>show(r);L.appendChild(b);
   });
   $('more').style.display=f.length>PAGE?'':'none';
 }
 function show(r){
-  const s=r.start,e=s?new Date(s):null;if(e)e.setDate(e.getDate()+r.days);
   const dep=Math.min(DEPOSIT[r.pkg]||0,r.price);
-  $('rTitle').textContent=r.dep?'ใบรับมัดจำ':'ใบเสร็จการเช่า';
-  $('rPaid').textContent=r.dep?'มัดจำแล้ว':'ชำระแล้ว';$('rPaid').className='paid'+(r.dep?' dep':'');
   $('rDep').style.display=r.dep?'':'none';
   $('dFull').textContent=r.price+' บาท';$('dPaid').textContent=dep+' บาท';$('dDue').textContent=(r.price-dep)+' บาท';
   $('rNo').textContent=r.no?'เลขที่ '+r.no:'';
-  $('rIssue').textContent=r.dep?'ใบรับมัดจำ':'ใบเสร็จย้อนหลัง';
   $('rWhoK').textContent='Gmail';$('rWho').textContent=r.who;$('rWho').parentNode.style.display=r.who?'':'none';
-  $('rPkg').textContent=r.pkg;$('rDays').textContent=r.days+' วัน';
+  $('rPkg').textContent=r.lo?(r.pkg+' · โล๊ะราคาถูก'):r.pkg;
   $('rPrice').textContent=r.price+' บาท';$('rPrice').parentNode.style.display=r.dep?'none':'';
-  $('rCal').style.display=s?'':'none';
-  if(s){$('rStart').textContent=fmt(s);$('rEnd').innerHTML=fmt(new Date(e.getTime()-60000))+' <small>23.59 น.</small>';drawCal(s,e)}
+
+  if(r.lo){
+    $('rTitle').textContent='ใบเสร็จโล๊ะ Grok';
+    $('rPaid').textContent='โล๊ะ · ชำระแล้ว';$('rPaid').className='paid lo';
+    $('rIssue').textContent='ใบเสร็จรหัสของเหลือ';
+    $('rCal').style.display='none';
+    $('rLo').style.display='';
+    const left=hoursLeftTxt(r.end);
+    $('rHours').textContent=left.txt;
+    $('rHoursSub').textContent=left.sub;
+    $('rLoEnd').textContent=fmt(r.end)+' '+pad(r.end.getHours())+':'+pad(r.end.getMinutes())+' น.';
+    $('rPct').textContent='เหลือ '+(100-r.pct)+'% (ใช้ไป '+r.pct+'%)';
+    $('rNote').textContent='หมายเหตุ รหัสโล๊ะเป็นของเหลือ ใช้ได้จนถึงเวลาหมดอายุด้านบนเท่านั้น (ไม่ใช่เต็ม 24 ชม. จากตอนซื้อ) มีประกันตามชั่วโมงที่เหลือ หากรหัสมีปัญหา ร้านจะเคลมเรียกรหัสเดิมกลับมาให้ใช้ต่อจนครบเวลา';
+  } else {
+    const s=r.start,e=s?new Date(s):null;if(e)e.setDate(e.getDate()+r.days);
+    $('rTitle').textContent=r.dep?'ใบรับมัดจำ':'ใบเสร็จการเช่า';
+    $('rPaid').textContent=r.dep?'มัดจำแล้ว':'ชำระแล้ว';$('rPaid').className='paid'+(r.dep?' dep':'');
+    $('rIssue').textContent=r.dep?'ใบรับมัดจำ':'ใบเสร็จย้อนหลัง';
+    $('rLo').style.display='none';
+    $('rDays').textContent=r.days+' วัน';
+    $('rNote').textContent='หมายเหตุ สงวนสิทธิ์ขอเรียกคืนการครอบครองรหัสเมื่อสิ้นสุดการเช่า ตลอดจำนวนวันที่เช่ามีประกัน ประกันคือการเคลมเรียกรหัสเดิมกลับมาใช้ให้ครบระยะเวลาเช่า หากประสงค์ต่ออายุกรุณาแจ้งล่วงหน้า';
+    $('rCal').style.display=s?'':'none';
+    if(s){$('rStart').textContent=fmt(s);$('rEnd').innerHTML=fmt(new Date(e.getTime()-60000))+' <small>23.59 น.</small>';drawCal(s,e)}
+  }
   $('listPanel').style.display='none';$('view').style.display='';window.scrollTo(0,0);
 }
 function back(){$('view').style.display='none';$('listPanel').style.display='';}
