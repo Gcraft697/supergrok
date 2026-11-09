@@ -444,7 +444,7 @@
         .ml-item b { font-size: 1.15rem; color: var(--navy); display: block; }
 
         /* หน้าต่างรายละเอียด */
-        .modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 12px; }
+        .modal { position: fixed; inset: 0; z-index: 10050; display: flex; align-items: center; justify-content: center; padding: 12px; }
         .modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,.65); }
         .modal-box { position: relative; background: #fff; border-radius: 20px; width: 100%; max-width: 520px; max-height: calc(100vh - 24px); overflow-y: auto; padding: 18px; }
         .modal-x { position: absolute; top: 10px; right: 10px; width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 26px; cursor: pointer; display: grid; place-items: center; color: #111827; z-index: 2; }
@@ -678,7 +678,7 @@ h2.home-h { margin:0 0 12px; }
 #panel-home { --c-card:#fffdf9; --c-line:#ebdfcc; --c-brown:#8a4b16; --c-brown-d:#6e3a10; --c-text:#2b2118; --c-mute:#8a7a68; --c-pill:#f3e7d4; }
 #panel-home .home-h { font-family:'Kanit','Sarabun',sans-serif; font-weight:500; }
 #panel-home .home-h .ic { color:var(--c-brown); }
-#home-slots { font-family:'Kanit','Sarabun','Noto Sans Thai',sans-serif; font-weight:400; color:var(--c-text); gap:18px; }
+#home-slots { position:relative;z-index:1; font-family:'Kanit','Sarabun','Noto Sans Thai',sans-serif; font-weight:400; color:var(--c-text); gap:18px; }
 #home-slots .slot-cat { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 #home-slots .slot .p-card, #home-slots .p-card.month { background:var(--c-card); border:1px solid var(--c-line); border-radius:24px; padding:14px 14px 20px; box-shadow:0 6px 24px -14px rgba(110,58,16,.35); overflow:visible; }
 #home-slots .slot .p-img, #home-slots .month .p-img { border-radius:16px; overflow:hidden; background:#000; cursor:pointer; }
@@ -939,7 +939,7 @@ body{background:var(--sg-cream)!important}
 .hero2-mascot{max-width:42%;object-fit:contain;background:transparent}
 
 /* ===== ของเหลือ (Leftover) : สไตล์แบบหน้า Usage ===== */
-.lo-wrap{margin:18px 0 8px}
+.lo-wrap{margin:18px 0 8px;position:relative;z-index:1}.lo-wrap.lo-below{margin:28px 0 8px;z-index:3}
 .lo-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 2px 10px}
 .lo-head h2{font-size:18px;font-weight:700;color:var(--text);margin:0}
 .lo-head small{color:#6b7280;font-size:13px}
@@ -959,8 +959,16 @@ body{background:var(--sg-cream)!important}
 .lo-price{font-size:20px;font-weight:700;color:var(--grok)}.lo-price small{font-size:12px;color:#6b7280;font-weight:400}
 .lo-btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;text-decoration:none}
 .lo-can{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.lo-can span{background:#f3f2ef;border-radius:8px;padding:4px 9px;font-size:12.5px;color:#333}.lo-can b{color:#111}
-.lo-foot{flex-wrap:wrap}.lo-empty{background:#fff;border:2px dashed #fdba74;border-radius:16px;padding:16px;text-align:center;color:#9a3412;font-weight:700;font-size:15px;line-height:1.45}.lo-empty small{display:block;margin-top:6px;color:#b45309;font-weight:600;font-size:13px}.lo-hours{margin-top:10px;display:inline-block;background:#fff4e0;color:#b45309;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}.lo-btns{display:flex;gap:8px;width:100%}.lo-btns .lo-btn{flex:1;white-space:nowrap;padding:10px 8px}.lo-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}.lo-btn.full{width:100%;margin-top:14px;padding:12px;font-size:16px}
-.lo-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:flex-end;justify-content:center}.lo-modal.hidden{display:none}
+.lo-foot{flex-wrap:wrap}.lo-empty{background:#fff;border:2px dashed #fdba74;border-radius:16px;padding:16px;text-align:center;color:#9a3412;font-weight:700;font-size:15px;line-height:1.45}.lo-empty small{display:block;margin-top:6px;color:#b45309;font-weight:600;font-size:13px}
+.lo-card.lo-sold{position:relative;text-decoration:none;color:inherit;display:block;flex:0 0 min(86%,360px)}
+.lo-card.lo-sold .lo-box{filter:grayscale(.15)}
+.lo-sold-mark{display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px;margin-left:6px}
+.lo-btn.follow{background:#0084ff;color:#fff;border:0;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.lo-btn.follow .ic{width:18px;height:18px}
+.lo-btn.gone{background:#e5e7eb;color:#6b7280;border:0;cursor:default;pointer-events:none}
+.lo-card.lo-sold:hover{box-shadow:0 8px 22px -14px rgba(0,132,255,.55)}
+.lo-card.lo-sold:hover .lo-btn.follow{background:#006fd6}.lo-hours{margin-top:10px;display:inline-block;background:#fff4e0;color:#b45309;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}.lo-btns{display:flex;gap:8px;width:100%}.lo-btns .lo-btn{flex:1;white-space:nowrap;padding:10px 8px}.lo-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}.lo-btn.full{width:100%;margin-top:14px;padding:12px;font-size:16px}
+.lo-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10050;display:flex;align-items:flex-end;justify-content:center}.lo-modal.hidden{display:none}
 .lo-m-box{position:relative;background:#faf9f7;width:min(100%,460px);border-radius:20px 20px 0 0;padding:22px 18px 26px;max-height:88vh;overflow:auto}
 @media(min-width:600px){.lo-modal{align-items:center}.lo-m-box{border-radius:20px}}
 .lo-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:18px;cursor:pointer;color:#555}
@@ -1261,6 +1269,7 @@ body{background:var(--sg-cream)!important}
         // Messenger deep link — บน iOS เปิดแอป Messenger ได้เสถียรกว่าเพจ facebook.com + target=_blank
         const MESSENGER_LINK = 'https://www.facebook.com/messages/t/100012830647735';
         const MESSENGER_APP_LINK = 'https://m.me/100012830647735';
+        const LO_GROUP_LINK = 'https://m.me/j/HNA2cXPHFcXK4A2_/?send_source=gc:copy_invite_link_c';
         const PHONE_NUMBER = '0973151708';
         const TEL_LINK = 'tel:0973151708';
 
@@ -1678,6 +1687,7 @@ body{background:var(--sg-cream)!important}
                 allProducts = [];
                 dateProductMap = {};
                 const leftovers = [];
+                const loPast = [];
                 let saleRow = null;
 
                 rows.forEach((row) => {
@@ -1689,8 +1699,9 @@ body{background:var(--sg-cream)!important}
                     if (status === 'ของเหลือ') {
                         const kRaw = row.c[10] ? (row.c[10].f != null && String(row.c[10].f).trim() !== '' ? row.c[10].f : row.c[10].v) : '';
                         const k = String(kRaw == null ? '' : kRaw).trim().toLowerCase();
-                        // K ว่าง = โชว์การ์ดโล๊ะ · clear = ไม่โชว์ (ไปหน้าใบเสร็จ)
+                        // K ว่าง = โชว์การ์ดโล๊ะ · clear = ไม่โชว์ตอนขาย แต่เก็บไว้เป็นตัวอย่างราคา/หลอดในอดีต
                         if (!k || k === '-' || k === 'ว่าง') leftovers.push(row);
+                        else loPast.push(row);
                         return;
                     }
                     const day = row.c[3] ? row.c[3].v : '-';    
@@ -1740,7 +1751,7 @@ body{background:var(--sg-cream)!important}
                 SALE.cfg = readSaleConfig(saleRow);
                 allProducts.forEach(applySaleToItem);
                 renderSaleBanner();
-                renderLeftovers(leftovers);
+                renderLeftovers(leftovers, loPast);
                 filterProducts();
                 renderHomeReady();
                 updateOfferSchema(allProducts);
@@ -2008,17 +2019,127 @@ body{background:var(--sg-cream)!important}
             const h = Math.floor(ms / 3600000), mn = Math.floor(ms % 3600000 / 60000);
             return h > 0 ? `เหลือ ${h} ชม. ${mn} นาที (ได้ใช้ ${h} ชั่วโมง)` : `เหลือ ${mn} นาที (ได้ใช้ไม่ถึง 1 ชั่วโมง)`;
         }
-        function renderLeftovers(rows) {
+        function loParsePct(pctRaw) {
+            let pct = parseFloat(String(pctRaw == null ? '' : pctRaw).replace('%', ''));
+            if (!isNaN(pct) && pct <= 1 && !String(pctRaw).includes('%')) pct *= 100;
+            return isNaN(pct) ? 0 : Math.max(0, Math.min(100, Math.round(pct)));
+        }
+        function loPriceNum(raw) {
+            const n = parseFloat(String(raw == null ? '' : raw).replace(/[^\d.]/g, ''));
+            return isNaN(n) ? null : Math.round(n);
+        }
+        function loUsageBits(prod, pct) {
+            const kind = planKind({ product: prod }) || 'grok';
+            const left = 100 - pct;
+            const cnt = (key) => { const r = key ? USAGE_ROWS.find(x => x.key === key) : null; const arr = r ? r[kind] : null; return arr ? Math.floor(arr[0] * left / 100) : 0; };
+            const row720 = USAGE_ROWS.find(r => r.label === '720p 6วิ');
+            const c720 = row720 && row720[kind] ? Math.floor(row720[kind][0] * left / 100) : 0;
+            const imgRow = USAGE_ROWS.find(r => r.key === 'image');
+            const img = imgRow && imgRow[kind] ? imgRow[kind] : [0];
+            const imgTxt = img.map(n => Math.floor(n * left / 100)).join('–');
+            const lvl = pct >= 80 ? 'hi' : pct >= 50 ? 'mid' : '';
+            return { kind, left, imgTxt, c480: cnt('clip480s6'), c720, lvl };
+        }
+        let _loSampleTimer = null;
+        function placeLoSection(empty) {
+            const sec = document.getElementById('lo-section');
+            const slots = document.getElementById('home-slots');
+            const title = document.querySelector('h2.home-h');
+            if (!sec || !slots) return;
+            sec.classList.toggle('lo-below', !!empty);
+            if (empty) slots.insertAdjacentElement('afterend', sec);
+            else if (title) title.insertAdjacentElement('beforebegin', sec);
+            else slots.insertAdjacentElement('beforebegin', sec);
+        }
+        function renderLoEmptySample(past) {
+            const sec = document.getElementById('lo-section'), track = document.getElementById('lo-track');
+            if (!sec || !track) return;
+            if (_loSampleTimer) { clearInterval(_loSampleTimer); _loSampleTimer = null; }
+            const sampleHref = esc(LO_GROUP_LINK);
+            const parsed = (past || []).map(row => ({
+                prod: loCell(row, 1) || 'Supergrok',
+                price: loCell(row, 4),
+                pct: loParsePct(loCell(row, 5)),
+                date: loCell(row, 7),
+                time: loCell(row, 3)
+            }));
+            const sampleHoursText = (item) => {
+                const m = String(item && item.time || '').match(/(\d{1,2})[:.](\d{2})/);
+                if (!m) return '';
+                const h = +m[1], mn = +m[2];
+                if (!h && !mn) return '';
+                return mn > 0 ? ('ได้ใช้ ' + h + ' ชั่วโมง ' + mn + ' นาที') : ('ได้ใช้ ' + h + ' ชั่วโมง');
+            };
+            const startPriceHtml = '฿59–99 <small>ราคาเริ่มต้น</small>';
+            const samples = [];
+            const seen = new Set();
+            for (let i = parsed.length - 1; i >= 0; i--) {
+                const p = parsed[i];
+                if (p.pct <= 0) continue;
+                const key = String(p.prod) + '|' + p.pct + '|' + String(p.price);
+                if (seen.has(key)) continue;
+                seen.add(key);
+                samples.push(p);
+            }
+            const paint = (item) => {
+                const u = loUsageBits(item.prod, item.pct);
+                const pctEl = track.querySelector('#lo-sample-pct');
+                if (pctEl) pctEl.innerHTML = item.pct + '%<span>used</span>';
+                const fill = track.querySelector('#lo-sample-fill');
+                if (fill) { fill.style.width = item.pct + '%'; fill.className = 'lo-fill ' + u.lvl; }
+                const can = track.querySelector('#lo-sample-can');
+                if (can) can.innerHTML = '<span>🖼️ ภาพ <b>~' + u.imgTxt + '</b></span><span>🎬 480p 6วิ <b>~' + u.c480 + '</b></span><span>🎬 720p 6วิ <b>~' + u.c720 + '</b></span>';
+                const nameEl = track.querySelector('#lo-sample-name');
+                if (nameEl) nameEl.textContent = 'รหัส 1 วัน · ' + (planDisplayName(item.prod) || item.prod) + ' ';
+                const hoursEl = track.querySelector('#lo-sample-hours');
+                if (hoursEl) {
+                    const ht = sampleHoursText(item);
+                    hoursEl.textContent = ht ? ('⏳ ' + ht) : '';
+                    hoursEl.style.display = ht ? '' : 'none';
+                }
+            };
+            const first = samples[0] || { prod: 'Supergrok', pct: 60, price: '59' };
+            const firstName = planDisplayName(first.prod) || first.prod;
+            const u0 = loUsageBits(first.prod, first.pct);
+            track.innerHTML = `<a class="lo-card lo-sold" href="${sampleHref}" data-ext="${sampleHref}">
+                    <div class="lo-label"><span id="lo-sample-name">รหัส 1 วัน · ${esc(firstName)} </span><span class="lo-tag">ตัวอย่างราคาโล๊ะ</span><span class="lo-sold-mark">หมดแล้ว</span></div>
+                    <div class="lo-box">
+                        <div class="lo-row"><div class="lo-pct" id="lo-sample-pct">${first.pct}%<span>used</span></div>
+                        <div class="lo-reset">รอบก่อนโล๊ะไปแล้ว</div></div>
+                        <div class="lo-bar"><div class="lo-fill ${u0.lvl}" id="lo-sample-fill" style="width:0%"></div></div>
+                        ${(ht => ht ? `<div class="lo-hours" id="lo-sample-hours">⏳ ${esc(ht)}</div>` : `<div class="lo-hours" id="lo-sample-hours" style="display:none"></div>`)(sampleHoursText(first))}
+                        <div class="lo-can" id="lo-sample-can"><span>🖼️ ภาพ <b>~${u0.imgTxt}</b></span><span>🎬 480p 6วิ <b>~${u0.c480}</b></span><span>🎬 720p 6วิ <b>~${u0.c720}</b></span></div>
+                        <div class="lo-foot"><div class="lo-price" id="lo-sample-price">${startPriceHtml}</div>
+                        <div class="lo-btns">
+                            <span class="lo-btn gone">หมดแล้ว</span>
+                            <span class="lo-btn follow"><svg class="ic"><use href="#i-msg"/></svg> เข้ากลุ่มติดตาม</span>
+                        </div></div>
+                    </div>
+                </a>`;
+            bindExternalLinks(track);
+            requestAnimationFrame(() => { const fill = track.querySelector('#lo-sample-fill'); if (fill) fill.style.width = first.pct + '%'; });
+            if (samples.length > 1) {
+                let idx = 0;
+                _loSampleTimer = setInterval(() => {
+                    idx = (idx + 1) % samples.length;
+                    paint(samples[idx]);
+                }, 4000);
+            }
+            placeLoSection(true);
+            const head = sec.querySelector('.lo-head'); if (head) head.style.display = '';
+            const hint = sec.querySelector('.lo-head small'); if (hint) hint.style.display = 'none';
+        }
+        function renderLeftovers(rows, past) {
             const sec = document.getElementById('lo-section'), track = document.getElementById('lo-track');
             if (!sec || !track) return;
             sec.classList.remove('hidden');
+            if (_loSampleTimer) { clearInterval(_loSampleTimer); _loSampleTimer = null; }
             if (!rows.length) {
-                LO_ITEMS = [];
-                track.innerHTML = '<div class="lo-empty">ตอนนี้ยังไม่มีราคาโล๊ะครับ<small>เมื่อมีรหัสของเหลือ จะขึ้นการ์ดให้เลือกที่นี่</small></div>';
-                const hint = sec.querySelector('.lo-head small'); if (hint) hint.style.display = 'none';
+                renderLoEmptySample(past || []);
                 return;
             }
-            const hint = sec.querySelector('.lo-head small'); if (hint) hint.style.display = '';
+            placeLoSection(false);
+            const head = sec.querySelector('.lo-head'); if (head) head.style.display = '';
             LO_ITEMS = [];
             track.innerHTML = rows.map((row, idx) => {
                 const prod = loCell(row, 1) || 'Supergrok';
