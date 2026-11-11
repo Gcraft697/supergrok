@@ -693,6 +693,13 @@ h2.home-h { margin:0 0 12px; }
 #home-slots .pill { display:inline-block; vertical-align:3px; margin-left:8px; background:#fbe9cf; color:var(--c-brown); font-size:11.5px; font-weight:500; padding:0 9px; border-radius:99px; line-height:20px; white-space:nowrap; }
 #home-slots .pill.ok { background:#e3f1e5; color:#1f6b33; } #home-slots .pill.none { background:#eee; color:#6b7280; }
 #home-slots .pill.on-img { position:absolute; top:10px; left:10px; margin:0; z-index:2; vertical-align:baseline; font-size:15px; font-weight:600; line-height:24px; padding:0 14px; color:#fff; background:#d98a1b; box-shadow:0 2px 8px rgba(0,0,0,.35); }
+#home-slots .p-img { position:relative; }
+#home-slots .q-days.stock { background:#efedea; color:#a19a91; font-weight:500; font-size:12.5px; }
+#home-slots .stock-count { position:absolute; top:8px; right:8px; z-index:2; display:inline-flex; align-items:baseline; gap:3px; font-size:13px; font-weight:700; line-height:1; padding:6px 13px 7px; border-radius:99px; color:#fff; background:linear-gradient(135deg,#ff2d2d 0%,#ff7a00 100%); border:2px solid #fff; box-shadow:0 0 0 2px rgba(255,90,0,.35), 0 4px 14px rgba(255,60,0,.55); white-space:nowrap; text-shadow:0 1px 2px rgba(0,0,0,.25); }
+#home-slots .stock-count b { font-size:21px; font-weight:900; letter-spacing:-.5px; }
+#home-slots .stock-count .sc-sep { width:1.5px; height:16px; background:rgba(255,255,255,.7); margin:0 7px; align-self:center; }
+#home-slots .slot .p-meta.has-power { flex-wrap:wrap; row-gap:4px; align-items:center; }
+#home-slots .p-meta .p-power { margin:0; font-size:clamp(10.5px,3.75cqi,13.5px); flex:none; }
 #home-slots .pill.on-img.ok { background:#1f9d4a; } #home-slots .pill.on-img.none { background:#6b7280; }
 #home-slots .q-price { font-size:14px; font-weight:400; color:var(--c-mute); }
 #home-slots .q-price b { font-size:40px; font-weight:800; color:var(--navy); line-height:1; margin-right:3px; }
@@ -2278,11 +2285,21 @@ body{background:var(--sg-cream)!important}
             });
 
             // 2) ช่องละหมวด
+            // แสดงสินค้าพร้อมขายทุกชิ้นของแต่ละหมวด (ไม่ใช่แค่ชิ้นแรก) เรียงตามลำดับในชีต
             HOME_SLOTS.forEach(slot => {
+              // รวมชิ้นที่วันเช่าและราคาเท่ากันเป็นการ์ดเดียว แล้วบอกจำนวนบัญชีที่มุมการ์ด
+              const groups = [];
+              normalItems.filter(slot.match).forEach(it => {
+                  const key = String(it.day).trim() + '|' + String(it.price).trim();
+                  const g = groups.find(x => x.key === key);
+                  if (g) g.count++; else groups.push({ key, item: it, count: 1 });
+              });
+              (groups.length ? groups : [null]).forEach((grp, idx) => {
+                const ready = grp ? grp.item : null;
+                const stockCount = grp ? grp.count : 0;
                 const wrap = document.createElement('section');
                 wrap.className = 'slot';
-                wrap.id = 'slot-' + slot.key;
-                const ready = normalItems.find(slot.match);             // รายการแรกตามลำดับเดิมในชีต
+                wrap.id = 'slot-' + slot.key + (idx ? '-' + idx : '');
                 const saleReady = saleItems.find(slot.match);
                 const nextQueue = getClosestQueueItem(queueItems.filter(slot.match));
                 let pill, card;
@@ -2324,10 +2341,20 @@ body{background:var(--sg-cream)!important}
                 const imgEl = card.querySelector('.p-img');
                 const pillOnImg = pill.replace('class="pill"', 'class="pill ok"').replace('class="pill', 'class="pill on-img').replace('<span ', '<span aria-hidden="true" ');
                 if (imgEl) imgEl.insertAdjacentHTML('beforeend', pillOnImg);
+                if (imgEl && ready) {
+                    // มุมขวาบน: จำนวนวัน + ราคา / ใต้ชื่อ (ที่เดิมของป้ายวัน): จำนวนบัญชีที่เหลือ
+                    imgEl.insertAdjacentHTML('beforeend', `<span class="stock-count"><b>${esc(ready.day)}</b> วัน<i class="sc-sep"></i><b>${esc(fmtPrice(ready.price))}</b> บาท</span>`);
+                    // ย้ายความโหดไปอยู่บรรทัดเดียวกับประกัน
+                    const pw = card.querySelector('.p-power'), meta = card.querySelector('.p-meta');
+                    if (pw && meta) { meta.prepend(pw); meta.classList.add('has-power'); }
+                    const daysEl = card.querySelector('.q-days');
+                    if (daysEl) { daysEl.textContent = `เหลือ ${stockCount} บัญชี`; daysEl.classList.add('stock'); }
+                }
                 else if (nameEl) nameEl.insertAdjacentHTML('beforeend', ' ' + pillOnImg);
                 wrap.appendChild(card);
                 box.appendChild(wrap);
                 bindExternalLinks(wrap);
+              });
             });
             tickCountdown();
         }
