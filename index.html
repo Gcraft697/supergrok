@@ -1742,7 +1742,7 @@ body{background:var(--sg-cream)!important}
                     };
 
                     const rawStatus = row.c[2] ? row.c[2].v : null;
-                    const soldOut = rawStatus === true || /หมด|ขายแล้ว|sold/i.test(status);
+                    const soldOut = rawStatus === true || /หมด|ขายแล้ว|sold|ไม่เปิด|ยังไม่เปิด|^ปิด|ระงับ|disabled|inactive/i.test(status);
                     if (status && !soldOut) {
                         allProducts.push(item);
                         if (parsedDate) {
@@ -2350,7 +2350,7 @@ body{background:var(--sg-cream)!important}
                     const daysEl = card.querySelector('.q-days');
                     if (daysEl) { daysEl.textContent = `เหลือ ${stockCount} บัญชี`; daysEl.classList.add('stock'); }
                 }
-                else if (nameEl) nameEl.insertAdjacentHTML('beforeend', ' ' + pillOnImg);
+                else if (nameEl && !imgEl) nameEl.insertAdjacentHTML('beforeend', ' ' + pillOnImg.replace(' on-img', ''));
                 wrap.appendChild(card);
                 box.appendChild(wrap);
                 bindExternalLinks(wrap);
